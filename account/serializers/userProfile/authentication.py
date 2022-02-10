@@ -1,5 +1,4 @@
-from rest_framework import fields, serializers, exceptions
-from business.models import Queue
+from rest_framework import serializers 
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout
 
@@ -45,8 +44,9 @@ class AuthenticateUserSerializer(serializers.Serializer):
         validated_data = self.validated_data
         username = validated_data.get('username')
         user_data = {"username":username} if "@" not in username else {"email":username}
-        instance = User.objects.get(**user_data)
-        return instance
+        user = User.objects.get(**user_data)
+        userProfile = user.userProfile
+        return userProfile
     
    
  

@@ -3,12 +3,11 @@ from django.urls import path,re_path
 from account.api  import (
                           CreateUserProfileAPIView,
                           UpdateUserProfileAPIView,
+                          AuthenticateUserProfileAPIView,
+                          DeauthenticateUserProfileAPIView,
+                          SignUpConfirmationEmailAPIView
                         )
 
-from account.api import (
-                           AuthenticateUserProfileAPIView,
-                           DeauthenticateUserProfileAPIView,
-                        )
 
 from .views import activateView,changeEmail,set_new_passwordView,ResetPasswordView,activate_resetView,UserAccountView,confirm_emailView,BusinessAccountView,EditBusinessProfileView
 
@@ -22,6 +21,7 @@ urlpatterns = [
     path('user-profile/<int:pk>/update/', UpdateUserProfileAPIView.as_view(), name='update_user_profile' ),
     path('user-profile/authenticate/', AuthenticateUserProfileAPIView.as_view(), name='authenticate_user_profile' ),
     path('user-profile/deauthenticate/', DeauthenticateUserProfileAPIView.as_view(), name='deauthenticate_user_profile' ),
+    path('user-profile/email/confirm-sign-up/', SignUpConfirmationEmailAPIView.as_view(), name='email_sign_up_confirmation' ),
 
 #####################################################################
     re_path(r'^user-signup/$', UserAccountView, name='user_signup' ),

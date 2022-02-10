@@ -16,8 +16,14 @@ class AuthenticateUserProfileTests(APITestCase):
                         
         self.login_data =  {   
                             "username": "Babatola",
+                            "email":"Babatola@gmail.com",
                             "password":"1234@334&*9",
                            }
+        username = self.login_data.get("username")
+        email = self.login_data.get("email")
+        assert username.lower() != username, "This is to ensure that the value is converted to lowercase during validation "
+        assert email.lower() != email, "This is to ensure that the value is converted to lowercase during validation "
+
     
     def __correct_byte(self,byte_value):
         return ast.literal_eval(byte_value.decode('utf-8'))
@@ -67,7 +73,7 @@ class AuthenticateUserProfileTests(APITestCase):
         Ensure that authentication with the correct details works.
         """
         data = self.login_data.copy()
-        data["username"] = "babatola@gmail.com"
+        data["username"] = data.get("email")
         response = self.client.post(self.url, data, format='json')
         content = self.__correct_byte(response.content)
         user = auth.get_user(self.client)

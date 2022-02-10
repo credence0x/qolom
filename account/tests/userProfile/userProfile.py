@@ -22,7 +22,9 @@ class CreateUserProfileTests(APITestCase):
                             "country":"Nigeria",
                             "timezone":"Lagos/Africa"
                      }
+        
         self.url = reverse('account:create_user_profile')
+
     
     def __correct_byte(self,byte_value):
         return ast.literal_eval(byte_value.decode('utf-8'))

@@ -42,6 +42,15 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+  
+    class Meta:
+        model = UserProfile
+        fields = user_profile_base_fields
+
+
+
 class CreateUserProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(write_only=True)
     email = serializers.EmailField(write_only=True)
