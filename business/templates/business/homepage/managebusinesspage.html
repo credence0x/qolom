@@ -1,0 +1,136 @@
+
+{% extends 'business/base.html' %}
+{% load static %}
+{% load hosts %}
+{% block head %}
+{% if business.dp %}
+<link rel="preload" as="image" href="{% host_url 'image' business.filename host 'media' %}">
+{% endif %}
+{% endblock%}
+{% block content %}
+
+
+
+
+  
+  {% if business.dp %}
+  
+  	<div style="font-weight: bold;text-align: center;height: 100%;border-color: rgb(148,193,239);border-radius: 40px;border-color: lightgrey;" class="dp">
+
+  <a href="{% url "account:edit_business_registration" %}">
+  <img src="{% host_url 'image' business.filename host 'media' %}" style="height: 2.5em;width: 2.5em;border-radius: 10px;box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);">
+  
+  </a>
+
+
+</div>
+<br><br>
+  
+{% else %}
+<div style="font-weight: bold;text-align: center;height: 100%;border-color: rgb(148,193,239);border-radius: 40px;border-color: lightgrey;" class="dp">
+
+  <a href="{% url "account:edit_business_registration" %}">
+
+
+
+    
+<div style="width:2.5em;height: 2.5em; box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);border-radius: 10px;text-align: center; background-color: orange;border-color:black;color: white;font-weight: bold; padding-top: 0.4em;margin:auto;">
+ <span style="font-size: 1.5em;">
+   
+          {{first_letter}}
+    
+ </span></div>
+
+
+    
+ </a>
+<div>
+<a href="{% url "account:edit_business_registration" %}" class="line_detail">
+  <br>
+    <!-- <button class="linestyle" style="color: white;border-color: rgb(0,0,90);background-color: rgb(0,0,90);font-weight: bold;width: 40%;padding: 8px"> 
+              Add Logo
+    </button> -->
+  </a>
+  <br><br>
+</div>
+
+</div>
+<br>
+
+<br>  
+{% endif %}
+
+
+  
+{% if not business.days_open or business.days_open == '[]' %}
+<a href="{% url 'business:business_hours' %}">
+  <div class="dp" style="color: white;background-color: orange;text-align: center;font-size: 14px;border-radius: 0px">
+    SET BUSINESS HOURS
+ </div>
+
+</a>
+{% endif %}
+
+
+
+
+{% if businesslines %}
+<div class="menubuttons">
+  <br>
+  Manage Lines
+  <br><br>
+  <div style="color: grey;font-size: 90%;font-weight: normal;width: 70%;margin-left:15%;margin-right: 15%;">
+     Customers may join any of your lines by searching for your business name or using your key. This key is connected to all your lines.
+     <br><br><span style="color: blue;font-weight: bold;">Your key is 
+     <span style="letter-spacing: 1px">{{ business.key }}</span></span>
+  </div><br>
+{% for line in businesslines %}
+<div>
+  <a href="{{ line.get_absolute_url }}" class="line_detail">
+    <button class="linestyle" style="color: blue"> 
+              {{ line.name }}
+    </button>
+  </a>
+  <a href="{% url "business:edit_line" line.slug %}" " class="editline" > 
+       <button class="linestyle" style="color: orange;font-weight: bold;"> 
+              Edit Line
+    </button>
+  </a>
+</div>
+</br>
+
+{% endfor %}
+</div>
+<br>
+{% endif %}
+<p>
+
+  
+
+
+
+  <div class="menubuttons">
+    Create Line
+    <br>
+    <br><br><img src="{% static 'img/queue.jpg' %}" style="width: inherit;"><br><br>
+
+    <div style="color: grey;margin-left: 15%;margin-right: 15%;font-weight: normal;"> Create a line and have full control over it. You can display information and provide instructions to your customer on what should be done after they join the line. You can also set the period your customers will be able or unable to join the line among other features.<br><br>Try it Out</div>
+    <br><br>
+<a href="{% url 'business:business_line' %}" class="line_detail">
+  
+    <button class="linestyle" style="color: white;border-color: orange;background-color: orange;font-weight: bold"> 
+              Create
+    </button>
+  </a>
+  <br><br>
+  </div>
+
+
+
+</p>
+  <br>
+  <br>
+
+
+{% endblock %}
+

@@ -1,0 +1,30 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+{% load static %}
+<style type="text/css">
+        .errorlist{
+                color: red
+        }
+        body{
+                background-color: rgb(250,250,250)
+        }
+
+</style>
+<article>
+                <h1 class="sec_head" ><img src="{% static 'img/logo.png' %}" style="" ><br>Qolom</h1>
+
+
+
+<form action="{% url 'account:change_email' %}" method="POST" class="content">
+        <p style="font-weight: bold;color: orange;text-align: center;font-size: 110%">
+         Change E-mail Address
+        </p>
+                                {{ form.as_p }}
+                                {% csrf_token %}
+<button type="submit" style="background-color:rgb(148,193,239);color: white;font-size: 100%;font-weight: bo>
+
+</form>
+</article>
+{% endblock %}
+

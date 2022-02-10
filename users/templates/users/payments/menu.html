@@ -1,0 +1,208 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% load hosts %}
+
+{% block content %}
+<br>
+<style type="text/css">
+  span{
+    display: inline-block;
+  }
+</style>
+<div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;box-shadow: 0px 1px 1px 2px rgba(148,193,239, 0.7);border-color: white">
+
+
+<div class="content">
+
+  <div  style="float: right;color: orange;font-weight: bold;"  >
+  PLACE ORDER
+</div>
+
+
+  
+<div style="width: 70%">
+  {% if business.dp %}
+  <img src="{% host_url 'image' business.filename host 'media' %}" style="height: 2.5em;width: 2.5em;border-radius: 10px;float: left;box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);">
+  <a href="{{ business.get_absolute_url }}">
+  <h3 style="color: orange;margin-left: 50px">{{business|title}}
+</h3>
+</a>
+{% else %}
+<a href="{{ business.get_absolute_url }}">
+  <div style="width:2.5em;height: 2.5em; box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);border-radius: 10px;text-align: center; background-color: orange;border-color:black;color: white;font-weight: bold;float: left;padding-top: 0.4em">
+ <span style="font-size: 1.5em;">
+          {{first_letter}}
+ </span></div>
+<h3 style="color: orange;margin-left: 55px">{{business|title}}</h3>
+</a>
+{% endif %}
+</div>
+
+
+</div>
+
+{% if items %}
+<br><br>
+<form method="GET" action="{% url 'users:checkout' business.key %}">
+  
+
+       <div class="linestyle" style="color: orange;padding-left: 2%;padding-right: 2%;box-shadow: none;border-color: white" > 
+              <span style="width: 55%;">Name</span>
+              
+              <span style="width: 25%;">Price</span>
+              <span style="width: 15%;">Units</span>
+              <hr style="padding: 2px;background-color: grey">
+    </div>
+
+
+
+
+
+
+
+
+{% for each in items %}
+
+  
+      
+  <div class="linestyle" style="color: blue;padding-left: 2%;padding-right: 2%;box-shadow: none;border-color: white">
+
+              <span style="width: 50%">{{each.name}}</span>
+              
+              <input type="hidden" name="{{each.id}}" value="0" onclick="do_et('{{each.name}}','{{each.price}}');" class="{{each.units_available}}_{{forloop.counter}}_mkunique">
+              <span style="width: 25%" class="add_commas">{{each.price}}.00</span>
+              <select style="width: 20%;" id='{{each.units_available}}_{{forloop.counter}}_mkunique' class="get_units" onchange="add_to_cart('{{each.name}}',this.id,'{{each.price}}')"></select>
+
+    </div>
+  
+
+
+{% endfor %}
+
+  <br><br>
+      <div class="linestyle" style="color: orange;padding-left: 2%;padding-right: 2%;font-weight: bold;"> 
+       
+        
+<br>
+
+              <span style="width: 55%;">Name</span>
+              
+              <span style="width: 25%;">Price</span>
+              <span style="width: 15%;">Units</span>
+<hr>
+              
+    
+<div id="cart" style="margin-bottom: 30px;color: blue;font-weight: normal;"></div>
+              <div style="text-align: center;color: red">TOTAL: <span style="padding-left: 20px" id="total">N 0.00 </span></div>
+              
+               <br><br>
+              <button class="linestyle" type="submit" style="background-color: orange;color: white;font-weight: bold;">PROCEED</button>
+    </div>
+  
+
+
+
+
+              
+             
+</form>
+
+<br><br>
+{% else %}
+<br><br><br>
+<div style="color: red;text-align: center;font-weight: bold;">Sorry, there are no items in the menu yet</div>
+<br><br><br><br><br>
+{% endif %}
+
+</div>
+
+</div>
+
+
+<script type="text/javascript">
+  add_commas = document.getElementsByClassName('add_commas');
+  for (var i = 0; i < add_commas.length; i++) {
+    add_commas[i].innerHTML =  thousands_separators(add_commas[i].innerHTML)  
+  }
+
+
+
+
+
+
+  al_units = document.getElementsByClassName('get_units');
+  for (var imo = 0; imo < al_units.length; imo++) {
+    var fornow = al_units[imo].id
+    fornow = fornow.split('_')[0]
+    
+    for (var ios = 0; ios <= fornow; ios++) {
+      var option = document.createElement('option');
+      option.text = ios
+      al_units[imo].add(option)
+
+    }
+  }
+  
+  var cloud = {}
+
+  function add_to_cart(nam,ide,pris) {
+    
+    var cart = document.getElementById('cart')
+    var theval = document.getElementById(ide).value
+    pris = parseInt(pris)
+    if (cloud[ide]) {
+      delete cloud[ide]
+      
+    }
+    if (theval!='0') {
+      cloud[ide]={'name':nam,'price':pris,'value':theval}
+    }
+    
+    
+    cart.innerHTML = ''
+    var total = 0
+  for (objec in cloud) {
+    var indi1 = '<span style="width: 55%">' + cloud[objec]['name'] + '</span>'
+    var indi2 = '<span style="width: 25%">' +thousands_separators(cloud[objec]['price'])+'.00'+ '</span>'
+    var indi3 = '<span style="width: 15%">x ' + cloud[objec]['value'] + '</span>'
+    cart.innerHTML +=  indi1 + indi2 + indi3+'<br><br>'
+    total = total + (cloud[objec]['price'] * parseInt(cloud[objec]['value']))
+  }
+  var submit_input = document.getElementsByClassName(ide)[0]
+      submit_input.setAttribute('value',theval)
+  
+    console.log(cloud)
+    document.getElementById('total').innerHTML ='N '+ thousands_separators(total)+'.00'
+  }
+
+  ///////////////////incase back button is pressed//////////////////
+  function immediate (){
+   initial_add = document.getElementsByClassName('get_units');
+  for (var i = 0; i < initial_add.length; i++) {
+    
+    input_ele = document.getElementsByClassName(initial_add[i].id)[0]
+    input_ele.setAttribute('value',initial_add[i].value)
+    input_ele.click()
+    add_to_cart(outer[0], initial_add[i].id,outer[1])
+  
+  }
+
+  }
+  
+  function do_et(name,price){
+    outer = [name,price]
+  }
+  //IT NEEDS settimeout else itt wont work
+  setTimeout(immediate,0)
+  /////////////////////END////////////////
+ 
+  
+
+  function thousands_separators(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num_parts.join(".");
+  }
+</script>
+{% endblock %}

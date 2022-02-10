@@ -1,0 +1,29 @@
+
+{% extends 'business/base.html' %}
+{% block content %}
+
+<br><br>
+<div class="menubuttons" style="border-color: blue;border-radius: 10px">
+<p> Add Item</p>
+
+  <form action="{% url "business:create_items" %}" method="POST" >
+    
+        {{ form.as_p }}
+  {% csrf_token %}
+
+<p>
+          
+        <button type="submit" class="linestyle edit_submit" style="margin-top: 10px" >
+              Create Item
+          </button>
+      </p>
+
+</form>
+</div>
+</p>
+<br>
+
+
+
+{% endblock %}
+

@@ -1,0 +1,286 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% load hosts %}
+{% load tz %}
+{% block head %}{% endblock %}
+{% block content %}
+
+
+  
+  
+
+ <style type="text/css">
+   span{
+    display: inline-block;
+   }
+
+   @media only screen and (max-width: 870px) {
+   .linestyle{
+    margin-left:2.5%;
+    margin-right: 2.5%;
+    width: 95%;
+   }
+ }
+
+ </style>
+
+
+
+
+<br>
+<div class="linestyle" style="border-radius: 20px" >
+
+
+
+
+  <div   style="float: right;color: orange;font-weight: bold;margin-right:20px"  >
+  PIN: {{order.pin}} 
+</div>
+
+
+  
+<div >
+  {% if business.dp %}
+  <img src="{% host_url 'image' business.filename host 'media' %}" style="height: 2.5em;width: 2.5em;border-radius: 10px;float: left;box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);margin-left: 30px">
+  <a href="{{ business.get_absolute_url }}">
+  <h3 style="color: orange;margin-left: 80px">{{business|title}}
+</h3>
+</a>
+{% else %}
+<a href="{{ business.get_absolute_url }}">
+  <div style="width:2.5em;height: 2.5em; box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);border-radius: 10px;text-align: center; background-color: orange;border-color:black;color: white;margin-left: 30px;font-weight: bold;float: left;padding-top: 0.4em">
+ <span style="font-size: 1.5em;">
+  {% for first in business.name %}
+      {% if forloop.counter == 1 %}    {{first|title}}
+  
+  {% endif %}
+  {% endfor %}
+ </span></div>
+<h3 style="color: orange;margin-left: 80px">{{business|title}}</h3>
+</a>
+{% endif %}
+</div>
+<br>
+<span style="color: orange;margin-left: 30px;font-weight: bold;">
+{% localtime off %}
+    {{created_date}}
+{% endlocaltime %}</span><br><br>
+
+<span style="color: blue;margin-left: 30px">REF: {{order.reference}}</span>
+
+{% if items %}
+
+
+<br><br>
+
+  
+
+              
+              {% if order_status == 'SENT'%}
+<div class="linestyle" style="color: white;text-align: center;padding: 17px;background-color: green;box-shadow: none;font-size: 110%" > 
+Your order has been sent </div><br><div class="content" style="color: green;text-align: center;margin-left: 5%;width: 90%">{% if days_past %}You will be notified via email when your order is ready.
+{% else %}
+You will be notified on this app and via email when your order is ready
+{% endif %}
+</div>
+              {% elif order_status == 'NOT SENT' %}
+          <div class="linestyle" style="color: white;text-align: center;padding: 17px;background-color: red;box-shadow: none;font-size: 110%" >     This order could not be completed</div>
+              {% elif order_status == 'COLLECTED' %}
+      <div class="linestyle" style="color: white;text-align: center;padding: 17px;background-color: green;box-shadow: none;font-size: 110%" >         RECEIVED</div>
+              {% elif order_status == 'READY' %}
+      <div class="linestyle" style="color: white;text-align: center;padding: 17px;background-color: green;box-shadow: none;font-size: 110%" >         Your order is ready for pickup</div>
+      {% elif order_status == 'REFUND REQUESTED' %}
+                <div class="linestyle" style="color: white;text-align: center;padding: 17px;background-color: red;box-shadow: none;font-size: 110%;" >      PROCESSING REFUND
+                </div>
+          {% elif order_status == 'REFUNDED' %}
+                <div class="linestyle" style="color: white;text-align: center;padding: 17px;background-color: green;box-shadow: none;font-size: 110%" >      REFUNDED</div>
+              {% endif %}
+              
+    
+
+       
+<div class="linestyle" style="color: orange;padding-left: 2%;padding-right: 2%;font-weight: bold;box-shadow: none;border-color: white">
+
+              <span style="width: 55%">Name</span>
+              
+              
+              <span style="width: 25%">Price (NGN)</span>
+              <span style="width: 15%">Units</span>
+    </div>
+
+{% for each in items %}
+<div class="linestyle" style="color: blue;padding-left: 2%;padding-right: 2%;box-shadow: none;border-color: white">
+
+              <span style="width: 55%">{{each.0}}</span>
+              
+              <input type="hidden" name="{{each.id}}" class="{{each.units_available}}_{{forloop.counter}}_mkunique" value="0">
+              <span style="width: 25%">{{each.1}}.00</span>
+              <span style="width: 15%">x {{each.2}}</span>
+    </div>
+  
+      
+
+
+{% endfor %}
+
+  
+    
+              
+              
+              
+                
+              
+           <div class="linestyle" style="color: orange;padding-left: 2%;padding-right: 2%;font-weight: bold;box-shadow: none;">
+              <span style="width: 55%;">TOTAL:</span>
+              
+              
+              <span style="width: 25%;">{{total}}</span>
+              
+              {% if status == 'PAID' %}
+
+               
+
+               <span style="width: 15%;color: green"> PAID</span>
+              
+              {% else %}
+              <span style="width: 15%;color: red">
+                FAIL
+              </span>
+              {% endif %}
+    </div>   
+              
+            
+<br><br>
+    
+              
+    
+  
+
+
+{% else %}
+No items
+
+{% endif %}
+
+</div>
+
+
+{% if card_details %}
+
+<div id="confirmModal"  class="modal"  >
+  <div class="modal-content2" id="modale_content" style="border-style: none;width: 100%;position: absolute;left: 0px;top: 0px;animation: updown 0.5s 10000;animation-direction: alternate;">
+    
+    <p style="text-align: center;">
+     Would you like to save this card for future use?
+    </p>
+    
+    
+    <div class="linestyle" style="border-color: lightgrey;box-shadow: none;font-weight: bold;font-size: 120%;width: 300px;margin: auto;border-width: 2px;font-weight: normal;" >
+      
+      {% if 'mastercard' in card_details.card_type %}
+    <img src="{% static 'img/mastercard.png' %}" style="height: 37px;width: 60px;float: left;margin-left: 20px;margin-top: -10px">
+    {% elif 'visa' in card_details.card_type %}
+    <img src="{% static 'img/visa.png' %}" style="height:20px;width: 60px;float: left;;margin-left: 20px">
+    {% elif 'verve' in card_details.card_type %}
+    <img src="{% static 'img/verve.png' %}" style="height:20px;width: 60px;float: left;;margin-left: 20px">
+    {% endif %}
+    &emsp;card ending with {{ card_details.last_4 }}
+
+     </div>  
+       <br><br>
+
+<div class="linestyle" style="box-shadow: none;width: 300px;margin: auto;border-style: none;">
+  <button id="allow" class="yes_no" style="color: red;border-color: lightgrey;width: 145px;box-shadow: none;border-style: none; float: left;">
+      <b>Yes</b>
+  </button>
+    <button id="disallow" class="yes_no" style="border-style: none; border-color: lightgrey;width: 145px;box-shadow: none;float: left;">
+    <b>No</b>
+  </button>
+
+</div>
+
+    
+    
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+  
+  var modale = document.getElementById("confirmModal");
+  var allow = document.getElementById('allow');
+  var disallow = document.getElementById('disallow');
+  var button_click = document.getElementById('create_line')
+  var doit = false
+  var how_to_content = document.getElementById('modale_content');
+  var stop_the_count = 0
+
+  how_to_content.addEventListener("animationiteration", function(){
+    if (stop_the_count==0) {
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.animationPlayState = 'paused';
+    stop_the_count=1
+  }
+  else{
+    modale.style.display = 'none';
+    how_to_content.style.display = 'none'
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.animationPlayState = 'paused';
+    stop_the_count=0
+  
+  }
+  
+  });
+  setTimeout(function(){
+    modale.style.display = 'block'
+  modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+  },2000)
+  
+  
+  allow.onclick=function(){
+    var xhttp = new XMLHttpRequest();
+  xhttp.open("GET","{% url 'users:save_card' %}?a=yes", true);
+  xhttp.send();
+   modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+  
+  
+ 
+  };
+
+  disallow.onclick=function(){
+    var xhttp = new XMLHttpRequest();
+  xhttp.open("GET","{% url 'users:save_card' %}?a=no", true);
+  xhttp.send();
+    modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+  
+  
+  
+  };
+
+
+  
+</script>
+{% endif %}
+
+
+{% endblock %}

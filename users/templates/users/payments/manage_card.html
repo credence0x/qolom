@@ -1,0 +1,97 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% load hosts %}
+{% block head %}{% endblock %}
+{% block content %}
+
+
+  
+  
+<style type="text/css">
+  span{
+    display: inline-block;
+  }
+  @keyframes updown
+ {
+  from {margin-top: -1000px;}
+  to {margin-top: 0px;}
+}
+</style>
+ 
+
+
+
+
+<br>
+<div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;box-shadow: 0px 2px 2px 2px rgb(148,193,239);color: black;border-style: none;">
+
+
+
+
+
+
+<h3 style="color: orange;text-align: center;">Manage Cards</h3>
+
+<div style="text-align: center;color: grey;">Double tap to remove</div>
+<br>
+  <div  style="border-style: none;width: 100%;">
+    
+    
+    {% for card in card_info %}
+    
+    <div class="linestyle" style="border-color: lightgrey;box-shadow: none;font-weight: bold;font-size: 100%;width: 300px;margin: auto;border-width: 2px;font-weight: normal;" id="{{card.3}}" onclick="shine_and_go(event,'{{card.3}}')">
+
+      
+      
+      {% if 'mastercard' in card.0 %}
+    <img src="{% static 'img/mastercard.png' %}" style="height: 37px;width: 60px;float: left;margin-left: 20px;margin-top: -10px">
+    {% elif 'visa' in card.0 %}
+    <img src="{% static 'img/visa.png' %}" style="height:20px;width: 60px;float: left;;margin-left: 20px">
+    {% elif 'verve' in card.0 %}
+    <img src="{% static 'img/verve.png' %}" style="height:20px;width: 60px;float: left;;margin-left: 20px">
+    {% endif %}
+    &emsp;card ending with {{ card.2 }}
+    
+
+      
+    
+  </div>
+
+  <br>
+  {% endfor %}
+
+
+    
+  </div>
+</div>
+
+<script type="text/javascript">
+
+
+var counter = false
+function shine_and_go(event,signat){
+ if (!counter) {
+    document.getElementById(signat).style.borderColor = 'rgb(148,193,239)'
+    counter = true;
+    return
+ }
+ else{
+  remove(event,signat)
+ }
+}
+
+
+  
+  
+
+function remove(event,sig){
+  
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("GET","{% url 'users:remove_card' %}?sig="+sig, true);
+  xhttp.send();
+  document.getElementById(sig).style.display ='none'
+}
+ 
+
+</script>
+{% endblock %}

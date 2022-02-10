@@ -1,0 +1,197 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- change action-->
+
+
+<div class="menubuttons" style="border-radius: 25px;text-align: unset;font-weight: normal;box-shadow: 0px 2px 2px 3px rgba(148,193,239, 0.7);color: unset;border-color: white;margin-top: 20px">
+{%if results %}
+
+<p class="content"> Results for "{{result_for_business}}"
+{% if result_for_loc %}
+at "{{result_for_loc}}"
+{% endif %}
+</p>
+{% if loc_form%}
+
+<div style="background-color: inherit;">
+
+
+
+   <form method="GET" action="{% url 'users:search' %}" >
+    <input type="hidden" name="search" value="{{result_for_business}}">
+      {{ loc_form}}
+      
+      
+      <input type="image" src="{% static 'img/searchico.png' %}" class="searchicon" style="margin-left: -37px;margin-bottom: -6px;background-color: transparent;">
+    </form>
+    
+    </div>
+
+  {% endif %}
+{% if close_to_you and not results.has_previous %}
+<br>
+<div style="color: rgb(148,193,239);text-align: center"><b>Close to you</b></div>
+
+<p >{% for all in close_to_you %}
+  <div>
+  <a href="{{ all.get_absolute_url }}" >
+      <button class="searchstyle">
+        <b>{% filter title|truncatechars:150 %}{{all}}{% endfilter %}</b>
+        <br>
+        <span style="text-decoration: bold;color: black;">
+        {% filter title|truncatechars:150 %}{{all.address}}{% endfilter %}
+      </span>
+      </button>
+      
+        </a>
+     </div>
+    
+{% endfor %}</p>
+<div style="color: rgb(148,193,239);text-align: center"><b>All</b></div>
+{% endif %}
+<p >{% for business in results %}
+  <div>
+  <a href="{{ business.get_absolute_url }}" >
+      <button class="searchstyle" id="{{forloop.counter}}" >
+        <b>{% filter title|truncatechars:150 %}{{business}}{% endfilter %}</b>
+        <br>
+        <span style="text-decoration: bold;color: black;">
+        {% filter title|truncatechars:150 %}{{business.address}}{% endfilter %}
+      </span>
+      </button>
+      
+        </a>
+     </div>
+    
+{% endfor %}</p>
+<div class="pagination" style="text-align: center;margin-bottom: 5%;">
+    <span class="step-links">
+        {% if results.has_previous %}
+            <a href="?search={{result_for_business}}{% if result_for_loc %}&s_b_l={{result_for_loc}}{% endif %}&page=1">&laquo; first</a>
+            <a href="?search={{result_for_business}}{% if result_for_loc %}&s_b_l={{result_for_loc}}{% endif %}&page={{ results.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ results.number }} of {{ results.paginator.num_pages }}.
+        </span>
+
+        {% if results.has_next %}
+            <a href="?search={{result_for_business}}{% if result_for_loc %}&s_b_l={{result_for_loc}}{% endif %}&page={{ results.next_page_number }}">next</a>
+            <a href="?search={{result_for_business}}{% if result_for_loc %}&s_b_l={{result_for_loc}}{% endif %}&page={{ results.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+<div style="margin-top: 30px;color: grey;text-align: center;">Top Results</div>
+{% else %}
+<p class="content">
+  No results for "{{result_for_business}}"
+{% if result_for_loc %}
+at "{{result_for_loc}}"
+{% endif %}
+found<br>
+Try confirming the spelling
+<br><br>
+Results only contain businesses in your country. If you have moved from your location, click <a href="{% url "users:user_edit" %}">here</a> to change country
+</p>
+
+{% endif %}
+
+
+
+
+<form action="{% url 'users:get_location' %}" method="GET" id="sub_loc">
+  {{ get_loc }}
+  {% csrf_token %}
+</form>
+<a href="#top">
+<div style="display:none;height: 100%;background-color: rgb(148,193,239);color: white;text-align:center;padding: 4%;margin-left: 4.17%" class="col-11" id="top_id"> <b>Top of Page</b></div>
+</a><br><br>
+
+</div>
+<br><br><br>
+
+<script type="text/javascript">
+  window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 90 || document.documentElement.scrollTop > 90) {
+    //document.getElementById("myBtn2").style.display = "block";
+    document.getElementById('stickyhr').style.display ="block";
+  } else {
+    //document.getElementById("myBtn2").style.display = "none";
+    document.getElementById('stickyhr').style.display ="none";
+  }
+  //////////////////////////////////////////////////////////////////
+  if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+    //document.getElementById("myBtn2").style.display = "block";
+    document.getElementById('top_id').style.display ="block";
+  } else {
+    //document.getElementById("myBtn2").style.display = "none";
+    document.getElementById('top_id').style.display ="none";
+  }
+}
+</script>
+{% if request.session.allow %}
+<script type="text/javascript">
+
+  window.navigator.geolocation.getCurrentPosition(showPosition)
+
+   function showPosition(position) {
+    
+     latitude = position.coords.latitude
+     longitude = position.coords.longitude     
+
+  var api_url = 'https://api.bigdatacloud.net/data/reverse-geocode-client'
+  var request_url = api_url
+    + '?'
+    + 'latitude=' + latitude
+    + '&longitude=' + longitude
+    + '&localityLanguage=en';
+  var request = new XMLHttpRequest();
+  request.open('GET', request_url, true);
+  request.onload = function() {
+    if (request.status == 200){ 
+      // Success!
+      var data = JSON.parse(this.responseText);
+      
+      var locality = data.locality||'undefined'
+      var city = data.city||'undefined'
+      var state = data.principalSubdivision||'undefined'
+      var ccode = data.countryCode||'undefined'
+      var parameterz = '?country_code='+ccode+'&statin='+state+'&cty='+city+'&locaty='+locality
+      var send_et = new XMLHttpRequest();
+      send_et.open('GET', '{% url 'users:get_location' %}'+parameterz, true);
+      send_et.send()
+      
+      console.log(data)
+  
+
+    } else if (request.status <= 500){ 
+      // We reached our target server, but it returned an error
+                           
+      console.log("unable to geocode! Response code: " + request.status);
+      var data = JSON.parse(request.responseText);
+      console.log(data.status.message);
+    } else {
+      console.log("server error");
+    }
+  };
+
+  request.onerror = function() {
+    // There was a connection error of some sort
+    console.log("unable to connect to server");        
+  };
+
+  request.send(); 
+  
+};
+
+</script>
+{% endif %}
+
+
+
+{% endblock %}
+

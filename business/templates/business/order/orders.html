@@ -1,0 +1,140 @@
+
+{% extends 'business/base.html' %}
+{% block content %}
+<style type="text/css">
+  span{
+    display: inline-block;
+  }
+</style>
+
+
+  <h2 style="color: red;text-align: center;">Orders</h2>
+{% if orders %}
+<div style="width: 90%;margin-left: 5%">
+<input type="text" name="" class="forms" placeholder="  search by customer name or reference" id="ajax_search" style="margin-bottom: 0px;border-radius: 20px">
+<div class="linestyle" style="color: orange;padding-left: 6%;padding-right: 6%;font-weight:normal;border-color: white;margin-top: 0px;display:none;padding-bottom: 20px;" id="search_text"></div>
+</div>
+<br><br>
+
+
+
+<div class="linestyle" style="color: orange;padding-left: 6%;padding-right: 6%;font-weight: bold;box-shadow: none;border-color: white white white lightgrey"> 
+  
+              <span style="width: 32%">CUSTOMER</span>
+              
+              <span style="width: 2%"></span>
+              <span style="width: 25%">PAID (₦)</span>
+              <span style="width: 2%"></span>
+              <span style="width: 33%">STATUS 
+                <select style="width: 25px;height: 20px;float: right;" id="filter_status">
+                  <optgroup label="Filter">
+                  <option>------</option>
+                  <option>All</option>
+                  <option>Delivered</option>
+                  <option>Ready</option>
+                  <option>Not Ready</option></optgroup>
+                  
+                </select></span>
+            
+              
+    </div>
+
+{% for each in orders %}
+
+  <a href="{% url 'business:order_detail' each.id %}">
+      <div class="linestyle" style="color: blue;padding-left: 6%;padding-right: 6%;border-color: lightgrey;box-shadow: none;border-color: lightgrey;"> 
+              <span style="width: 32%">{{each.user.first_name|title}} {{each.user.last_name|title}}</span>
+              
+              <span style="width: 2%"></span>
+              <span style="width: 25%">{{each.total}}</span>
+              <span style="width: 2%"></span>
+              {% if each.order_status == 'SENT' %}
+                <span style="width: 25%;color: red;" >NOT READY</span>
+                {% elif each.order_status == 'READY' %}
+                <span style="width: 25%;color: orange;" >READY</span>
+                {% elif each.order_status == 'COLLECTED' %}
+                <span style="width: 33%;color: green;" >DELIVERED</span>
+                {% elif each.order_status == 'REFUND REQUESTED' %}
+                <span style="width: 33%;color: blue;" >REFUND REQUESTED</span>
+                {% elif each.order_status == 'REFUNDED' %}
+                <span style="width: 33%;color: blue;" >REFUNDED</span>
+                {% endif %}
+                
+    </div>
+  </a>
+
+
+{% endfor %}
+<div class="pagination linestyle content" style="text-align: center;margin-bottom: 5%;font-weight: bold;box-shadow: none;font-weight: normal;" >
+  <br>
+    <span class="step-links" style="color: blue">
+        {% if orders.has_previous %}
+            <a href="{% url 'business:orders' %}">&laquo; first&emsp;</a>
+            <a href="{% url 'business:orders' %}?page={{ orders.previous_page_number }}">previous</a>&emsp;
+        {% endif %}
+
+        <span class="current" style="color: orange">
+            Page {{ orders.number }} of {{ orders.paginator.num_pages }}&emsp;
+        </span>
+
+        {% if orders.has_next %}
+            <a href="{% url 'business:orders' %}?page={{ orders.next_page_number }}">next</a>&emsp;
+            <a href="?{% url 'business:orders' %}page={{ orders.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+    <br><br>
+</div>
+{% else %}
+No orders
+
+{% endif %}
+<script type="text/javascript">
+  var filter = document.getElementById('filter_status')
+  filter.onchange= function reloader() {
+    top.location.href = '{% url 'business:orders' %}?status='+filter.value.toLowerCase()
+  }
+</script>
+<script type="text/javascript">
+  var ajax_search = document.getElementById('ajax_search');
+  ajax_search.onkeyup=function(){
+      if (ajax_search.value.length>1) {
+         var xvhttp = new XMLHttpRequest();
+       xvhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var search_text = document.getElementById('search_text');
+      if (this.responseText=='0') {
+        search_text.innerHTML=""
+        search_text.innerHTML='<span style="color:red;">No results found</span>'
+        search_text.style.display='block'
+        return
+      }
+      var text = JSON.parse(this.responseText)
+      search_text.innerHTML=''
+      var hold_value = '<div style="color:grey;text-align:center">Top results</div><br>'
+      for (var i =0 ; i < Object.keys(text).length; i++) {
+      hold_value+= '<a href="{% url "business:order_detail" "find" %}?ref='+ text[i][0]+'">'
+      hold_value+= '<span style="width: 40%;color: blue;" >'+text[i][1]+'</span>'
+      hold_value+= '<span style="width: 4%" ></span>'
+      hold_value+= '<span style="width: 50%;color: red;" > REF: '+text[i][2]+'</span>'
+      hold_value+= '</a><hr>'
+      }
+      search_text.innerHTML=hold_value
+      search_text.style.display='block'
+    }
+  }
+  xvhttp.open("GET","{% url 'business:orders' %}?find="+ajax_search.value, true);
+  xvhttp.send();
+  }
+  else {
+    document.getElementById('search_text').style.display='none'
+  }
+}
+top.onclick=function(){
+  document.getElementById('search_text').style.display='none'
+}
+
+</script>
+
+
+{% endblock %}
+

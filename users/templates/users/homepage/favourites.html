@@ -1,0 +1,35 @@
+{% extends 'users/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<br>
+<div class="menubuttons" style="border-radius: 20px;box-shadow: 0px 2px 2px 1px lightblue;border-style: none;">
+<p id=display_favs ><span style="color: orange;">Favourites<br><br><input type="image" src="{% static "img/fav.png" %}" style="height: 15px"></span><br><br>
+  {% if person_fav %}
+{% for favs in person_fav %}
+<a href="{{favs.get_absolute_url}}">
+    <button class="searchstyle" style="border-color: lightgrey;color: orange; font-size: 12px;margin-bottom: 3px;">
+      <b>
+        {{favs.name|title}}
+      </b>
+      <br>
+        <span style="text-decoration: bold;color: black;">
+        {{favs.address}}
+      </span>
+    </button>
+   
+ </a>
+{% endfor %}
+<br><br>
+
+{% else %}
+
+<p style="color: grey">No place added to favourites</p>
+<p style="color: grey">Click the <img src="{% static "img/n_fav.png" %}" style="height: 15px"> icon on any business page to add to favourites</p>
+{% endif %}
+</p>
+</div>
+<br><br><br>
+{% endblock %}
+

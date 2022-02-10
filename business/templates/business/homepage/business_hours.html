@@ -1,0 +1,198 @@
+
+{% extends 'business/base.html' %}
+{% block content %}
+
+{% if default_timezone %}
+Please enable timezone setting of device
+{% else %}
+<style type="text/css">
+  .errorlist{
+    color: red;
+  }
+</style>
+<div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;color: black;border-color: rgb(148,193,239);padding: 0px">
+<p>
+  <h2 class="edit_head searchstyle" style="border-color: white;color: orange" >Business Hours</h2>
+  <form action="{% url "business:business_hours"  %}" method="POST" >
+    
+        
+        <span>{{ form.mo_o.errors}}</span>
+      <div class='time_box'>
+          <p style="text-align: center;"> Monday {{ form.monday}}</p>
+                  
+        <p>
+               <label class="form_label" for="id_mo_o">Open:</label>
+              {{ form.mo_o}}
+        </p>
+        <p >
+           <label class="form_label" for="id_mo_c">Close: </label>
+              {{ form.mo_c}}
+        </p>
+       
+      </div>
+
+      {{ form.tu_o.errors}}
+      <div class='time_box'>
+          <p style="text-align: center;"> Tuesday {{ form.tuesday}}</p>        
+        <p>
+               
+               <label class="form_label" for="id_tu_o">Open:</label>
+              {{ form.tu_o}}
+        </p>
+        <p >
+           <label class="form_label" for="id_tu_c">Close: </label>
+              {{ form.tu_c}}
+        </p>
+      </div>
+
+      {{ form.we_o.errors}}
+      <div class='time_box'>
+          <p style="text-align: center;"> Wednesday {{ form.wednesday}}</p>        
+        <p>
+               
+               <label class="form_label" for="id_we_o">Open:</label>
+              {{ form.we_o}}
+        </p>
+        <p >
+           <label class="form_label" for="id_we_c">Close: </label>
+              {{ form.we_c}}
+        </p>
+      </div>
+
+
+
+      {{ form.th_o.errors}}
+      <div class='time_box'>
+          <p style="text-align: center;"> Thursday {{ form.thursday}}</p>        
+        <p>
+               
+               <label class="form_label" for="id_th_o">Open:</label>
+              {{ form.th_o}}
+        </p>
+        <p >
+           <label class="form_label" for="id_th_c">Close: </label>
+              {{ form.th_c}}
+        </p>
+       
+      </div>
+
+
+      {{ form.fr_o.errors}}
+      <div class='time_box'>
+          <p style="text-align: center;"> Friday {{ form.friday}}</p>        
+        <p>
+               
+               <label class="form_label" for="id_fr_o">Open:</label>
+              {{ form.fr_o}}
+        </p>
+        <p >
+           <label class="form_label" for="id_fr_c">Close: </label>
+              {{ form.fr_c}}
+        </p>
+      </div>
+
+
+
+      {{ form.sa_o.errors}}
+      <div class='time_box'>
+          <p style="text-align: center;"> Saturday {{ form.saturday}}</p>        
+        <p>
+               
+               <label class="form_label" for="id_sa_o">Open:</label>
+              {{ form.sa_o}}
+        </p>
+        <p >
+           <label class="form_label" for="id_sa_c">Close: </label>
+              {{ form.sa_c}}
+        </p>
+       
+      </div>
+
+
+      {{ form.su_o.errors}}
+      <div class='time_box'>
+          <p style="text-align: center;"> Sunday {{ form.sunday}}</p>        
+        <p>
+               
+               <label class="form_label" for="id_su_o">Open:</label>
+              {{ form.su_o}}
+        </p>
+        <p >
+           <label class="form_label" for="id_su_c">Close: </label>
+              {{ form.su_c}}
+        </p>
+       
+      </div>
+      
+         
+
+        
+  {% csrf_token %}
+
+<p>
+          
+        <button type="submit" class="linestyle edit_submit" style="margin-top: 10px" >
+              Submit
+          </button>
+      </p>
+
+</form>
+</p>
+<br>
+
+</p>
+
+
+{% endif %}
+</div>
+<br><br><br>
+
+<script type="text/javascript">
+  var days = ['monday','tuesday','wednesday',
+              'thursday','friday','saturday',
+              'sunday']
+
+  for (var x of days) {
+    var y = 'id_'+ x 
+    z = document.getElementById(y)
+    z.addEventListener("click", run_am );
+    var id_o = 'id_'+z.id[3]+z.id[4] +'_o'
+    var id_c = 'id_'+z.id[3]+z.id[4] +'_c'
+    if (z.checked==false) {
+         document.getElementById(id_o).style.display ='None';
+         document.getElementById(id_c).style.display ='None'
+         document.getElementById(id_o).labels[0].style.display='None'
+         document.getElementById(id_c).labels[0].style.display='None'
+          
+        }
+    
+  }
+//errorrrrrrrrrrrrrrrrrrrrrrrrrr handling
+  
+ function run_am(){
+
+          var id_o = 'id_'+this.id[3]+this.id[4] +'_o'
+          var id_c = 'id_'+this.id[3]+this.id[4] +'_c'
+    if (this.checked==true) {
+          document.getElementById(id_o).style.display ='inline'
+          document.getElementById(id_c).style.display ='inline'
+          document.getElementById(id_o).labels[0].style.display='inline'
+          document.getElementById(id_c).labels[0].style.display='inline'
+          
+        }
+
+    else if (this.checked==false){
+           document.getElementById(id_o).style.display ='None'
+           document.getElementById(id_c).style.display ='None'
+           document.getElementById(id_o).labels[0].style.display='None'
+           document.getElementById(id_c).labels[0].style.display='None'
+           
+        }
+ } 
+
+</script>
+
+
+
+{% endblock %}
+

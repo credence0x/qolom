@@ -1,0 +1,325 @@
+
+{% extends 'business/base.html' %}
+{% load tz %}
+{% block content %}
+<style type="text/css">
+  span{
+    display: inline-block;
+  }
+</style>
+<br><br>
+<style type="text/css">
+  .linestyle{
+    box-shadow: 0px 8px 6px 0px rgba(0, 0, 0, 0.2), 0px 6px 6px 0px rgba(0, 0, 0, 0.2);
+  }
+</style>
+
+<div >
+  
+      <div class="linestyle" style="text-align: center;font-weight: bold;color: orange;padding-left: 30px;padding-right: 30px"> 
+        <div style="position: relative;">
+              <span style="float: left;width: 50%">{{customer.first_name|title}} {{customer.last_name|title}}<br><br>
+               <span style="color: orange;font-weight: bold;">
+{% localtime off %}
+    {{created_date}}
+{% endlocaltime %}</span>
+
+                <br><br><span style="color: blue;">( ref: {{order.reference}} ) </span> </span>
+              
+              <span style="float: right;width: 33.33%;color: green">
+                <span style="margin-bottom: 5px">PAID</span><br>N {{order.total}}
+                
+
+
+              </span>
+              
+              </div>
+  <br><br><br>
+      <div  style="color: blue;border-color: white;margin-top: 100px;font-weight: normal;"> 
+        
+
+        <span style="width: 35%;color: orange;font-weight: bold;">Item</span>
+              
+              
+              <span style="width: 25%;color: orange;font-weight: bold;">Price</span>
+              <span style="width: 35%;color: orange;font-weight: bold;">Units</span>
+              <br><hr><br>
+        {% for each in items %}
+        <span style="width: 35%">{{each.0}}</span>
+              
+              
+              <span style="width: 25%">{{each.1}}.00</span>
+              <span style="width: 35%">x {{each.2}}</span>
+              <br><br>
+          {% endfor %}
+              
+    </div>
+  
+
+
+
+<div style="color: black;border-color: white;font-weight: normal;box-shadow: none;width: 70%;margin-left: 15%;margin-bottom: 60px;margin-top: 20px" > 
+
+
+
+  {% if 'REFUND' not in order.order_status %}
+              <span style="float: left;">STATUS</span>
+              
+              
+                {% if order.order_status == 'SENT' %}
+                <span style="color: red;font-weight: bold;float: right;" id="elementrix">NOT READY</span>
+                {% elif order.order_status == 'READY' %}
+                <span style="color: orange;font-weight: bold;float: right;" id="elementrix">READY</span>
+                {% elif order.order_status == 'COLLECTED' %}
+                <span style="color: green;font-weight: bold;float: right;" id="elementrix" >DELIVERED</span>
+                {% endif %}
+              
+    {% endif %} 
+    </div>
+
+   
+  
+    
+
+    
+    {% if order.order_status != 'COLLECTED' %}
+    {% if 'REFUND' not in order.order_status %}
+    <div style="color: red;text-align: center;display: none; margin-bottom: 20px;font-size: 110%;font-weight: normal;" id="inc_pin">incorrect pin</div><br>
+<input type="text" id="order_pin" class="forms" style="width: 20%;" placeholder="PIN" maxlength="6" >
+<div style="text-align: center;color: blue;width: 70%;margin-left: 15%;font-weight: normal;" id="id_text">Enter PIN from customer to confirm delivery<br><br></div>
+{% endif %}
+{% endif %}
+{% if order.order_status == 'SENT' %}
+<div style="text-align: center;margin: 20px;color: green;font-weight: normal;" id="jumaji"> Click the button below to alert customer that the order is ready for pickup<br></div>
+  <button class="linestyle" style="background-color: red;color: white;font-weight: bold" id="m_ready" onclick="make_cus_aware();">NOTIFY CUSTOMER</button>
+  <br><br>
+
+{% elif order.order_status == 'READY' %}
+   <button class="linestyle" style="background-color: green;color: white;font-weight: bold" id="m_ready">READY</button>
+{% elif order.order_status == 'COLLECTED' %}
+   <button class="linestyle" style="background-color: green;color: white;font-weight: bold" >DELIVERED</button>
+
+  {% elif order.order_status == 'REFUND REQUESTED' %}
+                <button class="linestyle" style="background-color: red;color: white;font-weight: bold" >
+                REFUND REQUESTED
+              </button>
+      {% elif order.order_status == 'REFUNDED' %}
+                <button class="linestyle" style="background-color: green;color: white;font-weight: bold" >
+                REFUNDED
+              </button>
+{% endif %}
+<br><br><br><br>
+{% if order.order_status == 'SENT' or order.order_status == 'READY' %}
+
+<div style="text-align: center;color: red;font-weight: normal;cursor: pointer;" id="refund">click here if you would like to refund this customer.</div>
+<br><br>
+
+{% endif %}
+</div>
+</div>
+<br><br><br><br><br><br><br><br>
+{% if order.order_status == 'SENT' or order.order_status == 'READY' %}
+
+<div id="confirmModal"  class="modal"  >
+  <div class="modal-content2" id="modale_content">
+    <div style="color: grey;font-size: 100%;float: right;cursor: pointer;" id="disallow">&#10005;</div>
+    <p style="text-align: center;">Enter password to confirm refund to customer </p>
+    
+    <form method="POST" action="{% url 'business:order_detail' order.id %}" id="refund_form">
+   <p>
+    {% for erroz in refund_form %}
+    {{ erroz.errors }}
+    {% endfor %}
+
+  </p>
+    {% for all_ in refund_form %}
+    {{all_}}
+    {% endfor %}
+    {% csrf_token %}
+
+    </form>
+    <button id="allow" class="forms" style="color: white;background-color: orange;border-color: orange">
+      <b>Confirm</b>
+  </button>
+    
+  </div>
+</div>
+<script type="text/javascript">
+  var modale = document.getElementById("confirmModal");
+  var allow = document.getElementById('allow');
+  var disallow = document.getElementById('disallow');
+  var button_click = document.getElementById('refund')
+  var the_form = document.getElementById('refund_form')
+  var how_to_content = document.getElementById('modale_content');
+  var if_statement = {% if refund_form.password.errors %}true{% else %}false{% endif %}
+
+
+  button_click.onclick=function create(event){ 
+    modale.style.animationPlayState = 'running';
+    modale.style.display = "block";
+    how_to_content.style.animationPlayState = 'running';
+    how_to_content.style.display = "block";
+    setTimeout(function(){
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.animationPlayState = 'paused';
+  
+  },500);
+  
+};
+
+if (if_statement) {
+    button_click.click();
+  }
+
+  allow.onclick=function(){
+    the_form.submit()
+  };
+
+  disallow.onclick=function(){
+    modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+  
+  setTimeout(function(){
+    modale.style.display = 'none';
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.display = 'none';
+    how_to_content.style.animationPlayState = 'paused';
+  
+  },500);
+  
+  };
+   
+</script>
+
+{% endif %}
+
+
+{% if order.order_status != 'COLLECTED' %}
+{% if 'REFUND' not in order.order_status %}
+<script type="text/javascript">
+  order_pin = document.getElementById('order_pin')
+  inc_pin = document.getElementById('inc_pin');
+  
+  
+  order_pin.onkeyup= function (){
+    var vlau =order_pin.value
+    console.log(vlau)
+
+
+    // change later to only 4
+    
+
+    if (vlau.length==6) {
+      inc_pin.style.display = 'block'
+      inc_pin.innerHTML='. '
+      var xvhttp = new XMLHttpRequest();
+    xvhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var text = this.responseText
+      stopetInterval();
+      if (text=='good') {
+        inc_pin.style.display = 'none'
+        document.getElementById('m_ready').innerHTML = 'DELIVERED'
+        document.getElementById('elementrix').innerHTML = 'DELIVERED'
+        document.getElementById('id_text').style.display = 'none'
+        document.getElementById('refund').style.display = 'none'
+        order_pin.style.display = 'none'
+  
+      }
+      else if (text=='bad') {
+        order_pin.style.borderColor='red'
+        inc_pin.innerHTML = 'incorrect pin'
+
+      }
+      else if (text=='reload') {
+         var reloo = window.location.href
+         window.location.href = reloo
+
+      }
+    };
+  };
+  xvhttp.open("GET","{% url 'business:order_detail' order.id %}?pin="+vlau, true);
+  xvhttp.send();
+    }
+  else{
+    inc_pin.style.display = 'none'
+    order_pin.style.borderColor='rgb(148,193,239)'
+
+  }
+  }
+  
+
+  var intera = setInterval(movingdotss,1000)
+function movingdotss() {
+    if (inc_pin.innerHTML=='. ') {
+      inc_pin.innerHTML = '. . '
+    }
+    else if (inc_pin.innerHTML=='. . ') {
+      inc_pin.innerHTML = '. . . '
+    }
+    else if (inc_pin.innerHTML =='. . . ') {
+      inc_pin.innerHTML = '. . . . '
+    }
+    else if (inc_pin.innerHTML=='. . . . ') {
+      inc_pin.innerHTML = '. '
+    }
+  }
+  function stopetInterval(){
+  clearInterval(intera)
+};
+</script>
+{% endif %}
+{% endif %}
+
+{% if order.order_status == 'SENT' %}
+<script type="text/javascript">
+  order_pin.style.display = 'none'
+  document.getElementById('id_text').style.display = 'none'
+function make_cus_aware(){
+  var xhttp = new XMLHttpRequest();
+  var m_ready = document.getElementById('m_ready')
+  document.getElementById('m_ready').innerHTML=''
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var text = this.responseText
+      if (text=='good') {
+        stpInterval();
+        document.getElementById('m_ready').style.backgroundColor='green'
+        document.getElementById('m_ready').innerHTML="READY"
+        document.getElementById('elementrix').innerHTML = 'READY'
+        document.getElementById('elementrix').style.color='orange'
+        m_ready.disabled = true
+
+        document.getElementById('jumaji').style.display='none'
+        document.getElementById('order_pin').style.display = 'inline-block'
+        document.getElementById('id_text').style.display = 'block'
+      }
+    };
+  };
+  xhttp.open("GET","{% url 'business:order_detail' order.id %}?p=makeaware", true);
+  xhttp.send();
+  m_ready.innerHTML='. '
+  var intava = setInterval(movingdots,1000)
+function movingdots() {
+    if (m_ready.innerHTML=='. ') {
+      m_ready.innerHTML = '. . '
+    }
+    else if (m_ready.innerHTML=='. . ') {
+      m_ready.innerHTML = '. . . '
+    }
+    else if (m_ready.innerHTML =='. . . ') {
+      m_ready.innerHTML = '. . . . '
+    }
+    else if (m_ready.innerHTML=='. . . . ') {
+      m_ready.innerHTML = '. '
+    }
+  }
+function stpInterval(){
+  clearInterval(intava)
+};
+};
+</script>
+
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,114 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+  
+  
+
+ <style type="text/css">
+   span{
+    display: inline-block;
+   }
+   @media only screen and (max-width: 870px) {
+   .linestyle{
+    margin-left:2.5%;
+    margin-right: 2.5%;
+    width: 95%;
+   }
+ }
+ </style>
+
+
+
+
+<br>
+
+  
+
+
+
+
+
+{% if orders %}
+<div class="linestyle" style="text-align:center;color: white;font-weight: bold;background-color: orange;font-size: 110%;padding: 15px;border-color: oranges"  >
+ ORDERS</div>
+<div class="linestyle" style="color: red;padding-left: 10%; padding-right: 6%;font-weight: bold;">
+
+              <span style="width: 35%">Business</span>
+              
+              
+              <span style="width: 25%">Price (NGN)</span>
+              <span style="width: 35%">Status</span>
+    </div>
+
+
+ 
+  {% for each in orders %}
+
+  <a href="{% url 'users:order' each.id %}">
+      <div class="linestyle" style="color: blue;padding-left: 10%;padding-right: 6%"> 
+              <span style="width: 35%">{{each.business.name}}</span>
+              
+              
+              <span style="width: 25%">{{each.total}}</span>
+              {% if each.order_status == 'SENT' %}
+                <span style="width: 35%;color: blue;" >SENT</span>
+                {% elif each.order_status == 'READY' %}
+                <span style="width: 35%;color: orange;" >READY</span>
+                {% elif each.order_status == 'COLLECTED' %}
+                <span style="width: 35%;color: green;" >RECEIVED</span>
+                {% elif each.order_status == 'NOT SENT' %}
+                <span style="width: 35%;color: red;" >FAILED</span>
+                {% elif each.status == 'Pending' %}
+                <span style="width: 35%;color: red;" >CLICK TO ACTIVATE</span>
+                {% elif each.order_status == 'REFUND REQUESTED' %}
+                <span style="width: 35%;color: red;" >PROCESSING REFUND</span>
+                {% elif each.order_status == 'REFUNDED' %}
+                <span style="width: 35%;color: green;" >REFUNDED</span>
+                {% endif %}
+                
+    </div>
+  </a>
+
+
+{% endfor %}
+
+<div class="pagination linestyle" style="text-align: center;margin-bottom: 5%;font-weight: bold;" >
+  <br>
+    <span class="step-links" style="color: blue">
+        {% if orders.has_previous %}
+            <a href="{% url 'users:orders_list' %}">&laquo; first&emsp;</a>
+            <a href="{% url 'users:orders_list' %}?page={{ orders.previous_page_number }}">previous</a>&emsp;
+        {% endif %}
+
+        <span class="current" style="color: orange">
+            Page {{ orders.number }} of {{ orders.paginator.num_pages }}&emsp;
+        </span>
+
+        {% if orders.has_next %}
+            <a href="{% url 'users:orders_list' %}?page={{ orders.next_page_number }}">next</a>&emsp;
+            <a href="{% url 'users:orders_list' %}?page={{ orders.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+    <br><br>
+</div>
+{% else %}
+<div class="linestyle" style="text-align:center;color: white;font-weight: bold;background-color: orange;font-size: 110%;padding: 15px;border-color: orange"  >
+Orders
+</div>
+<div class="linestyle" style="text-align:center;color: red;font-weight: bold;background-color: white;font-size: 110%;padding: 15px;border-color: white"  >
+  No Orders
+  </div>
+{% endif %}
+
+
+</div>
+
+
+
+
+
+{% endblock %}

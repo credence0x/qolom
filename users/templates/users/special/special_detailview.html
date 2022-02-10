@@ -1,0 +1,226 @@
+
+{% extends 'users/special_base.html' %}
+{% block content %}
+
+
+
+
+
+<div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;color: black;border-color: rgb(148,193,239);box-shadow: 2px 2px 2px 3px rgba(0, 0, 0, 0.2)">
+<h3 style="color: orange;text-align: center;"> My Line</h3>
+
+  
+<div class="content">
+  <span style="float: right;text-align: center;">No.<br> <span id="n_o_p" style="color: blue">{{number_of_people}}</span></span>
+
+  
+
+
+<div style="color: blue;width: 50%;margin-top: 2em">{{ businessline.name|title }}
+<br>
+</div>
+<div style="color: grey;font-size: 80%;">
+     <i> Key is <span style="letter-spacing: 1px;color: blue">{{ businessline.uniquefield }}</span></i>
+      
+  </div><br>
+<h6 style="color: grey;margin-top: 3px;">
+ 
+
+    {% if open_or_closed == 'open' %}
+            <div style="color: rgb(27,171, 5)"> OPEN</div>
+          Closes by {{closetime}} {% if tomorrow %}(tomorrow){% endif %}<br> 
+         {% else %}
+      <div style="color: red"> CLOSED</div>
+    {% if opentime %}
+               {% if weekday_open %}
+                 Opens {{opentime}} <br>
+               {% else %}
+              Opens {{opentime}} <br>
+               {% endif %}
+    
+    {% endif %}
+    {% endif %}
+ 
+
+           
+
+
+</h6>
+    
+
+<a style="display: none;" href="{% url 'users:line' businessline.uniquefield %}" id="link_itself"></a>
+
+
+
+
+
+
+
+
+{% if businessline.information %}
+
+<p><span style="color: orange">About<br></span>{{ businessline.information }}</p> 
+{% endif %}
+{% if businessline.instruction %}
+
+<p><span style="color: orange">Instruction<br></span>{{ businessline.instruction }}</p> 
+{% endif %}
+<br>
+<a href="#recently_removed" id="rem_recently"><u> show recently removed</u></a>
+
+<div style="float: right;margin-right: 1%;">
+
+  <button id='show_less' class="" style="color: white;background-color: rgb(148,193,239);border-color:lightgrey;height: 30px">Show ID</button><br><br>
+</div>
+</div>
+
+  <br><br>
+
+<span id="demo">
+
+{% if line %}
+{% for eachuser in line %}
+<div>
+      <button class="linestyle" style="padding-right: 30px"> 
+          <span style="text-align: center;" name="user">{{forloop.counter}}. {{eachuser|title }}</span>
+
+          <span name="restyle" style="float: right; display: none;letter-spacing: 3px">{{eachuser.ticket}}</span>
+      </button><br>
+      <button class="linestyle" onclick="removed('{{eachuser.unique}}','{{eachuser}}__{{eachuser.ticket}}')" style="color: red;" > 
+          <b>Remove</b>        
+      </button>
+      
+</div>
+<br>
+ 
+
+ 
+
+
+{% endfor %}
+{% else %}
+<button class="linestyle"> 
+          <span  style="color: orange;"><b>Nobody in Line</b></span>
+      </button>
+{% endif %}
+
+</span>
+<br><br>
+<div style="text-align: center;font-size: 90%"><a id="invite" href="#how"><u> how do I invite people? </u></a><br><br></div>
+<br><br><br>
+</div>
+<div id="how_to"  class="modal">
+  <div class="modal-content2" id="how_to_content">
+    <div style="text-align: center;">You can invite people to join this line using the key,
+    <br><br><span style="color: blue">{{businessline.uniquefield}}. </span> <br><br>
+    They just have to open the app, click the menu button and when the menu is open, click key search then paste the key. <br><br> Yes, it is that simple.
+    </div> 
+    <br><br>
+    <button id="okay_then" style="color: orange;width: 100%" class="yes_no">
+      <b>Okay</b>
+  </button>
+    </div>
+  </div>
+
+
+
+<div id="confirmModal"  class="modal" style="animation:bright 0.5s;animation-direction: normal;" >
+  <div class="modal-content2" style="animation:appear 0.5s;animation-direction: normal; ">
+    Are you sure you want to remove user?<br><br>Note: This can not be undone
+    <br><br>
+    <button id="allow" style="color: red" class="yes_no">
+      <b>Yes</b>
+  </button>
+    <button id="disallow" class="yes_no" >
+    <b>No</b>
+  </button>
+  </div>
+  </div>
+
+
+<form id='format'action="{% url 'users:special_detailview' %}" method="post">{{ the_form.as_p }}{% csrf_token %}</form>
+
+<div id="show_recently"  class="modal" style="animation:bright 0.5s;animation-direction: normal; ">
+  <div class="modal-content2" style="animation:appear 0.5s;animation-direction: normal; " >
+    <div id="recently_removed_text"></div>
+    <br><br>
+    <button id="i_done" style="color: orange;width: 100%" class="yes_no">
+      <b>Done</b>
+  </button>
+    
+  </div>
+</div>
+<br><br><br>
+
+<script type="text/javascript">
+  var click_me = document.getElementById('invite');
+  var allow = document.getElementById('okay_then');
+  var modale = document.getElementById('how_to');
+  var how_to_content = document.getElementById('how_to_content');
+  click_me.onclick = function(){
+    
+    modale.style.animationPlayState = 'running';
+    modale.style.display = "block";
+    how_to_content.style.animationPlayState = 'running';
+    how_to_content.style.display = "block";
+    click_me.style.animationPlayState = 'running';
+
+    setTimeout(function(){
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.animationPlayState = 'paused';
+    click_me.style.animationPlayState = 'paused';
+  },500);
+  };
+  allow.onclick = function(){
+    
+    modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+    click_me.style.animationPlayState = 'running';
+  
+  setTimeout(function(){
+    modale.style.display = 'none';
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.display = 'none';
+    how_to_content.style.animationPlayState = 'paused';
+    click_me.style.animationPlayState = 'paused';
+  },500);
+  
+  
+  };
+</script>
+<script type="text/javascript">
+  var less = document.getElementById('show_less');
+  var user = document.getElementsByName('user');
+  var restyle = document.getElementsByName('restyle');
+  less.onclick = function(){
+    if (less.innerHTML == 'Show ID') {
+      less.innerHTML ='Hide ID';
+     for ( var i = 0; i < restyle.length; i++ ) {
+      restyle[i].style.display='block';
+      
+    
+    };
+  }
+  else{
+    less.innerHTML ='Show ID';
+     for ( var i = 0; i < restyle.length; i++ ) {
+      
+      restyle[i].style.display='none';
+
+    };
+  };
+    
+
+};
+
+</script>
+
+
+  <script type="text/javascript">
+  
+  var c=['getElementById','</span><br><hr></div>','block','</span><span\x20name=\x22restyle\x22\x20style=\x22float:right;letter-spacing:3px;\x22>','shift','send','length','style','rem_recently','format','<span\x20style=\x22float:right\x22>','disallow','Content-type','recently_removed_text','i_done','<div\x20style=\x22color:orange\x22>\x20Name','status','onreadystatechange','setRequestHeader','onload','onclick','{% url "login" %}?u=u','allow','network_error','responseText','inline','parse','show_less','substring','open','List\x20is\x20empty','demo','target','none','</span><br><br></div>','onerror','display','innerText','Hide\x20ID','getElementsByName','show_recently','href','cookie','<div><button\x20class=\x22linestyle\x22\x20style=\x22padding-right:\x2030px;\x22\x20><span\x20style=\x22text-align:center\x22\x20name=\x22user\x22>','innerHTML','POST','split','toString','{% url "users:user_homepage" %}','stringify','remove','n_o_p','setAttribute','slice','GET','<button\x20class=\x22linestyle\x22><span\x20\x20style=\x22color:orange;\x22><b>Nobody\x20in\x20Line</b></span></button>','location','value','<span\x20style=\x22float:right;letter-spacing:3px;\x22>','readyState','csrftoken'];(function(a,b){var d=function(e){while(--e){a['push'](a['shift']());}};d(++b);}(c,0x1a8));var d=function(a,b){a=a-0xbc;var e=c[a];return e;};var o=d,timer=0x0,rem_recently=document[o(0xbf)](o(0xc7));rem_recently[o(0xd3)]=function(){var p=o;if(just_removed[p(0xc5)]!=0x0){var e=p(0xce)+p(0xc9)+'ID'+p(0xc0);for(x=just_removed['length']-0x1;x>=0x0;x--){e+='<div>'+just_removed[x][0x0]+p(0xbc)+just_removed[x][0x1]+p(0xe1);};}else var e=p(0xdd);;document['getElementById'](p(0xcc))[p(0xeb)]=e,document[p(0xbf)]('show_recently')[p(0xc6)][p(0xe3)]=p(0xc1);},document['getElementById'](o(0xcd))['onclick']=function(){var q=o;document['getElementById'](q(0xe7))[q(0xc6)][q(0xe3)]='none';};var loadDoc=function(){var r=o,e=new XMLHttpRequest();e[r(0xd0)]=function(){var s=r;if(this[s(0xbd)]==0x4&&this[s(0xcf)]==0xc8){var f='';p_inline=document[s(0xbf)](s(0xf2));var g=p_inline[s(0xe4)];if(g>0x5){timer!=0x7530&&(stopInterval(),timer=0x7530,stopInterval(),interval=setInterval(loadDoc,timer));;}else{timer!=0x1388&&(timer=0x1388,stopInterval(),interval=setInterval(loadDoc,timer));;};if(this[s(0xd7)]=='-')return;;if(this[s(0xd7)][0x0]=='*'){p_inline[s(0xeb)]='',p_inline[s(0xeb)]=this['responseText'][s(0xee)]()[s(0xf4)](0x1);return;};this[s(0xd7)]=='a'&&(window['location'][s(0xe8)]=s(0xd4));;this['responseText']=='r'&&(window[s(0xf7)][s(0xe8)]=s(0xef));;var h=JSON[s(0xd9)](this[s(0xd7)]);if(h==0x0){document[s(0xbf)](s(0xde))[s(0xeb)]='',document['getElementById'](s(0xde))['innerHTML']=s(0xf6),p_inline[s(0xeb)]='',p_inline[s(0xeb)]=0x0;return;}else{for(var j=0x1;j<Object['keys'](h)[s(0xc5)];j++){var k=h[j]['toString']()[s(0xed)](',');f=f+s(0xea)+j+'.\x20'+k[0x0]+s(0xc2)+k[0x1]+'</span></button><button\x20class=\x22linestyle\x22\x20onclick=\x22removed('+'\x27'+k[0x2]+'\x27'+','+'\x27'+k[0x0]+'__'+k[0x1]+'\x27'+')\x22\x20style=\x22color:\x20red;\x22><b>Remove</button></b></div><br>';};p_inline['innerHTML']='',p_inline[s(0xeb)]=h[0x6],document[s(0xbf)]('demo')[s(0xeb)]='',document[s(0xbf)]('demo')[s(0xeb)]=f;var l=document[s(0xbf)](s(0xda)),m=document['getElementsByName']('user'),n=document[s(0xe6)]('restyle');if(l['innerHTML']==s(0xe5)){for(var j=0x0;j<n['length'];j++){n[j][s(0xc6)][s(0xe3)]=s(0xc1);};}else{for(var j=0x0;j<n[s(0xc5)];j++){n[j][s(0xc6)][s(0xe3)]='none';};};};};this['readyState']==0x4&&this[s(0xcf)]<0xc8&&(document['getElementById'](s(0xd6))[s(0xc6)][s(0xe3)]=s(0xc1));;},e[r(0xe2)]=function(){var t=r;document[t(0xbf)](t(0xd6))[t(0xc6)][t(0xe3)]='block';},e[r(0xd2)]=function(){var u=r;document['getElementById']('network_error')['style'][u(0xe3)]='none';},e['open'](r(0xf5),'{% url "users:special_ajax" %}',!![]),e['send']();},interval=setInterval(loadDoc,0x1388);function stopInterval(){clearInterval(interval);};var a=document['getElementById'](o(0xf1)),b=document[o(0xbf)](o(0xc8)),confirmModal=document[o(0xbf)]('confirmModal');window[o(0xd3)]=function(e){var v=o;e[v(0xdf)]==confirmModal&&(confirmModal[v(0xc6)][v(0xe3)]='none');;};var allow=document[o(0xbf)](o(0xd5)),disallow=document['getElementById'](o(0xca)),just_removed=[],res='';function removed(e,f){var w=o;res=f[w(0xed)]('__'),a[w(0xf3)](w(0xf8),e),confirmModal['style'][w(0xe3)]=w(0xc1);};allow[o(0xd3)]=function(){var y=o;function e(i){var x=d,j=null;if(document[x(0xe9)]&&document[x(0xe9)]!==''){const l=document[x(0xe9)][x(0xed)](';');for(var k=0x0;k<l['length'];k++){const m=l[k]['trim']();if(m['substring'](0x0,i[x(0xc5)]+0x1)===i+'='){j=decodeURIComponent(m[x(0xdb)](i[x(0xc5)]+0x1));break;};};};return j;};const f=e(y(0xbe));var g=JSON[y(0xf0)]({'remove':document[y(0xbf)](y(0xf1))['value']}),h=new XMLHttpRequest();h[y(0xd0)]=function(){var z=y;if(this['readyState']==0x4&&this[z(0xcf)]==0xc8){loadDoc(),just_removed['push'](res);just_removed['length']>0x5&&just_removed[z(0xc3)]();;}else this[z(0xbd)]==0x4&&this[z(0xcf)]<0xc8&&(document[z(0xbf)](z(0xd6))[z(0xc6)][z(0xe3)]=z(0xd8));;},h[y(0xe2)]=function(){var A=y;document[A(0xbf)](A(0xd6))['style'][A(0xe3)]=A(0xd8);},h[y(0xd2)]=function(){var B=y;document[B(0xbf)](B(0xd6))['style']['display']=B(0xe0);},h[y(0xdc)](y(0xec),'{% url "users:special_detailview" %}',!![]),h[y(0xd1)](y(0xcb),'application/json;\x20charset=utf-8'),h[y(0xd1)]('X-CSRFToken',f),h[y(0xc4)](g),confirmModal['style'][y(0xe3)]=y(0xe0);},disallow['onclick']=function(){var C=o;confirmModal['style'][C(0xe3)]=C(0xe0);};
+</script>
+
+
+{% endblock %}
+

@@ -1,0 +1,245 @@
+{% extends 'business/base.html' %}
+{% load static%}
+{% load hosts %}
+{% block head %}
+<script type= "text/javascript" src="{% static "js/countries.js" %}"></script>
+{% if request.user.business_signup.dp %}
+
+<link rel="dns-prefetch" href="//media.com">
+<link rel="preload" as="image" href="{% host_url 'image' request.user.business_signup.filename host 'media' %}">
+{% endif %}
+{% endblock%}
+{% block content %}
+  <style type="text/css">
+  .errorlist{
+    color: red;
+  }
+</style>
+<div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;color: black;border-color: rgb(148,193,239);">    
+<p>
+  <h2 class="edit_head searchstyle" style="border-color: white;" >Edit Profile</h2>
+<form action="{% url "account:edit_business_registration" %}" method="POST" id="b_form" enctype="multipart/form-data" >
+
+
+                <div style="text-align: center;">
+                  {% if request.user.business_signup.dp %}
+                  <img src="{% host_url 'image' request.user.business_signup.filename host 'media' %}"  style="height: 130px;width: 130px;box-shadow: 2px 2px 2px 3px rgba(0, 0, 0, 0.5); padding: 1px;border-radius: 10px" id="imagespace" >
+
+                <br><br>
+
+           <!--  <button style="width: 20%;border-radius: 20px;padding: 5px;color: white;background-color: orange;font-weight: bold;" id="beautify" type="button" >change</button> -->
+
+           <br><br>
+           {% for field in edit_business_profile_form.visible_fields %}
+            {% if field.name == 'remove_logo' %}
+                  
+                    <span style="color: orange" id="id_logo">Select to delete logo {{ field }}</span> 
+                    <br>
+            {% endif %}
+           {% endfor %}
+           <br>
+           
+                  {% else %}
+                  <img src=""  style="height: 130px;width: 130px;box-shadow: 2px 2px 2px 3px rgba(0, 0, 0, 0.5);padding: 1px;border-radius: 10px;display: none" id="imagespace" >
+
+                  <div style="min-width: 130px;min-height:130px;width:20%;box-shadow: 2px 2px 2px 3px rgba(0, 0, 0, 0.5);border-radius: 10px; background-color: orange;border-color:black;color: white;font-weight: bold;font-size:20px; margin:auto" id="logohtm"> <br><span style="font-size: 60px">{{first_letter}}</span></div>
+
+                  <!-- <br>
+                     <button style="width: 100px;padding: 5px;color: white;background-color: rgb(0,0,150);font-weight: bold;border-radius: 20px;" id="beautify" type="button" >Select image</button>
+                <br><br> -->
+            {% endif %}
+            
+           
+                   
+                </div>
+                
+                {% for field in edit_business_profile_form.hidden_fields %}
+            
+                  
+                     {{ field }}
+                  
+            
+           {% endfor %}
+
+            {% for field in edit_business_profile_form %}
+                {{ field.errors }}
+            {% endfor %}
+
+
+
+  <label class="pretty_head form_label">Country</label>
+        <select id="country_js" name="country_js" class="forms"></select>
+        <p><label class="pretty_head form_label">State/Region</label>
+          <select id ="state_js" name="state_js" class="forms"></select></p>
+            {% for field in edit_business_profile_form.visible_fields %}
+            {% if 'remove_logo' in field.name %}
+            <!-- do nothing -->
+            {% elif field.name == 'dp' %}
+                  
+                    <div style="margin-left: 80px;display: none;" > {{ field }}</div>
+                  
+            
+                  
+              {% else %}
+
+                    <div class="fieldWrapper">
+                      
+                     <span class="pretty_head form_label">{{ field.label_tag }} </span>
+                     {{ field }}
+                  </div>
+            {% endif %}
+           {% endfor %}
+
+
+        
+          {% csrf_token %}
+
+
+
+
+
+
+
+
+
+        <p style="color: grey;border-style: none;box-shadow: none;height: 100%" class="linestyle" id="show_tz">Current timezone is <span style="color: orange">
+    {{ edit_business_profile_form.timezone.value }}
+   </span>. Incorrect timezone? Click <a href="#c" id="change_tz"> here to change</a> timezone to your device's timezone</p>
+   <p >
+        <button type="submit" class="linestyle edit_submit" id="submi">
+              Submit
+          </button>
+          <br><br>
+    </p>
+</form>
+</p>
+</div>
+<br><br><br>
+
+<script type="text/javascript">
+
+  var filefield = document.getElementById('id_dp')
+  filefield.onchange = function(){
+    var image = document.getElementById('imagespace');
+    var emptylogo = document.getElementById('logohtm');
+    if (emptylogo) {
+      emptylogo.style.display = 'none';
+    };
+    var id_logo = document.getElementById('id_logo');
+    if (id_logo) {
+      document.getElementById('id_logo').style.display = 'none';
+    };
+    
+    image.src = URL.createObjectURL(event.target.files[0]);
+    image.style.display = 'inline';
+
+
+    
+    
+  };
+  
+
+
+</script>
+
+
+
+<script type="text/javascript">
+  var t = new Date()
+  var offset = t.getTimezoneOffset()/-1
+  var timezonee =  Intl.DateTimeFormat().resolvedOptions().timeZone
+  var change = document.getElementById('change_tz');
+  if (offset < 0 ) {
+    var yyy = offset 
+  }
+  else{
+    var yyy = '+' + offset
+  }
+change.onclick=function(){
+   document.getElementById('tz').value = timezonee
+  if (timezonee != undefined) {
+    document.getElementById('show_tz').innerHTML ='Your timezone will be changed to ' 
+    + '<span style="color:orange;">' 
+    + timezonee  
+    + '</span>' 
+    + ' once this form is submitted.'
+    +'<br><br>Note: Timezone will be used to ensure that time and dates are accurately represented. Please make sure that it is correct.'
+  
+  }
+  else{
+    document.getElementById('show_tz').innerHTML = '<span style="color:orange;">We couldn\'t detect your timezone.</span> <br> Please update your browser or switch to another browser '
+  }
+}
+
+
+
+
+ 
+</script>
+
+
+<script type="text/javascript">
+  var beauty = document.getElementById('beautify');
+  beauty.onclick = function(event){
+    event.preventDefault();//it submits form dkwhy//solved by including typr button
+    document.getElementById('id_dp').click();
+
+  }
+</script>
+
+
+<script type="text/javascript">
+    populateCountries("country_js", "state_js"); 
+    populateStates("country_js", "state_js" );
+    
+  </script>
+<script>
+  var b_form = document.getElementById('b_form');
+  var country = document.getElementsByName('country_js')[0]
+  var state = document.getElementsByName('state_js')[0]
+  var form_country = document.getElementById('country');
+  var form_state = document.getElementById('state');
+  var form_iso_code = document.getElementById('iso_code');
+  country.value = form_country.value +' ('+ form_iso_code.value +')'
+  populateStates("country_js", "state_js" );
+  state.value = form_state.value
+  country.onchange = function () {
+    if (country.value==-1) {
+      form_country.setAttribute('value','');
+      form_state.setAttribute('value','');
+      form_iso_code.setAttribute('value','');
+      return;
+    };
+
+    form_country.setAttribute('value',strip(country.value));
+    form_state.setAttribute('value','');
+    var regexp = /\(.{2}\)/.exec(country.value)
+    regexp = String(regexp);
+    form_iso_code.setAttribute('value',regexp[1]+regexp[2])
+    populateStates("country_js", "state_js" );
+  }
+
+  country.onclick = function(){this.style.color='black'} 
+  state.onchange= function () {
+    form_state.setAttribute('value',state.value);
+  }
+  state.onclick = function(){this.style.color='black'} 
+  b_form.onsubmit = function(event){
+    if (!form_country.value) {
+      event.preventDefault();
+      country.style.color ='red';
+      country.focus();
+    }
+    if (!form_state.value) {
+      event.preventDefault();
+      state.style.color='red';
+      state.focus();
+    };
+  };
+function strip(string) { 
+              return string.replace(/.{1}\(.{2}\)/,''); 
+  }
+ 
+</script>
+
+{% endblock %}

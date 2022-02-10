@@ -1,0 +1,139 @@
+
+
+<script type="text/javascript">
+ 
+  
+  if ('{{inline}}'=='True') {
+    var count = 0;
+    var timer = 0;
+    var exit = -1;//must be outside function
+var loadDoc = function () {
+  var xhttp = new XMLHttpRequest();
+  var join_line_button = document.getElementById('linebutton');
+  
+  xhttp.onreadystatechange = function() {
+  
+    if (this.readyState == 4 && this.status == 200) {      
+      if (this.responseText=='pnf') {
+        window.location.href = '{% url "users:line" businessline.uniquefield %}'
+      };
+      var response_t = parseInt(this.responseText);
+      if (response_t==0) {
+      
+        exit = exit + 1;
+        if (exit==0) {return;}
+        else if (exit > 0){
+
+            join_line_button.style.display = 'none';
+        
+           var fulltext ="<div style='color:red;text-align:center'>" + "You have been removed from the line" +"</div>";
+           document.getElementById('demo').innerHTML ='';
+           document.getElementById('demo').innerHTML = fulltext;
+        stopInterval();
+        return;
+          };
+      };
+      if (count==response_t) {return;};
+      count = response_t;
+  
+      if (response_t>30) {
+        if (timer!=60000) {
+            stopInterval();
+           timer = 60000;
+           interval = setInterval(loadDoc,timer);
+        };
+        
+      }
+      else if(response_t > 15){
+        if (timer!=30000) {
+            stopInterval();
+           timer = 30000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else if(response_t > 10){
+        if (timer!=15000) {
+            stopInterval();
+           timer = 15000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else if (response_t>5) {
+        if (timer!=5000) {
+            stopInterval();
+           timer = 5000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else {
+        if (timer!=3000) {
+            stopInterval();
+           timer = 3000;
+           interval = setInterval(loadDoc,timer);
+        };
+      };
+      fulltext = '';
+   
+        if(response_t <= 10){
+          
+          for (var i=1;i < response_t + 1; i++ ){
+            if (i==response_t) {
+              fulltext = fulltext + "<div class='linestyle' style='padding:15px'><span style='margin-left:15%;' class='blink'>"
+               + i +
+               "</span><span style='margin-left: 30%' class='blink'>{{person|title}}</span></div>";
+               
+            }
+            else{
+              fulltext= fulltext + "<div class='linestyle' style='padding:15px' ><span style='margin-left:15%' >"
+               +i+
+               "</span><span style='margin-left: 30%;'>----------------------</span></div>";
+            };
+
+          };
+          
+        }
+        else {
+          for (var j=1; j<=9; j++) {
+            fulltext = fulltext+ "<div class='linestyle' style='padding:15px'><span style='margin-left:15%' >"
+               + j +
+               "</span><span style='margin-left: 30%;'>----------------------</span></div>";
+          };
+          fulltext = fulltext+"<div class='linestyle' style='padding:15px' ><span class='blink' style='margin-left:15%'>";
+               + response_t +
+               "</span><span style='margin-left: 30%' class='blink'>{{person|title}}</span></div>";
+
+        };
+        join_line_button.setAttribute('value',"Exit Line");
+        join_line_button.setAttribute('onclick',"joinline('{{person.ticket}}')");
+   
+    document.getElementById('demo').innerHTML ='';
+    document.getElementById('demo').innerHTML = fulltext;
+    
+    };
+    if (this.readyState ==4 && this.status < 200) {
+      document.getElementById('network_error').style.display = 'block';
+
+    }
+  };
+
+  xhttp.onerror = function(){
+    document.getElementById('network_error').style.display = 'block';
+  };
+  xhttp.onload = function(){
+    document.getElementById('network_error').style.display = 'none';
+  };
+  xhttp.open("GET","{% url "users:user_ajax" businessline.uniquefield person.unique %}", true);
+  xhttp.send();
+
+  
+};
+var interval = setInterval(loadDoc,3000);
+   
+function stopInterval(){
+  clearInterval(interval);
+};
+
+};
+ 
+</script>
+

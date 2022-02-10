@@ -1,0 +1,201 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% block head %}
+<script type="text/javascript" src="{% static "js/countries.js" %}"></script>
+{% endblock%}
+{% block header %}
+<style type="text/css">
+  .company_name{
+      padding-top: 5px;
+      color: rgb(148,193,239);
+      font-size: 19px;
+      font-weight: bold;
+    }
+</style>
+<header class="col-12" style="background-color: white;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 0px 2px 0 rgba(0, 0, 0, 0.3);height: 100%;padding-bottom: 2px">
+  <span id="myBtn" style="background-color: white;color: blue" ><a href="{% url "login"%}">&emsp;<i class="arrow left"></i></a></span>
+        
+    <div class="company_name">
+      <img src="{% static 'img/logo.png' %}" style="height: 20px;margin-bottom: -7px;">
+      <br>
+    Qolom
+  </div>
+    
+  </header> 
+{% endblock %}
+{% block content %}
+   <p style="color: orange;text-align: center;"> Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+	<div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;border-color: rgb(148,193,239);box-shadow: 0px 2px 0px 2px rgba(0, 0, 0, 0.2)"> 
+
+		<h2 class="searchstyle" style="color: orange;border-color:white;text-align: center;background-color: inherit;font-size: 140%">Register a Business</h2>            
+        
+			<form action="{% url "account:business_signup" %}" method="POST" id="businessRegistrationForm">
+        <ul class="errorlist" id='js_errors'></ul>
+        {% for field in form %}
+                  
+                      {{ field.errors }}
+                     
+              
+           {% endfor %}
+           
+          
+      {{form.timezone.errors}}
+        
+        <label for="country_js" class="pretty_head form_label"> Country</label>
+        <select id="country_js" name="country_js" class="forms" ></select>
+        <p>
+          <label for="state_js" class="pretty_head form_label"> State/Region</label>
+          <select id ="state_js" name="state_js" class="forms"></select></p>
+        
+       {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+
+            {% for field in form.visible_fields %}
+                  <div class="fieldWrapper">
+                     <span class="pretty_head form_label">{{ field.label_tag }} </span>
+                     {{ field }}
+                  </div>
+           {% endfor %}
+			{% csrf_token %}
+      <br>
+      <br>
+        <div style="color: grey;border-style: none;font-size: 100%;height: 100%;" class="forms">
+        Note: Your device timezone will be used to ensure that time and dates are accurately represented. Please make sure that it is correct.
+        <br><br>
+         Your device timezone is <span style="color: orange" id="show_tz"></span> </div>
+         
+			<p><button type="submit" style="background-color:rgb(148,193,239);color: white;font-size: 100%;font-weight: bold;" class="linestyle" >Register</button>
+      </p>
+           </form>
+         <br><br>
+	</div>
+<br><br><br>
+  <script type="text/javascript">
+    var t = new Date()
+  
+  var timezonee =  Intl.DateTimeFormat().resolvedOptions().timeZone
+  
+  document.getElementById('tz').value = timezonee
+if (timezonee != undefined) {
+  document.getElementById('show_tz').innerHTML = timezonee 
+}
+else{
+  document.getElementById('show_tz').innerHTML = 'undefined <br> Please update your browser or switch to another browser'
+}
+  </script>
+  <script type="text/javascript">
+    populateCountries("country_js", "state_js"); 
+    populateStates("country_js", "state_js" );
+  </script>
+<script>
+  var b_form = document.getElementById('businessRegistrationForm'); 
+  var country = document.getElementsByName('country_js')[0];
+  var form_country = document.getElementById('country');
+  var state = document.getElementsByName('state_js')[0];
+  var form_state = document.getElementById('state');
+  var form_iso_code = document.getElementById('iso_code');
+  if (form_country.value!=='') {
+    country.value = form_country.value +' ('+ form_iso_code.value +')'
+  }
+  if (form_state.value!=='') {
+    populateStates("country_js", "state_js" );
+    state.value = form_state.value
+  }
+  country.onchange = function () {
+    form_country.setAttribute('value',strip(country.value));
+    form_state.setAttribute('value','');
+    var regexp = /\(.{2}\)/.exec(country.value)
+    regexp = String(regexp);
+    form_iso_code.setAttribute('value',regexp[1]+regexp[2])
+    if (country.value==-1) {
+      form_country.setAttribute('value','');
+      form_state.setAttribute('value','');
+      form_iso_code.setAttribute('value','');
+    };
+
+    populateStates("country_js", "state_js" );
+  }
+  country.onclick = function(){this.style.color='black'} 
+  state.onchange= function () {
+    form_state.setAttribute('value',state.value);
+  }
+  state.onclick = function(){this.style.color='black'} 
+  b_form.onsubmit = function(event){
+       var text = ''
+       var first_p = document.getElementById('password')
+       var second_p = document.getElementById('password2')
+    if (!form_country.value) {
+      country.style.color ='red';
+      country.focus();
+      text = text + '<li>Select Country</li>'
+
+    }
+    if (!form_state.value) {
+      event.preventDefault();
+      state.style.color='red';
+      state.focus();
+      text = text + '<li>Select State/Region</li>'
+    };
+    if (document.getElementById('tz').value=='undefined') {
+      text = text + '<li>We couldn\'t get your timezone.<br>Please update your browser or switch to another browser </li>'
+
+    };
+    if (document.getElementById('username').value.length < 6 ) {
+      event.preventDefault()
+       text = text + '<li>Username must contain up to 6 characters</li>'
+    }
+    if (document.getElementById('username').value.includes(' ') ){
+      event.preventDefault()
+      text = text + '<li>A blank space can not be included as part of username</li>'
+    }
+   if(first_p.value.length < 8){
+    event.preventDefault()
+    text = text + '<li>Password must contain up to 8 characters</li>'
+   }
+
+   var magic = false
+   var chars = ['1','2','3','4','5','6','7','8','9','0','~','@','$',
+        '#','%','^','&','*','(',')','+','=','{','}',']','[',
+        "'",';',':','/','>','<','?','/','.',',','\\','-','_','`']
+    for (var i = 0; i < 40; i++) {
+     if (first_p.value.includes(chars[i])) {
+      magic = true
+      break
+     }
+    }
+    if (magic==false) {
+      event.preventDefault()
+      text = text + '<li>Password must contain a number or special character</li>'
+    }
+    
+    if (first_p.value!==second_p.value) {
+      event.preventDefault()
+      text = text + '<li> Passwords did not match</li>'
+    }
+    if (text) {
+      event.preventDefault()
+
+      var all_e = document.getElementsByClassName('errorlist');
+
+      for (var i = 0;i < all_e.length; i++) {
+        all_e[i].style.display = 'none'
+       }
+      document.getElementById('js_errors').innerHTML = text 
+    document.getElementById('js_errors').style.display = 'block'
+    document.body.scrollTop = 0
+    document.documentElement.scrollTop = 0
+    console.log('error')
+
+    }
+    
+  };
+  
+
+  function strip(string) { 
+              return string.replace(/.{1}\(.{2}\)/,''); 
+        } 
+</script>
+
+{% endblock %}

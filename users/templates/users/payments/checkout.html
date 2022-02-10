@@ -1,0 +1,286 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% load hosts %}
+{% block head %}{% endblock %}
+{% block content %}
+
+
+  
+  
+<style type="text/css">
+  span{
+    display: inline-block;
+  }
+  @keyframes updown
+ {
+  from {margin-top: -1000px;}
+  to {margin-top: 0px;}
+}
+
+.loader_two {
+  border: 3px solid white;
+  border-radius: 50%;
+  border-top: 3px solid grey;
+  width: 20px;
+  height: 20px;
+  -webkit-animation: spin 0.5s linear infinite; /* Safari */
+  animation: spin 0.5s linear infinite;
+}
+</style>
+<iframe src="" id="o_frame" style="width: 100%;height: 100%;position: absolute; display: none" >
+      
+    </iframe>
+ <div id='modal_color' class="modal" style="animation: none;"></div>
+              <!-- dont delete -->
+
+<div style="position: fixed;top:50%;left:50%;display: none;" class="loader_two" id="loader_two"></div>
+
+<br>
+<div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;box-shadow: 0px 1px 1px 2px rgba(148,193,239, 0.7);border-color: white">
+
+
+<div class="content">
+
+  <div  style="float: right;color: orange"  >
+ <b> CHECKOUT</b>
+</div>
+
+
+  
+<div style="width: 70%">
+  {% if business.dp %}
+  <img src="{% host_url 'image' business.filename host 'media' %}" style="height: 2.5em;width: 2.5em;border-radius: 10px;float: left;box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);">
+  <a href="{{ business.get_absolute_url }}">
+  <h3 style="color: orange;margin-left: 50px">{{business|title}}
+</h3>
+</a>
+{% else %}
+<a href="{{ business.get_absolute_url }}">
+  <div style="width:2.5em;height: 2.5em; box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);border-radius: 10px;text-align: center; background-color: orange;border-color:black;color: white;font-weight: bold;float: left;padding-top: 0.4em">
+ <span style="font-size: 1.5em;">
+          {{first_letter}}
+ </span></div>
+<h3 style="color: orange;margin-left: 55px">{{business|title}}</h3>
+</a>
+{% endif %}
+</div>
+<div style="color: blue;width: 50%;margin-top: 2em">{{ businessline.name|title}}</div>
+
+</div>
+
+{% if items %}
+<br><br>
+
+  
+
+       <div class="linestyle" style="color: orange;padding-left: 2%;padding-right: 2%;font-weight: bold;box-shadow: none;border-color: white">
+
+              <span style="width: 55%">Name</span>
+              
+              
+              <span style="width: 25%">Price(₦)</span>
+              <span style="width: 15%">Units</span>
+              <hr style="padding: 2px;background-color: grey">
+    </div>
+
+{% for each in items %}
+
+  
+      <div class="linestyle" style="color: blue;padding-left: 2%;padding-right: 2%;box-shadow: none;border-color: white">
+
+              <span style="width: 55%">{{each.0}} </span>
+              
+              <input type="hidden" name="{{each.id}}" class="{{each.units_available}}_{{forloop.counter}}_mkunique" value="0">
+              <span style="width: 25%">{{each.1}}.00</span>
+              <span style="width: 15%">x {{each.2}}</span>
+    </div>
+  
+
+{% endfor %}
+
+<div class="linestyle" style="color: orange;padding-left: 2%;padding-right: 2%;box-shadow: none;border-color: white">
+
+              <span style="width: 55%">FEES </span>
+              
+              
+              <span style="width: 25%">{{fees}}</span>
+             
+    </div>
+<br><br>
+
+              <div style="text-align: center;color: red">TOTAL: <span style="padding-left: 20px" id="total">N {{total}} </span>
+              </div>
+              
+               <br><br>
+               {% if not card_information %}
+
+              <button class="linestyle" type="submit" style="background-color: red;color: white;font-weight: bold; " onclick="makepayment(true);" >ORDER</button>
+
+              {% else %}
+              <button class="linestyle" type="submit" style="background-color: red;color: white;font-weight: bold; " onclick="makepayment(false);" >ORDER</button>
+
+               {% endif %}
+              <br><br><br>
+    </div>
+  
+  
+      
+              
+    
+  
+
+
+{% else %}
+No items
+
+{% endif %}
+
+</div>
+{% if card_information %}
+<div id="confirmModal"  class="modal"  >
+  <div class="modal-content2" id="modale_content" style="border-style: none;width: 100%;position: absolute;left: 0px;top: 0px;animation: updown 0.5s 10000;animation-direction: alternate;">
+    <div style="color: grey;font-size: 100%;float: right;cursor: pointer;" id="disallow">&#10005;</div>
+    <p style="text-align: center;">
+     Pay with saved card or <a href="#" onclick="makepayment(true);" id="other_opti">explore other options</a>
+    </p>
+    {% for card in card_information %}
+    <a href="{% url 'users:pay-with-card' order.id card.3 %}">
+    <div class="linestyle" style="border-color: lightgrey;box-shadow: none;font-weight: bold;font-size: 120%;width: 300px;margin: auto;border-width: 2px;font-weight: normal;" id="{{card.3}}" onclick="shine_and_go(event,'{{card.3}}')">
+
+      
+      
+      {% if 'mastercard' in card.0 %}
+    <img src="{% static 'img/mastercard.png' %}" style="height: 37px;width: 60px;float: left;margin-left: 20px;margin-top: -10px">
+    {% elif 'visa' in card.0 %}
+    <img src="{% static 'img/visa.png' %}" style="height:20px;width: 60px;float: left;;margin-left: 20px">
+    {% elif 'verve' in card.0 %}
+    <img src="{% static 'img/verve.png' %}" style="height:20px;width: 60px;float: left;;margin-left: 20px">
+    {% endif %}
+    &emsp;card ending with {{ card.2 }}
+
+      
+    
+  </div>
+</a>
+  <br>
+  {% endfor %}
+
+
+    
+  </div>
+</div>
+{% endif %}
+<script type="text/javascript">
+var framee = document.getElementById('o_frame');
+framee.onload=function(){
+  document.getElementById('loader_two').style.display='none';
+  document.getElementById('modal_color').style.display = 'none';
+  framee.style.backgroundColor = 'rgb(0,0,0,0.8)';
+  var theheadheight = document.getElementById('the_header').clientHeight -5
+  console.log(theheadheight)
+  framee.style.top = theheadheight.toString()+'px';
+  document.getElementById('thefoot').style.display = 'none'
+}
+{% if card_information %}
+  
+  var modale = document.getElementById("confirmModal");
+ 
+  var disallow = document.getElementById('disallow');
+  
+  var doit = false
+  var how_to_content = document.getElementById('modale_content');
+
+ 
+  var close_f = function(event){
+    console.log(event.target)
+    modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+  
+  setTimeout(function(){
+    modale.style.display = 'none';
+    how_to_content.style.display = 'none'
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.animationPlayState = 'paused';
+  
+  },500);
+  
+  };
+
+
+  var close_ = function(event){
+    console.log(event.target)
+    if (event.target.id=='modale_content'||event.target.id.search('SIG_')!=-1) {
+      return
+    }
+    modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+  
+  setTimeout(function(){
+    modale.style.display = 'none';
+    how_to_content.style.display = 'none'
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.animationPlayState = 'paused';
+  
+  },500);
+  
+  };
+
+ modale.addEventListener("click", close_);
+ disallow.addEventListener("click", close_f);
+ document.getElementById('other_opti').addEventListener("click", close_f);
+
+  
+{% endif %}
+var counter = false
+function shine_and_go(event,signat){
+ if (!counter) {
+    event.preventDefault();
+    document.getElementById(signat).style.borderColor = 'rgb(148,193,239)'
+    counter = true;
+    return
+ }
+}
+
+
+  function makepayment(true_or_false) {
+    
+    {% if card_information %}
+    if (!true_or_false) {
+      setTimeout(function(){
+          modale.style.display = 'block'
+          how_to_content.style.display = 'block'
+          modale.style.animationPlayState = 'running';
+          how_to_content.style.animationPlayState = 'running';
+      },0);
+      setTimeout(function(){
+          modale.style.animationPlayState = 'paused';
+          how_to_content.style.animationPlayState = 'paused';
+      },500);
+      return;
+    };
+    {% endif %}
+    
+    document.getElementById('modal_color').style.display = 'block'
+    document.getElementById('loader_two').style.display = 'block'
+    var old_lod = window.location.href
+    
+    window.history.pushState({}, '', old_lod);
+
+    
+
+    
+     framee.src='{{link}}';
+    framee.style.display='block';
+  }
+  function change_window(newsrc){
+    console.log('skrrrrrr')
+    window.location.replace(newsrc);
+  }
+
+
+
+ 
+
+</script>
+
+{% endblock %}

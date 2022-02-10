@@ -1,0 +1,581 @@
+{% extends 'users/base.html' %}
+
+{% load static %}
+
+
+
+
+{% block content %}
+
+<style type="text/css">
+  .for_computers #search_for{
+    width: 300px;
+    height: 33px;
+    border-style: none;
+  }
+  .for_computers{
+    display: none;
+    color: white;
+  }
+  body{
+    background-color: white;
+    background-image:none;
+  }
+  .the_img{
+    width: 90%;
+    margin-left: 5%
+  }
+  #no_display{
+    display: none;
+  }
+  .menu_bar{
+    
+    color: orange;
+  }
+  @media only screen and (min-width: 1130px) {
+  /* For desktop and laptops: */
+  .for_computers{
+    display: inline-block;
+  }
+  .com_close{
+    display: none;
+   
+  }
+  .the_img{
+    width: 40%;
+    margin-left: 30%
+  }
+}
+</style>
+<script type="text/javascript">
+  
+</script>
+<div style="background-color: rgb(225,225,225);">
+<div style="background-color: rgb(245,245,245);padding-left: 10px;padding-bottom: 5px;padding-top: 0px;overflow: auto;white-space: nowrap;margin-top: 0px;" >
+  <button style="background-color: inherit;padding: 6px;border-radius: 20px;font-weight: bold;border-style: none;" onclick="activate_search();" class="com_close menu_bar">Find Place</button>&emsp;
+  <a href="{% url "users:key" %}" >
+
+      <button class="menu_bar" style="background-color: inherit;padding: 5px;border-radius: 20px;font-weight: bold;border-style: none; ">Key Search</button>&emsp;
+  </a>
+  {% if special_line %}
+  <a href="{% url "users:special_detailview" %}" >
+      <button style="background-color: inherit;padding: 5px;border-radius: 20px;font-weight: bold;border-style: none;" class="menu_bar">{{special_line.name|title|truncatechars:9}}</button>&emsp;
+  </a>
+  {% else %}
+  <a href="{% url "users:create_line" %}" >
+      <button style="background-color: inherit;padding: 5px;border-radius: 20px;font-weight: bold;border-style: none;"
+      class="menu_bar">Create Line</button>&emsp;
+  </a>
+  {% endif %}
+  
+<a href="{% url "users:favourites" %}" >
+  <button style="background-color: inherit;padding: 5px;border-radius: 20px;font-weight: bold;border-style: none;"
+  class="menu_bar">Favourites</button>
+</a>
+<!-- <a href="{% url 'users:orders_list' %}" > 
+  <button style="background-color: inherit;padding: 5px;border-radius: 20px;font-weight: bold;border-style: none;"
+  class="menu_bar">Orders</button>
+
+</a> -->
+{% if card_info %}
+
+                 <!--    <a href="{% url "users:manage_cards" %}" class="hyperlink" > 
+            <button style="background-color: inherit;padding: 5px;border-radius: 20px;font-weight: bold;border-style: none;"
+            class="menu_bar">Manage Cards</button>
+          </a> -->
+
+          {% endif %}
+  
+<a href="{% url "logout" %}"> 
+  <button style="background-color: inherit;padding: 5px;border-radius: 20px;font-weight: bold;border-style: none;float: right;padding-right: 40px" class="for_computers menu_bar"
+  >Sign out</button>
+</a>
+   <form method="GET" action="{% url 'users:user_homepage' %}" style="margin-bottom: 0px;height:100%;margin-right: 100px;float: right;" class="for_computers menu_bar">
+      {{ form }}
+      
+      
+      <input type="image" src="{% static 'img/searchico.png' %}" class="searchicon" style="margin-left: -35px;margin-bottom: -6px;background-color: transparent;">
+    </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div>add email admin@qolom.com </div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div style="background-color: white;padding-bottom: 50px;padding-top: 3px;">
+   {% if homepage %}
+   {% if order_ready_exists %}
+   {% if more_than_one %}
+   <!-- <a href="{% url 'users:orders_list' %}" id="order_href">
+    <input type="hidden" id="order_sent_value_holder" value="0"> 
+  <div class="content success " style="color: white;height: 100%;padding: 10px;margin-top: 0px; text-align: center;box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.2);" id="order_sent">Your orders are ready
+  </div>
+  </a> -->
+  <!-- <br> -->
+   {% else %}
+   <!-- <a href="{% url 'users:order'  first_order_url %}" id="order_href">
+    <input type="hidden" id="order_sent_value_holder" value="0"> 
+  <div class="content success " style="color: white;height: 100%;padding: 10px;margin-top: 0px; text-align: center;box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.2);" id="order_sent">Your order is ready
+  </div>
+  </a>
+  <br> -->
+   {% endif %}
+   
+  {% else %}
+  <!-- <a href="#" id="order_href">
+    <input type="hidden" id="order_sent_value_holder" value="0">
+  <div class="content success " style="color: white;height: 100%;padding: 10px;margin-bottom: 15px; margin-top: 10px; text-align: center;box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.2);display: none;" id="order_sent">
+  </div>
+  </a>
+   -->
+  {% endif %}
+
+{% if messages %}
+
+  <div class="content {% for message in messages %}{{ message.tags }} {% endfor %} " style="color: white;height: 100%;padding: 10px;margin-top: 0px; text-align: center;box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.2);" >
+    
+  
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+  
+  </div>
+<br>
+  {% endif %}
+  {% endif %}
+
+
+<div style="{% if line or recent %}padding: 10px;{% endif %}background-color: rgb(225,225,225);">
+
+{% if line or recent %}
+<div class="menubuttons" style="padding-bottom: 20px;border-radius: 20px;border-color: lightgrey;box-shadow: 0px 2px 2px 1px lightgrey;" >
+
+  {% if line %}
+<p>
+
+  <a href="{% url 'users:line' line.uniquefield %}" id="linelink">
+    <button id="blinkbutton" style="border-color: white;color: orange; font-size: 80%;margin-top: 0px;padding-top: 4px;padding-bottom:4px;height: 100%;box-shadow: 0px 1px 1px 2px grey;" class="linestyle"><b>{{line.name|title}}</b><br><br><span id="color">--&nbsp; <span id="numb" style="font-size: 15px;" >{{ number }}</span> &nbsp;--</span></button>
+</a>
+</p>
+
+{% endif %}
+
+
+
+{% if recent %}
+
+<div>
+  <br>
+ <span style="margin-left: 4.17%;color: grey;text-indent: 50%;font-weight: normal;">Recently visited</span>
+ <br><br>
+{% for recent_business in recent %}
+  <a href="{{recent_business.url}}">
+    <button class="searchstyle">
+      <b>
+        {{ recent_business.name }}
+      </b>
+    </button>
+   
+ </a>
+</div>
+
+
+{% endfor %}
+
+{% endif %}
+</div>
+{% endif %}
+<br>
+</div>
+
+
+
+
+
+
+
+<div style="background-color: rgb(225,225,225);margin-top: 0px;padding-top: 10px;padding-bottom: 30px">
+<div style="border-color: lightgrey;border-style: solid;border-width: 1px; box-shadow: 0px 2px 2px 1px lightgrey;padding-top: 0px;border-radius: 25px;background-color: white;margin-top: 10px;" class="the_img">
+  <div style="background-image: url('{% static 'img/personn.jpg' %}');border-style:none;background-color: transparent;color: white;width: 100%;height: 200px;border-radius: 25px 25px 0 0;margin-top: 0px;background-repeat: no-repeat; background-size: 100% 100%;image-rendering: -webkit-optimize-contrast;
+ "></div>
+ <div style="text-align: center;color: orange;width: 80%;margin-left: 10%;">
+  
+ <br>Queue up and only be present when you need to. Save time and be relieved of the hassle of being on a line.
+<br><br><br><br> 
+</div> 
+</div>
+</div>
+
+
+<div style="background-color: rgb(235,235,235);margin-top: -3px;padding-top: 10px;padding-bottom: 30px">
+<div style="border-color: lightgrey;border-style: solid;border-width: 1px; box-shadow: 0px 2px 2px 1px lightgrey;padding-top: 0px;border-radius: 25px;background-color: white;margin-top: 10px" class="the_img">
+  <div style="background-image: url('{% static 'img/resipsa.jpg' %}');border-style:none;background-color: transparent;color: white;width: 100%;height: 200px;border-radius: 25px 25px 0 0;margin-top: 0px;background-repeat: no-repeat; background-size: 100% 100%;image-rendering: -webkit-optimize-contrast;
+ "></div>
+ <div style="text-align: center;color: orange;width: 80%;margin-left: 10%;">
+  
+ <br>Make Orders
+
+  
+  
+ <br>Skip queues entirely.<br>Just order and pick up
+<br><br><br><br> 
+</div> 
+</div>
+</div>
+  
+  <div style="background-color: rgb(245,245,245);margin-top: -3px;padding-top: 10px;padding-bottom: 30px">
+<div style="border-color: lightgrey;border-style: solid;border-width: 1px; box-shadow: 0px 2px 2px 1px lightgrey;padding-top: 0px;border-radius: 25px;background-color: white;margin-top: 10px;" class="the_img">
+  <div style="background-image: url('{% static 'img/penguins.jpg' %}');border-style:none;background-color: transparent;color: white;width: 100%;height: 200px;border-radius: 25px 25px 0 0;margin-top: 0px;background-repeat: no-repeat; background-size: 100% 100%;image-rendering: -webkit-optimize-contrast;
+ "></div>
+ <div style="text-align: center;color: orange;width: 80%;margin-left: 10%;">
+  
+ <br>
+ <br>Create your own virtual line and invite others to join. Easily set the time that others will be able to join the line and remove people from the queue.
+<br><br><br><br> 
+</div> 
+</div>
+</div>
+
+
+
+
+
+
+<form action="{% url 'users:get_location' %}" method="GET" id="sub_loc">
+  {{ get_loc }}
+  {% csrf_token %}
+</form>
+{% if not line %}
+
+
+<div class="menubuttons" style="color: grey;font-weight: unset;border-color: grey;margin-top: 40px;margin-bottom: 40px"> Total time spent on all queues<br><br><span style="color: orange;">{{total_time}}</span> </div><br>
+{% endif %}
+
+
+
+
+
+{% if special_line %}
+<div id="confirmModal"  class="modal"  >
+  <div class="modal-content2" id="modale_content">
+    <p style="text-align: center;"> In order to create a new line,
+      <span style="color: orange;">{{special_line.name}}</span> will be deleted. </p>
+    <p style="text-align: center;">Do you wish to proceed?</p>
+    
+    <button id="allow" class="yes_no" style="color: red;">
+      <b>Yes</b>
+  </button>
+    <button id="disallow" class="yes_no">
+    <b>No</b>
+  </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+  
+  var modale = document.getElementById("confirmModal");
+  var allow = document.getElementById('allow');
+  var disallow = document.getElementById('disallow');
+  var button_click = document.getElementById('create_line')
+  var doit = false
+  var how_to_content = document.getElementById('modale_content');
+
+  
+  button_click.onclick=function create(event){
+    if (!doit) {
+    event.preventDefault();
+    modale.style.animationPlayState = 'running';
+    modale.style.display = "block";
+    how_to_content.style.animationPlayState = 'running';
+    how_to_content.style.display = "block";
+    setTimeout(function(){
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.animationPlayState = 'paused';
+  
+  },500);
+  }
+  else{
+    confirmModal.style.display='none'
+  };
+};
+  allow.onclick=function(){
+    doit = true
+    button_click.click();
+    doit = false//incase the person presses back
+  };
+
+  disallow.onclick=function(){
+    modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+  
+  setTimeout(function(){
+    modale.style.display = 'none';
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.display = 'none';
+    how_to_content.style.animationPlayState = 'paused';
+  
+  },500);
+  
+  };
+
+
+  
+</script>
+{% endif %}
+
+
+</div>
+
+
+
+
+
+
+{% if request.session.allow %}
+<script type="text/javascript">
+
+	window.navigator.geolocation.getCurrentPosition(showPosition)
+
+   function showPosition(position) {
+    
+     latitude = position.coords.latitude
+     longitude = position.coords.longitude     
+
+  var api_url = 'https://api.bigdatacloud.net/data/reverse-geocode-client'
+  var request_url = api_url
+    + '?'
+    + 'latitude=' + latitude
+    + '&longitude=' + longitude
+    + '&localityLanguage=en';
+  var request = new XMLHttpRequest();
+  request.open('GET', request_url, true);
+  request.onload = function() {
+    if (request.status == 200){ 
+      // Success!
+      var data = JSON.parse(this.responseText);
+      
+      var locality = data.locality||'undefined'
+      var city = data.city||'undefined'
+      var state = data.principalSubdivision||'undefined'
+      var ccode = data.countryCode||'undefined'
+      var parameterz = '?country_code='+ccode+'&statin='+state+'&cty='+city+'&locaty='+locality
+      var send_et = new XMLHttpRequest();
+      send_et.open('GET', '{% url 'users:get_location' %}'+parameterz, true);
+      send_et.send()
+
+      
+      console.log(data)
+  
+
+    } else if (request.status <= 500){ 
+      // We reached our target server, but it returned an error
+                           
+      console.log("unable to geocode! Response code: " + request.status);
+      var data = JSON.parse(request.responseText);
+      console.log(data.status.message);
+    } else {
+      console.log("server error");
+    }
+  };
+
+  request.onerror = function() {
+    // There was a connection error of some sort
+    console.log("unable to connect to server");        
+  };
+
+  request.send(); 
+  
+};
+
+</script>
+{% endif %}
+
+
+
+
+
+
+
+{% if line %}
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+  var edit = document.getElementById('numb');
+  var color = document.getElementById('color');
+  var blinkbutton = document.getElementById('blinkbutton');
+  if (edit.innerText <= 5) {
+    color.style.color='orange';
+    blinkbutton.style.boxShadow='1px 2px 2px 1px orange';
+  };
+
+    var exit = -1;
+    var timer = 0;
+    var count = 0;
+    var loadDoc = function () {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     
+      if (this.responseText=='pnf'){
+        color.innerText ='You have been removed from the line';
+        
+            stopInterval();
+      };
+      
+      var text = parseInt(this.responseText);
+      
+      
+      
+      
+      if (text==0) {
+      
+        exit = exit + 1;
+        if (exit==0) {
+          return;
+        }
+        else if (exit > 0){
+
+            color.innerText ='You have been removed from the line';
+        
+            stopInterval();
+        
+          };
+        }
+        else {  
+        // necessary for iphone while blinking   
+        edit.innerText = text;
+      };
+        
+        
+      if (count==text) {
+        return;
+      };
+      count = text;
+      
+      if (text>30) {
+        if (timer!=60000) {
+            stopInterval();
+           timer = 60000;
+           interval = setInterval(loadDoc,timer);
+        };
+        
+      }
+      else if(text > 15){
+        if (timer!=30000) {
+            stopInterval();
+           timer = 30000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else if(text > 10){
+        if (timer!=15000) {
+            stopInterval();
+           timer = 15000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else if (text>5) {
+        if (timer!=5000) {
+            stopInterval();
+           timer = 5000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else {
+        if (timer!=3000) {
+            stopInterval();
+           timer = 3000;
+           interval = setInterval(loadDoc,timer);
+        };
+      };
+      
+     if (text <= 5) {
+    color.style.color='orange';
+    
+  };
+    
+    };
+    if (this.readyState ==4 && this.status < 200) {
+
+      document.getElementById('network_error').style.display = 'block';
+      edit.style.animation ='none';
+
+    };
+  };
+  xhttp.onerror = function(){
+    document.getElementById('network_error').style.display = 'block';
+    edit.style.animation ='none';
+  };
+  xhttp.onload = function(){
+    document.getElementById('network_error').style.display = 'none';
+    edit.style.animation ='blinker 1.5s infinite';
+  };
+  xhttp.open("GET", "{% url "users:user_ajax" line.uniquefield request.user.user_signup.unique %}", true);
+  xhttp.send();
+
+  };
+var interval = setInterval(loadDoc,3000);
+
+function stopInterval(){
+  clearInterval(interval);
+};
+
+</script>
+
+
+
+
+
+
+
+{% endif %}
+
+
+
+
+
+
+
+
+{% endblock %}
+

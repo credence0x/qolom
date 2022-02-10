@@ -1,0 +1,89 @@
+<script>
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("close")[0]; 
+var dis_content = document.getElementById('content_id');
+var all_modal_buttons = document.getElementsByClassName('modalbutton');
+var the_fost=0
+
+
+	for ( ite = 0; ite < all_modal_buttons.length; ite++) {
+			all_modal_buttons[ite].onclick = function(event){
+            modal.style.animationPlayState = 'running';
+	dis_content.style.animationPlayState = 'running';
+	span.style.animationPlayState = 'running';
+	       		
+		};
+	}
+
+function heal_the_world() {
+  modal.style.animationPlayState = 'running';
+  modal.style.display = "block";
+  dis_content.style.animationPlayState = 'running';
+  dis_content.style.display = "block";
+  span.style.animationPlayState = 'running';
+  
+  
+  
+  
+  
+};
+
+dis_content.addEventListener("animationiteration", function(){
+	if (the_fost==0) {
+  	modal.style.animationPlayState = 'paused';
+  	dis_content.style.animationPlayState = 'paused';
+  	span.style.animationPlayState = 'paused';
+  	
+  	
+  	the_fost = 1
+  }
+  else{
+  		modal.style.display = 'none';
+		
+		modal.style.animationPlayState = 'paused';
+		dis_content.style.display = 'none';
+		dis_content.style.animationPlayState = 'paused';
+		span.style.animationPlayState = 'paused';
+		
+		
+		the_fost = 0
+  }
+  });
+
+
+btn.onclick = heal_the_world
+span.onclick = function() {
+
+	modal.style.animationPlayState = 'running';
+	dis_content.style.animationPlayState = 'running';
+	span.style.animationPlayState = 'running';
+	
+};
+
+
+	
+
+
+
+myModal.onclick = function(event) {
+  if (event.target == modal) {
+  	
+    modal.style.animationPlayState = 'running';
+	dis_content.style.animationPlayState = 'running';
+	span.style.animationPlayState = 'running';
+	
+	
+  };
+};
+
+function activate_search() {
+   heal_the_world(); 
+   
+   	document.getElementById('search_for').select();
+  
+   
+  }
+  dis_content.style.backgroundColor='rgb(245,245,245)'
+  dis_content.style.borderRadius='5px'
+</script>

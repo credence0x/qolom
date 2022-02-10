@@ -1,0 +1,185 @@
+
+
+{% extends 'users/base.html' %}
+{% load static %}
+{% load hosts %}
+{% block head %}
+{% if business.dp %}
+<link rel="preload" as="image" href="{% host_url 'image' business.filename host 'media' %}">
+{% endif %}
+{% endblock%}
+{% block content %}
+
+  <div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;color: black;border-color: white;box-shadow: 0px 2px 2px 3px rgba(150,150,150,0.7)">
+<br>
+    <div class="content">
+    <span id="fav_text" style="float:right;color: orange;font-weight: normal;">Favourite
+
+{% if business in person.favourites.all %}
+<br>
+<span id="rfav" style="padding-left: 35%"><input type="image" src="{% static "img/fav.png" %}" style="height: 20px"></span><br>
+{% else %}
+<br>
+<span id="fav" style="padding-left: 35%"><input type="image" src="{% static "img/n_fav.png" %}" style="height: 20px"></span><br>
+{% endif %}
+</span>
+<div style="color: orange;font-weight: bold;width: 70%">
+  {% if business.dp %}
+  <img src="{% host_url 'image' business.filename host 'media' %}" style="height: 2.5em;width: 2.5em;border-radius: 10px;float: left;box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);">
+<div style="margin-left: 55px">
+  {{business|title}}
+  </div>
+  {% else %}
+  <div style="width:2.5em;height: 2.5em; box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);border-radius: 10px;text-align: center; background-color: orange;border-color:black;color: white;font-weight: bold;float: left;padding-top: 0.4em">
+ <span style="font-size: 1.5em;">
+  
+          {{first_letter}}
+      
+  
+ </span></div>
+  <div style="margin-left: 55px">
+  {{business|title}}
+  </div>
+  {% endif %}
+
+
+</div>
+<br><br><i><div style="color: grey">Key is <span style="letter-spacing: 1px">{{ business.key }}</span></div></i><br>
+<span><span style="color: orange;font-weight: bold;">Address</span><br>{{ business.address }}</span>
+</div>
+<br>
+{% if open_or_closed == 'open' %}
+ 
+{% else %}
+<div id="o_or_c" style="color: red;font-weight: bold;text-align: center;"  >CLOSED
+</div>
+<p style="text-align: center;font-weight: bold;color: blue"> {% if opentime %}
+               {% if weekday_open %}
+                 Opens {{opentime}} <br>
+                
+               {% else %}
+              Opens {{opentime}} <br>
+                
+               {% endif %}
+    
+
+    {% endif %}</p>
+
+
+{% endif %}
+<br>
+
+{% if legal %}
+{% if open_or_closed == 'open' %}
+  
+
+
+<p style="color: red;font-weight: bold;text-align: center;font-size: 80%"> Closes by {{closetime}} {% if tomorrow %}(tomorrow){% endif %}<br> </p>
+
+{% if business.order_active and business.iso_code == 'NG' and user_signup.iso_code == 'NG' %}
+<!-- <br>
+
+    <a href="{% url 'users:show_items' business.key %}">
+    <div id="linebutton" style="background-color:white;border-color: white;color: orange;text-align: center; font-weight: bold;box-shadow: 0px 1px 1px 2px lightgrey;border-radius: 30px" class="linestyle">Order&nbsp;&nbsp;and&nbsp;&nbsp; pick up
+    </div></a>
+    
+     <br>
+ -->
+
+{% endif %}
+
+
+<div style="color: orange;box-shadow: 0px 1px 1px 2px lightgrey;text-align: center;padding-top: 30px;padding-bottom: 40px;padding-left: 10px;padding-right: 10px;font-weight: bold;border-color: white;border-radius: 30px" class="linestyle">
+Queue<br><br>
+{% if not line %}
+<div style="color: grey;font-weight: normal;">
+        This business has no active line
+      </div>
+{% else %}
+{% for eachline in line %}
+<div>
+  <a href="{% url 'users:line' eachline.uniquefield %}" class="line_detail" >
+      <button class="searchstyle" style="color: blue;width: 100%;margin-left: 0px">
+        {% filter title|truncatechars:150 %}{{eachline.name}}{% endfilter %}
+      </button>
+      
+        </a>
+     </div>
+{% endfor %}
+</div>
+
+{% endif %}
+{% endif %}
+<br><br>
+</div>
+
+
+
+<script type="text/javascript">
+  var fav = document.getElementById('fav');
+  var r_fav = document.getElementById('rfav');
+  var addToFav = function(){
+  	var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var text = this.responseText
+      if (text=='a') {
+        fav.innerHTML='<input type="image" src="{% static "img/fav.png" %}" style="height: 20px">'
+        fav.id ='rfav'
+      }
+    };
+  };
+  xhttp.open("GET","{{ business.get_absolute_url }}?p=fav", true);
+  xhttp.send();
+}
+ var remFromFav = function(){
+ 	var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var text = this.responseText
+      if (text=='r') {
+        fav.innerHTML='<input type="image" src="{% static "img/n_fav.png" %}" style="height: 20px">'
+        fav.id ='fav'
+      }
+    };
+  };
+  xhttp.open("GET","{{ business.get_absolute_url }}?p=rfav", true);
+  xhttp.send();
+ }
+if (fav) {
+	fav.onclick=function(){
+		if (fav.id=='fav') {
+			addToFav();
+		}
+		else{
+			remFromFav();
+		}
+	}
+}
+else if (rfav) {
+	var fav = document.getElementById('rfav');
+	fav.onclick=function(){
+		if (fav.id=='fav') {
+			addToFav();
+		}
+		else{
+			remFromFav();
+			
+		}
+	}
+}
+  	
+  
+  	 
+  
+  
+  
+  
+</script>
+{% else %}
+
+<button class="linestyle" style="box-shadow: none;border-color: red; text-align: center;color: grey;padding:10px">Sorry, you need to be {{business.min_age}} or older to use the services provided by this business.</button>
+<br>
+<br></div>
+{% endif %}
+{% endblock %}

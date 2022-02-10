@@ -1,0 +1,108 @@
+
+<script type="text/javascript">
+{% if order_ready_exits %}
+{% if not more_than_one %}
+{% if order_sent %}
+
+
+	all_intvs = []
+	{% for eachone in order_sent %}
+	setTimeout(to_interval,0,'{{eachone.id}}',
+	 	'{% url 'users:order' eachone.id %}','{{eachone.business.name}}',{{forloop.counter}})
+	 var interval_{{forloop.counter}} = setInterval(to_interval,60000,'{{eachone.id}}',
+	 	'{% url 'users:order' eachone.id %}','{{eachone.business.name}}',{{forloop.counter}})
+     all_intvs[{{forloop.counter}}-1]=interval_{{forloop.counter}}
+
+	{% endfor %}
+
+	function to_interval(reqst,linkto,businez,counting){
+		var xhttp_order_ready= new XMLHttpRequest();
+		xhttp_order_ready.open('GET', '{% url 'users:check_ready' %}?i='+reqst, true);
+  		xhttp_order_ready.onload = function() {
+    	if (xhttp_order_ready.status == 200){
+             var tester = this.responseText
+             if (tester=='yes') {
+             	console.log('amen')
+             	if (document.getElementById('order_sent_value_holder').value==0) {
+                    document.getElementById('order_href').href = linkto
+                    document.getElementById('order_sent_value_holder').value=1
+                    document.getElementById('order_sent').innerHTML = 'Your order from '+businez+' is ready'
+                    document.getElementById('order_sent').style.display = 'block'
+                    clearInterval(all_intvs[counting - 1]);
+
+
+             	}
+             	else{
+             		document.getElementById('order_href').href = '{% url 'users:orders_list' %}'
+                    document.getElementById('order_sent_value_holder').value=1
+                    document.getElementById('order_sent').innerHTML = "Your orders are ready"
+                    document.getElementById('order_sent').style.display = 'block'
+                    for (var i = 0; i >= {{order_sent|length}}-1; i++) {
+                    	clearInterval(all_intvs[i])
+                 }
+
+             	}
+
+             }
+    	}
+    }
+    xhttp_order_ready.send();
+}
+
+{% endif %}
+{% endif %}
+
+
+{% else %}
+
+
+{% if order_sent %}
+
+
+	all_intvs = []
+	{% for eachone in order_sent %}
+	setTimeout(to_interval,0,'{{eachone.id}}',
+	 	'{% url 'users:order' eachone.id %}','{{eachone.business.name}}',{{forloop.counter}})
+	 var interval_{{forloop.counter}} = setInterval(to_interval,60000,'{{eachone.id}}',
+	 	'{% url 'users:order' eachone.id %}','{{eachone.business.name}}',{{forloop.counter}})
+     all_intvs[{{forloop.counter}}-1]=interval_{{forloop.counter}}
+
+	{% endfor %}
+
+	function to_interval(reqst,linkto,businez,counting){
+		var xhttp_order_ready= new XMLHttpRequest();
+		xhttp_order_ready.open('GET', '{% url 'users:check_ready' %}?i='+reqst, true);
+  		xhttp_order_ready.onload = function() {
+    	if (xhttp_order_ready.status == 200){
+             var tester = this.responseText
+             if (tester=='yes') {
+             	console.log('amen')
+             	if (document.getElementById('order_sent_value_holder').value==0) {
+                    document.getElementById('order_href').href = linkto
+                    document.getElementById('order_sent_value_holder').value=1
+                    document.getElementById('order_sent').innerHTML = 'Your order from '+businez+' is ready'
+                    document.getElementById('order_sent').style.display = 'block'
+                    clearInterval(all_intvs[counting - 1]);
+
+
+             	}
+             	else{
+             		document.getElementById('order_href').href = '{% url 'users:orders_list' %}'
+                    document.getElementById('order_sent_value_holder').value=1
+                    document.getElementById('order_sent').innerHTML = "Your orders are ready"
+                    document.getElementById('order_sent').style.display = 'block'
+                    for (var i = 0; i >= {{order_sent|length}}-1; i++) {
+                    	clearInterval(all_intvs[i])
+                 }
+
+             	}
+
+             }
+    	}
+    }
+    xhttp_order_ready.send();
+}
+
+{% endif %}
+{% endif %}
+</script>

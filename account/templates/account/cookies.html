@@ -1,0 +1,82 @@
+<style type="text/css">
+
+@keyframes odede {
+  from {position: fixed;bottom: -800px;}
+  to {position: fixed;bottom: 0px;}
+}
+  #first_time {
+    animation: odede 2s 10;
+    animation-direction: alternate;
+    animation-play-state: running;
+  }
+  
+  @media only screen and (min-width: 870px) {
+  /* For desktop and laptops: */
+  #t_text{
+    width: 70%;
+    margin-left: 15%;
+    margin-right: 15%;
+  }
+};
+  
+</style>
+
+
+
+
+
+<div id="first_time" style="background-color: rgb(0,0,60);color: white;padding: 15px;position: fixed;bottom:0px;display:none;">
+<div id="t_text"> This website uses cookies to personalise content, for traffic analysis and for security purposes. By clicking "Okay" or by continued usage of this website, you consent to storing of cookies on your device. For more information, read our <a href="{% url 'privacy-policy' %}" >privacy policy</a>
+<button style="border-style: none; background-color: green;color: white;font-weight: bold;border-radius: 10px;margin-top: 10px; padding: 12px;margin-left: 42%" id="consent">Okay</button> 
+</div>
+</div>
+
+<script type="text/javascript">
+  function GetCookie(name) {
+  var arg=name+"=";
+  var alen=arg.length;
+  var clen=document.cookie.length;
+  var i=0;
+  while (i<clen) {
+  var j=i+alen;
+  if (document.cookie.substring(i,j)==arg)
+    return "here";
+  i=document.cookie.indexOf(" ",i)+1;
+  if (i==0) break;
+  }
+  return null;
+}
+function testFirstCookie(){
+
+  var visit=GetCookie("firsttimer");
+  if (visit==null){
+  
+     var expire=new Date();
+     expire=new Date(expire.getTime()+7776000000);
+     document.cookie="firsttimer=here; expires="+expire + ";path=/";
+     var consent = document.getElementById('consent')
+     
+  
+    document.getElementById('first_time').style.display = 'block';
+    setTimeout(function(){
+    document.getElementById('first_time').style.animationPlayState = 'paused';
+   },2000)
+
+  
+
+  consent.onclick = function(){
+    document.getElementById('first_time').style.animationPlayState = 'running'
+    setTimeout(function(){
+        document.getElementById('first_time').style.animationPlayState = 'paused';
+        document.getElementById('first_time').style.display = 'none';
+      },2000)
+      
+    
+  };
+   }; 
+};
+
+  testFirstCookie();
+  
+
+</script>

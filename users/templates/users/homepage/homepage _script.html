@@ -1,0 +1,133 @@
+
+
+
+
+
+{% if line %}
+<script type="text/javascript">
+
+  var edit = document.getElementById('numb');
+  var color = document.getElementById('color');
+  var blinkbutton = document.getElementById('blinkbutton');
+  if (edit.innerText <= 5) {
+    color.style.color='orange';
+    blinkbutton.style.boxShadow='orange';
+  };
+
+    var exit = -1;
+    var timer = 0;
+    var count = 0;
+    var loadDoc = function () {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     
+      if (this.responseText=='pnf'){
+        color.innerText ='You have been removed from the line';
+        
+            stopInterval();
+      };
+      
+      var text = parseInt(this.responseText);
+      
+      
+      
+      
+      if (text==0) {
+      
+        exit = exit + 1;
+        if (exit==0) {
+          return;
+        }
+        else if (exit > 0){
+
+            color.innerText ='You have been removed from the line';
+        
+            stopInterval();
+        
+          };
+        }
+        else {  
+        // necessary for iphone while blinking   
+        edit.innerText = text;
+      };
+        
+        
+      if (count==text) {
+        return;
+      };
+      count = text;
+      
+      if (text>30) {
+        if (timer!=60000) {
+            stopInterval();
+           timer = 60000;
+           interval = setInterval(loadDoc,timer);
+        };
+        
+      }
+      else if(text > 15){
+        if (timer!=30000) {
+            stopInterval();
+           timer = 30000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else if(text > 10){
+        if (timer!=15000) {
+            stopInterval();
+           timer = 15000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else if (text>5) {
+        if (timer!=5000) {
+            stopInterval();
+           timer = 5000;
+           interval = setInterval(loadDoc,timer);
+        };
+      }
+      else {
+        if (timer!=3000) {
+            stopInterval();
+           timer = 3000;
+           interval = setInterval(loadDoc,timer);
+        };
+      };
+      
+     if (text <= 5) {
+    color.style.color='orange';
+    blinkbutton.style.borderColor='orange';
+  };
+    
+    };
+    if (this.readyState ==4 && this.status < 200) {
+
+      document.getElementById('network_error').style.display = 'block';
+      edit.style.animation ='none';
+
+    };
+  };
+  xhttp.onerror = function(){
+    document.getElementById('network_error').style.display = 'block';
+    edit.style.animation ='none';
+  };
+  xhttp.onload = function(){
+    document.getElementById('network_error').style.display = 'none';
+    edit.style.animation ='blinker 1.5s infinite';
+  };
+  xhttp.open("GET", "{% url "users:user_ajax" line.uniquefield request.user.user_signup.unique %}", true);
+  xhttp.send();
+
+  };
+var interval = setInterval(loadDoc,3000);
+
+function stopInterval(){
+  clearInterval(interval);
+};
+
+</script>
+{% endif %}
+
+
+

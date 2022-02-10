@@ -1,0 +1,123 @@
+
+{% extends 'business/base.html' %}
+{% block content %}
+
+<style type="text/css">
+  span{
+    display: inline-block;
+  }
+  .pp{
+    width: 100%;
+    border-color: rgb(148,193,239);
+    border-style: solid;
+    height: 40px
+  }
+  .errorlist{
+    color: red
+  }
+</style>
+
+ 
+
+
+
+
+  <h2 style="color: red;text-align: center;"> Products</h2>
+{% if items %}
+<div>
+      <button class="linestyle" style="font-weight: bold;color: orange;"> 
+              <span style="float: left;width: 33.33%">Name</span>
+              <span style="float: left;width: 33.33%">Units Available</span>
+              <span style="float: right;width: 33.33%">Price</span>
+    </button>
+  
+</div>
+
+
+{% for each in items %}
+<div>
+  <a href="{% url 'business:edit_item' each.id %}">
+      <button class="linestyle" style="color: blue;"> 
+              <span style="float: left;width: 33.33%">{{each.name}}</span>
+              <span style="float: left;width: 33.33%">{{each.units_available}}</span>
+              
+              <span style="float: right;width: 33.33%">N <span class="add_commas">{{each.price}}</span>.00</span>
+    </button>
+  </a>
+</div>
+
+{% endfor %}
+<br><br><br>
+{% endif %}
+
+<div class="linestyle" style="color: orange;padding-left: 3%;padding-right: 3%;">
+  <br>
+ <span style="width: 50%;font-weight: bold;" >Name</span>
+              <span style="width: 20%;font-weight: bold;">Unit(s)</span>
+              <span style="width: 25%;font-weight: bold;">Price (₦)</span>
+
+
+
+              
+    <br><br>
+    {% for all_ in form %}
+    {{all_.errors }}
+  {% endfor %}
+  <form action="{% url 'business:items' %}" method="POST" >
+     
+{% csrf_token %}
+
+              <span style="width: 44%">{{form.name}}</span><span style="width: 3%"></span>
+              <span style="width: 20%">{{form.units_available}}</span><span style="width: 3%"></span>
+              <span style="width: 25%">{{form.price}}</span>
+    <br>
+    <button type="submit" class="linestyle edit_submit" style="margin-top: 30px;background-color: green;box-shadow: none;border-color: green" >
+              ADD
+          </button>
+    </div>
+        
+  
+
+
+
+</form>
+
+<script type="text/javascript">
+  add_commas = document.getElementsByClassName('add_commas');
+  for (var i = 0; i < add_commas.length; i++) {
+    add_commas[i].innerHTML =  thousands_separators(add_commas[i].innerHTML)  
+  }
+
+
+  function thousands_separators(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num_parts.join(".");
+  }
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

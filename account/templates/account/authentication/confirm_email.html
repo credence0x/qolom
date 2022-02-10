@@ -1,0 +1,77 @@
+{% extends 'account/base.html' %}
+
+
+{% block content %}
+{% load static %}
+<br><br>
+<article> 
+		
+
+<br>
+<div class="menubuttons content">
+  <h1 class="sec_head" ><img src="{% static 'img/logo.png' %}" ><br>Qolom</h1>
+<p style="text-align:center;font-weight: bold;color: black">
+An activation link has been sent to your e-mail, <b style="color: orange">{{email}}</b><br>
+Click the link to continue
+<a href="{% url 'account:change_email' %}"><p style="margin-top:30px;text-align: center;font-weight: normal"><u>incorrect email?</u></p></a>
+<div style="width:80%;margin-left: 10%;margin-right: 10%;color: black">
+  <span style="color: orange">Couldn't find the email?</span><br><br> Please verify that e-mail is not in your spam folder.If the e-mail can still not be found after about 5 minutes, click resend.
+</div>
+<br><br>
+<button class="linestyle" style="background-color: rgb(148,193,239);color: white;font-weight:bold;margin-left: 30%;margin-right:30%;width:40%;font-size: 100%; " id="resend" >Resend</button>
+</p>
+<br>
+<a href="{% url 'login' %}?u=u" ><div style="text-align: center;font-weight: normal;">Log-in</div></a>
+<br>
+</div>
+<br><br><br>
+</article>
+
+
+
+
+<script type="text/javascript">
+	var resend = document.getElementById('resend');
+	resend.onclick = function () {
+	var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      console.log(this.responseText)
+    if (this.readyState == 4 && this.status == 200) {
+      if (this.responseText=='-') {
+      	resend.innerHTML='Sent'
+      	resend.disabled=true
+        resend.style.backgroundColor = 'orange'
+      }
+      else {
+        resend.innerHTML='Something went wrong. Please try again'
+        resend.style.backgroundColor = 'red'
+      }
+      
+    };
+  
+  
+  }		
+  resend.innerText = '.';
+  resend.style.fontSize = '100%';
+  setInterval(function(){
+    if (resend.innerHTML=='.') {
+      resend.innerHTML = '..'
+    }
+    else if (resend.innerHTML=='..') {
+      resend.innerHTML = '...'
+    }
+    else if (resend.innerHTML =='...') {
+      resend.innerHTML = '....'
+    }
+    else if (resend.innerHTML=='....') {
+      resend.innerHTML = '.'
+    }
+  },1000)
+  xhttp.open("GET","{% url 'account:confirm_html' %}?p=x", true);
+  xhttp.send();
+
+}
+</script>
+
+</div>
+{% endblock %}

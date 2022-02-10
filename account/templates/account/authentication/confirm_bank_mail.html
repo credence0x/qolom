@@ -1,0 +1,39 @@
+{% autoescape off %}
+{% load static %}
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+	<meta charset="utf-8">
+	<title> Qolom </title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no ">
+</head>
+
+<body style="background-color: rgb(250,250,250);margin-top: 0px;">
+	<br><br><br>
+	<h3 style="color: rgb(148,193,239);text-align: center;" ><img src="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{domain}}{% static 'img/logo.png' %}" style="width: 30px;height: 30px"><br>Qolom</h3>
+<div style="padding-right: 10px;padding-left: 10px;" >
+
+<p style="font-weight: bold;"><span style="color: orange">Hi {{ user.first_name }},</span><br><br>
+We received a request to update your bank account information.<br>
+<span style="font-weight: normal">We just need to confirm that the request came from you before we enable fund transfer to the new bank account provided. Click the link provided below to proceed.</span><br><br><span style="color: grey;font-weight: normal;">Link expires after 30 minutes</span></p>
+
+<div>
+<p>
+	<br>
+
+<a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{ domain }}{% url 'business:bank_confirmation' uidb64=uid token=token %}">
+	<button style="color: white;background-color: rgb(148,193,239);border-color: rgb(250,250,250);margin-left: 
+	30%;height: 60px;width: 40%;border-radius: 4px;font-size: 17px;"><b>ACTIVATE</b></button>
+</a>
+</p>
+<br>
+<p><span style="color:orange">Didn't request to change account information?</span><br><br>
+If you did not request for your account information to be changed, it means that a third party might have access to your account. <br>To disable access, simply change your password from the app or <a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{ domain }}{% url 'account:forgot_password' %}">reset your password.</a>
+<br><br>
+Have further questions? Don't hesitate to contact us at support@qolom.com <br><br> Thank you.</p>
+</div>
+</div>
+<br><br><br>
+</body>
+</html>
+{% endautoescape %}

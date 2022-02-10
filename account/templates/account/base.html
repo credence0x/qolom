@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang = "en">
+
+<head>
+	<meta name="description" content="Create an account or log in with Qolom - Line up, just without the hassle. Queue remotely with us and only be there when you're needed. You can also create and manage remote queues for your business or for special occasions, absolutely free. ">
+	<meta charset="utf-8">
+	<title> Qolom </title>
+	<link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+	<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/logo.png' %}" >
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+	<link rel="manifest" href="{% static 'img/site.webmanifest' %}">
+	<link rel="mask-icon" href="{% static 'img/safari-pinned-tab.svg' %}" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no ">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/surrogate.css' %}">
+	{% block head %}{% endblock %}
+	
+</head>
+<body>
+	<style type="text/css">
+	
+	body{
+		background-color: rgb(245,245,245);
+		width: 100%;
+		
+	}
+	#myBtn{
+			margin-top: 12px;
+			
+		}
+	.errorlist{
+		color: red;
+	}
+	.button{
+		background-color: rgb(148,193,239);
+	}
+	
+</style>
+	{% block header %}
+	{% endblock %}
+	
+
+{% block content %}{% endblock %}
+{% if not domain %}
+{% include 'account/footer.html' %}
+{% endif %}
+{% include 'account/cookies.html' %}
+</body>
+</html>
+		

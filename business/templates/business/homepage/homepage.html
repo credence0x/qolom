@@ -1,0 +1,54 @@
+
+{% extends 'business/base.html' %}
+{% block content %}
+
+<style type="text/css">
+.errorlist{
+  color: red;
+}
+</style>
+
+<div class="menubuttons" style="border-radius: 15px;text-align: unset;font-weight: normal;color: black;border-color: rgb(148,193,239);">
+<p>
+  <h2 class="searchstyle edit_head" style="border-color: white">Create Line</h2>
+<form action="{% url "business:business_line" %}" method="POST">
+	<div class="fieldWrapper">
+            {{ form.name.errors }}
+               <label class=" pretty_head form_label" for="id_openday">Name</label>
+              {{ form.name}}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.information.errors }}
+               <label class="pretty_head form_label" for="id_information">Information</label>
+              {{ form.information}}
+        </div>
+
+        <div class="fieldWrapper">
+            {{ form.instruction.errors }}
+               <label class="pretty_head form_label" for="id_instruction">Instruction</label>
+              {{ form.instruction}}
+        </div>
+        
+        
+	{% csrf_token %}
+
+<p>
+          
+        <button type="submit" class="linestyle edit_submit" style="margin-top: 10px" >
+              Submit
+          </button>
+      </p>
+
+</form>
+</p>
+</div>
+<br><br>
+
+
+
+
+
+
+
+{% endblock %}
+

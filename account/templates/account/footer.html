@@ -1,0 +1,72 @@
+{% load static %}
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-2 col-4">
+				<img src="{% static 'img/logo.png' %}" class="img-fluid">
+			</div>
+			<div class="col-sm-2 col-4">
+				<h5>Support</h5>
+				<ul class="list-unstyled">
+					<li><a href="mailto:support@qolom.com">Contact</a></li>
+
+				</ul>
+			</div>
+
+			<div class="col-sm-2 col-4">
+				<h5>Social</h5>
+				<ul class="list-unstyled">
+					<li><a href="https://instagram.com/ojetokunlanre">Facebook</a></li>
+					<li><a href="https://twitter.com/ojetokunlanre">Twitter</a></li>
+				</ul>
+			</div>
+			<div class="col-sm-2 offset-sm-0 col-4 offset-4">
+				<h5>Map</h5>
+				<ul class="list-unstyled">
+					<li><a href="/">Home</a></li>
+					<li><a href="{% url 'login' %}">Sign In</a></li>
+					<li><a href="{% url 'account:user_signup' %}">Sign Up</a></li>
+					<li><a href="{% url 'account:business_signup' %}">Sign Up (Business)</a></li>
+					{% if request.user.is_authenticated %}
+					<li><a href="{% url 'logout' %}"> Sign Out</a></li>
+					{% endif %}
+					<li><a href="{% url 'account:forgot_password' %}"> Forgot password</a></li>
+
+
+
+
+
+				</ul>
+			</div>
+			<div class="col-sm-4 col-4">
+				<address>
+					<strong>Qolom Ltd</strong>
+					<br>
+					<div style="color:rgb(243, 243, 243);font-weight:bold;">
+						K55/56, Ikota Complex,<br>
+						Victoria Garden City,<br>
+						Lagos.<br>
+
+						Tel: + 234 811 719 4807<br>
+						E-mail: support@qolom.com
+					</div>
+
+				</address>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="mt-5">
+				<a href="{% url 'terms-of-use' %}">Terms of Use </a> &emsp;<a
+					href="{% url 'privacy-policy' %}">Privacy Policy</a> <br>
+
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="mt-1 text-center" style="color:rgb(243,243,243)">
+				Copyright &copy; 2021 Qolom Ltd<br>
+				All rights reserved
+			</div>
+		</div>
+	</div>
+</footer>
+

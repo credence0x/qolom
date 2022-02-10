@@ -1,0 +1,259 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang = "en">
+<head>
+	<meta charset="utf-8">
+	<title> Qolom </title>
+	<link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+	<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/logo.png' %}" >
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+	<link rel="manifest" href="{% static 'img/site.webmanifest' %}">
+	<link rel="mask-icon" href="{% static 'img/safari-pinned-tab.svg' %}" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no ">
+	<link rel="stylesheet" type="text/css" href="{% static "css/surrogate.css" %}">
+	{% block head %}{% endblock %}
+	
+</head>
+<body style="background-color: rgb(235,235,235);" >
+	<div id="no_js">
+	<style type="text/css">
+		
+		#myBtn{
+			margin-top: 12px;
+		}
+		
+		.company_name{
+			padding-top: 5px;
+			color: rgb(148,193,239);
+		}
+		
+		
+		.button{
+			background-color: orange;
+
+		}
+		.edit_head{
+			background-color: inherit;
+			border-color: rgb(250,250,250);
+		}
+
+	
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+	</style>
+	<header class="col-12" style="background-color: white;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 0px 2px 0 rgba(0, 0, 0, 0.3);height: 100%;padding-bottom: 2px;">
+
+		<span id="myBtn" style="background-color: white;color:orange" ><i class="fas fa-bars"></i></span>
+        
+		<div class="company_name">
+
+			<img src="{% static 'img/logo.png' %}" style="height: 25px;margin-bottom: 7px;margin-top: 8px">
+			
+		</div>
+		
+	</header>
+<!-- The Modal -->
+<div id="myModal" class="modal" >
+<span class="close">&times;</span>
+  <!-- Modal content -->
+  <div class="modal-content" id="content_id">
+    
+    <p>
+    	    <span style="color: orange;">{{request.user.first_name}}</span><hr style="background-color: grey;height: 0px;display: block;">
+    
+
+			<a href="{% url "business:business_homepage" %}" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Home</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a>
+
+			<a href="{% url "business:business_hours" %}" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Business Hours</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a>
+
+
+			<a href="{% url 'business:business_line' %}" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Create Line</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a>
+
+{% if business_real.iso_code == 'NG' %}
+			<!-- <a href="{% url 'business:orders' %}" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Orders</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a>
+
+            
+
+
+            <a href="{% url 'business:payment' %}" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Order Management</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a> -->
+{% endif %}
+
+
+			<a href="{% url "account:edit_business_registration" %}" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Edit Profile</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a>
+
+
+			<a href="{% url "business:change_password" %}" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Change Password</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a>
+
+			<a href="mailto:support@qolom.com" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Contact us</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a>
+
+			<a href="{% url "logout"%}" class="hyperlink">
+			 <button class="modalbutton"><span style="float: left;">Log Out</span>
+			 <span style="float: right;"> &raquo;</span>
+			</button>
+			</a>
+
+
+    	  
+			
+			
+			
+		</p>
+  </div>
+
+</div>
+<div style="color: red;font-size: 110%;box-shadow: none;border-style:none;height: 100%;display:  none;background-color: transparent;" id="network_error" class="linestyle">
+      <div class="loader" style="float: left;margin-left:29%"></div>&nbsp;&nbsp; waiting for network
+   <br>
+   </div>
+
+<a href="{% url 'business:orders' %}">
+<div class="content success " style="color: white;height: 100%;padding: 10px;margin-top: 10px; text-align: center;box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.2);
+{% if not business_real.has_orders %}display: none;{% endif %}" id="there_is">
+  
+    You have new order(s)
+  
+  </div>
+</a>
+
+{% if messages %}
+
+  <div class="content {% for message in messages %}{{ message.tags }} {% endfor %} " style="color: white;height: 100%;padding: 10px;margin-top: 10px; text-align: center;box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.2);">
+  
+    {% for message in messages %}
+      {{ message }}<br>
+    {% endfor %}
+  
+  </div>
+  {% endif %}
+{% block content %}{% endblock %}
+
+{% include 'account/modal.html' %}
+{% include 'account/footer.html' %}
+</div>
+{% include 'account/nojs.html' %}
+
+<script type="text/javascript">
+	{% if not business_real.has_orders %}
+	// check if condition later
+	function check_if_order(){
+		var xhttp_order_ready= new XMLHttpRequest();
+		xhttp_order_ready.open('GET', '{% url 'business:orders' %}?api=check', true);
+  		xhttp_order_ready.onload = function() {
+    	if (xhttp_order_ready.status == 200){
+             var tester = this.responseText
+             if (tester=='y') {
+             	document.getElementById('there_is').style.display = 'block'
+             	
+             }
+    	}
+    }
+    xhttp_order_ready.send();
+}
+setInterval(check_if_order,60000)
+{% endif %}
+</script>
+</body>
+</html>
+		

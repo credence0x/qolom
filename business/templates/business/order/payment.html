@@ -1,0 +1,306 @@
+
+{% extends 'business/base.html' %}
+{% block content %}
+
+
+
+<style type="text/css">
+  span{
+    display: inline-block;
+  }
+  body{
+    font-family: calibri
+  }
+</style>
+<h3 style="color: red;text-align: center;font-family: calibri">Order Management</h3>
+
+
+<br>
+<div style="text-align: center;color: green;font-weight: bold;">
+  <span id="enabled_span" style="{% if not business_real.order_active %}color: red;{% endif %}">{% if business_real.order_active %}ORDERING ENABLED{% else %}ORDERING DISABLED{% endif %}</span><br>
+<label class="switch" style="margin-top: 7px">
+  <input type="checkbox" {% if business_real.order_active %}checked{% endif %} id="maybe_active">
+  <span class="slider round" ></span>
+</label>
+<br><br>
+</div>
+
+<div class="linestyle" style="font-weight: bold;color: orange;padding-left: 10%;padding-right: 10%; border-color: rgb(148,193,239);box-shadow: none;;border-color: rgb(210,210,210);border-radius: 0px;font-family: calibri"> <br>
+            <div style="float: left;">EARNED
+              <br><br><span style="color: blue" >N <span id="change_1">{{business_real.total_earned}}</span>.00</span> </div> 
+             <div style="float: right;" >RECEIVED
+             <br><br><span style="color: blue">N <span id="change_2">{{business_real.total_received}}</span>.00</span>
+           </div>
+            <br><br><br>
+            <div style="text-align: center;font-weight: normal;color: black;"><br>Note that payment will only be "earned" after an order's PIN has been confirmed and only earned payments will be sent to your business.</div>
+<br>
+    </div>
+<br>
+
+
+<div>
+
+<a href="{% url 'business:items' %}">
+  <button class="linestyle" style="font-weight: bold;color: red;box-shadow: none;border-radius: 20px;margin-bottom: 2px"> 
+             Manage Products
+    </button>
+</a>
+
+<a href="{% url 'business:orders' %}">
+  <button class="linestyle" style="font-weight: bold;color: red;box-shadow: none;border-radius: 20px"> 
+           View Orders
+    </button>
+</a>
+<br><br>
+
+
+
+
+
+
+{% if not business.account_number %}
+<div class="menubuttons" style="text-align: unset;font-weight: normal;color: black;border-color: white;padding: 0px">
+<p style="text-align: center;color: red;font-weight: bold;">Add Bank Information </p>
+<div style="font-size: 80%;text-align: center;"> ALL PAYMENTS WILL BE MADE TO THIS ACCOUNT<br><br></div>
+  <form action="." method="POST" >
+    
+    {% for all_ in form %}
+    <label class="pretty_head form_label" for="id_openday">{{all_.label}}</label>
+    {{all_}}
+    {% for errorz in form %}
+    {{ errorz.errors }}
+    {% endfor %}
+    {% endfor %}
+
+  {% csrf_token %}
+
+<p>
+          
+        <button type="submit" class="linestyle edit_submit" style="margin-top: 10px;background-color: white;border-color: orange;color: orange;border-radius: 10px" >
+              SUBMIT
+          </button><br><br>
+      </p>
+
+</form>
+</div>
+
+
+
+
+
+{% else %}
+
+  {% if not business_real.bank_email_confirmation %}
+  <div class="linestyle" style="color: red;text-align: center; padding-left: 2%;padding-right: 2%;font-weight: bold;font-family: calibri;box-shadow: none;"> 
+              PAYMENT TO THIS ACCOUNT IS TEMPORARILY DISABLED <br><br>AWAITING E-MAIL CONFIRMATION 
+                                                      <br><br>
+              <div style="color: black;font-weight: normal;" id="m_ready">couldn't find email? click <a href="#" style="color: blue" onclick="make_cus_aware()">here to resend</a></div>
+    </div>
+
+  {% endif %}
+  <div class="linestyle" style="color: orange;padding-left: 2%;padding-right: 2%;font-weight: bold;box-shadow: none;font-family: calibri"> 
+              <span style="width: 30%">Account Number</span>
+              <span style="width: 40%">Account Name </span>
+              <span style="width: 25%">Bank</span>
+              <br><br>
+              <span style="width: 30%;color: blue;">{{business.account_number}}</span>
+            
+              <span style="width: 40%;color: blue;">{{business.bank_account_name}}</span>
+              <span style="width: 25%;color: blue;">{{business.bank}}</span>
+    </div>
+      
+
+<a href="{% url 'business:del_pay' %}">
+  <button class="linestyle" style="font-weight: bold;color: white;background-color: red" id="go_daddy"> 
+             DELETE
+    </button>
+</a>
+</div>
+
+
+{% endif %}
+
+
+
+<br><br>
+
+
+
+
+
+
+
+<div id="confirmModal"  class="modal"  >
+  <div class="modal-content2" id="modale_content">
+    <p style="text-align: center;">Are you sure you want to delete your account information? </p>
+    
+    <button id="allow" class="yes_no" style="color: red;">
+      <b>Yes</b>
+  </button>
+    <button id="disallow" class="yes_no">
+    <b>No</b>
+  </button>
+  </div>
+</div>
+
+
+
+
+</p>
+<br>
+
+<script type="text/javascript">
+  var maybe = document.getElementById('maybe_active');
+  function change_enabled(what_able){
+    var another_http = new XMLHttpRequest();
+  another_http.onreadystatechange = function() {
+  if (this.readyState ==4 && this.status == 200) {
+      var text = this.responseText
+      if (text=='enabled') {
+        document.getElementById('enabled_span').innerHTML = 'ORDERING ENABLED'
+        document.getElementById('enabled_span').style.color = 'green'
+        maybe.checked = true
+      }
+      else if (text=='disabled') {
+        document.getElementById('enabled_span').innerHTML = 'ORDERING DISABLED'
+        document.getElementById('enabled_span').style.color = 'red'
+        maybe.checked = false
+      }
+      
+    };
+  }
+  
+  if (what_able=='disable') {
+    another_http.open("GET", "{% url "business:del_pay" %}?disable=true", true);
+  }
+  else{
+  another_http.open("GET", "{% url "business:del_pay" %}?disable=false", true);
+}
+  another_http.send();
+  }
+  
+  maybe.onclick = function de_or_activate(event) {
+     event.preventDefault()
+    if (maybe.checked==false) {
+      change_enabled('disable');
+    }
+    else{
+      change_enabled('enable');
+    }
+  }
+
+
+
+  function thousands_separators(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num_parts.join(".");
+  }
+
+  document.getElementById('change_1').innerHTML = thousands_separators(document.getElementById('change_1').innerHTML)
+  document.getElementById('change_2').innerHTML = thousands_separators(document.getElementById('change_2').innerHTML)
+</script>
+
+<script type="text/javascript">
+
+  
+  var modale = document.getElementById("confirmModal");
+  var allow = document.getElementById('allow');
+  var disallow = document.getElementById('disallow');
+  var button_click = document.getElementById('go_daddy')
+  var doit = false
+  var how_to_content = document.getElementById('modale_content');
+
+  
+  button_click.onclick=function create(event){
+    if (!doit) {
+    event.preventDefault();
+    modale.style.animationPlayState = 'running';
+    modale.style.display = "block";
+    how_to_content.style.animationPlayState = 'running';
+    how_to_content.style.display = "block";
+    setTimeout(function(){
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.animationPlayState = 'paused';
+  
+  },500);
+  }
+  else{
+    confirmModal.style.display='none'
+  };
+};
+  allow.onclick=function(){
+    doit = true
+    button_click.click();
+    doit = false//incase the person presses back
+  };
+
+  disallow.onclick=function(){
+    modale.style.animationPlayState = 'running';
+    how_to_content.style.animationPlayState = 'running';
+  
+  setTimeout(function(){
+    modale.style.display = 'none';
+    modale.style.animationPlayState = 'paused';
+    how_to_content.style.display = 'none';
+    how_to_content.style.animationPlayState = 'paused';
+  
+  },500);
+  
+  };
+
+
+  
+</script>
+
+
+
+
+<script type="text/javascript">
+  
+  
+function make_cus_aware(){
+  var xhttp = new XMLHttpRequest();
+  var m_ready = document.getElementById('m_ready')
+  document.getElementById('m_ready').innerHTML=''
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var text = this.responseText
+      if (text=='good') {
+        stpInterval();
+        document.getElementById('m_ready').style.color='green'
+        document.getElementById('m_ready').innerHTML="<b>SENT</b>"
+      }
+      else {
+        stpInterval();
+        document.getElementById('m_ready').style.color='black'
+        document.getElementById('m_ready').innerHTML="Something went wrong <a href='#' style='color:blue' onclick='make_cus_aware()'>click here to retry <a>"
+      }
+    };
+  };
+  xhttp.open("GET","{% url 'business:resend_bank_confirm' %}", true);
+  xhttp.send();
+  m_ready.innerHTML='. '
+  var intava = setInterval(movingdots,1000)
+function movingdots() {
+    if (m_ready.innerHTML=='. ') {
+      m_ready.innerHTML = '. . '
+    }
+    else if (m_ready.innerHTML=='. . ') {
+      m_ready.innerHTML = '. . . '
+    }
+    else if (m_ready.innerHTML =='. . . ') {
+      m_ready.innerHTML = '. . . . '
+    }
+    else if (m_ready.innerHTML=='. . . . ') {
+      m_ready.innerHTML = '. '
+    }
+  }
+function stpInterval(){
+  clearInterval(intava)
+};
+};
+</script>
+{% endblock %}
+

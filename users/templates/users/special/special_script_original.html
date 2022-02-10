@@ -1,0 +1,206 @@
+
+<script type="text/javascript">
+  var timer = 0;
+  var rem_recently = document.getElementById('rem_recently');
+  rem_recently.onclick = function(){
+    if (just_removed.length!=0) {
+    var input = '<div style="color:orange"> Name'+'<span style="float:right">'+'ID'+'</span><br><hr></div>';
+    for (x=just_removed.length-1; x>=0; x--) {
+      input += '<div>' + just_removed[x][0]+'<span style="float:right;letter-spacing:3px;">'+just_removed[x][1]+'</span><br><br></div>';
+    };
+  }
+  else{
+    var input = 'List is empty';
+  };
+    document.getElementById('recently_removed_text').innerHTML=input;
+    document.getElementById('show_recently').style.display = 'block';
+  };  
+  document.getElementById('i_done').onclick=function(){
+    document.getElementById('show_recently').style.display = 'none';
+  };
+
+var loadDoc = function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var fulltext='';
+      p_inline = document.getElementById('n_o_p');
+      var people_inline = p_inline.innerText;
+  
+      if (people_inline>5) {
+        if (timer!=30000) {
+        stopInterval()
+        timer = 30000;
+        stopInterval();
+        interval = setInterval(loadDoc,timer);
+      };
+    }
+    else {
+      if (timer!=5000) {
+        timer = 5000;
+        stopInterval();
+        interval = setInterval(loadDoc,timer);
+      };
+    };
+
+
+      if (this.responseText=='-') {
+        return;
+      };
+
+      if (this.responseText[0]=='*'){
+        p_inline.innerHTML = '';
+        p_inline.innerHTML = this.responseText.toString().slice(1);
+
+        return;
+      };
+      if (this.responseText=='a'){
+        window.location.href = '{% url "login" %}?u=u';
+      };
+      if (this.responseText=='r'){
+        window.location.href = '{% url "users:user_homepage" %}';
+      };
+      var text = JSON.parse(this.responseText);
+
+        if (text==0){
+        document.getElementById('demo').innerHTML='';
+        document.getElementById('demo').innerHTML = '<button class="linestyle"><span  style="color:orange;"><b>Nobody in Line</b></span></button>';
+        p_inline.innerHTML='';
+        p_inline.innerHTML = 0;
+        return;
+      }
+      else{
+      for (var i =1 ; i < Object.keys(text).length; i++) {
+        
+          var displaytext = text[i].toString().split(',');
+          fulltext= fulltext + '<div><button class="linestyle" style="padding-right: 30px;" ><span style="text-align:center" name="user">'
+          + i+
+          '. ' + displaytext[0]+
+          '</span><span name="restyle" style="float:right;letter-spacing:3px;">'
+          +displaytext[1]+
+          '</span></button><button class="linestyle" onclick="removed('+'\''+displaytext[2]+'\''+','+'\''+displaytext[0]+'__'+displaytext[1]+'\''+')" style="color: red;"><b>Remove</button></b></div><br>';
+      
+          };
+          p_inline.innerHTML ='';
+          p_inline.innerHTML = text[6];
+          document.getElementById('demo').innerHTML = '';
+          document.getElementById('demo').innerHTML = fulltext;
+          var less = document.getElementById('show_less');
+  var user = document.getElementsByName('user');
+  var restyle = document.getElementsByName('restyle');
+    if (less.innerHTML == 'Hide ID') {
+     for ( var i = 0; i < restyle.length; i++ ) {
+      restyle[i].style.display='block';
+    };
+  }
+  else{
+     for ( var i = 0; i < restyle.length; i++ ) {
+  
+      restyle[i].style.display='none';
+
+            };   
+
+        };
+
+
+      };
+      
+    };
+
+    if (this.readyState ==4 && this.status < 200) {
+      document.getElementById('network_error').style.display = 'block';
+
+    };
+
+  };
+  xhttp.onerror = function(){
+    document.getElementById('network_error').style.display = 'block';
+  };
+  xhttp.onload = function(){
+    document.getElementById('network_error').style.display = 'none';
+  };
+  xhttp.open("GET", "{% url "users:special_ajax" %}", true);
+  xhttp.send();
+};
+var interval = setInterval(loadDoc,5000);
+function stopInterval(){
+  clearInterval(interval);
+};
+
+/////////////////////////// END //////////////////////////////////////////////////////////
+
+
+
+
+
+var a = document.getElementById('remove');
+  var b = document.getElementById('format');
+  var confirmModal = document.getElementById("confirmModal");
+  
+  window.onclick = function(event) {
+  if (event.target == confirmModal) {
+    confirmModal.style.display = "none";
+  };
+};
+var allow = document.getElementById('allow');
+var disallow = document.getElementById('disallow');
+var just_removed = [];
+var res = '';
+  function removed(user,credentials){
+    
+    res = credentials.split("__");
+    a.setAttribute('value',user);
+    confirmModal.style.display = "block";
+ };
+    allow.onclick = function(){
+      function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (var let = 0; let < cookies.length; let++) {
+            const cookie = cookies[let].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            };
+        };
+    };
+
+    return cookieValue;
+
+};
+ const csrftoken = getCookie('csrftoken');
+  var json = JSON.stringify({
+  remove: document.getElementById('remove').value
+});
+
+  var remove_http = new XMLHttpRequest();
+  remove_http.onreadystatechange = function(){
+  if (this.readyState == 4 && this.status == 200) {
+    loadDoc();
+    just_removed.push(res);
+    if (just_removed.length>5) {
+      just_removed.shift();
+    };
+  }
+  else if (this.readyState ==4 && this.status < 200) {
+      document.getElementById('network_error').style.display = 'inline';
+    };   
+  };
+  remove_http.onerror = function(){
+    document.getElementById('network_error').style.display = 'inline';
+  };
+  remove_http.onload = function(){
+    document.getElementById('network_error').style.display = 'none';
+  };
+  remove_http.open("POST", "{% url "users:special_detailview" %}", true);
+  remove_http.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+  remove_http.setRequestHeader('X-CSRFToken', csrftoken);
+  
+  remove_http.send(json);
+  confirmModal.style.display='none';
+   };
+  disallow.onclick=function(){
+    confirmModal.style.display='none';
+  };       
+</script>

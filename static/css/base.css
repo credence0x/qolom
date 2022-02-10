@@ -1,0 +1,105 @@
+section#intro-header {
+    background-size: cover;
+    height:100vh;
+}
+
+
+section#intro-header .wrap-headline {
+    color:white;
+    /* position:relative; */
+    padding-top:20vh;
+    padding-bottom: 50px;
+    /* background-color: red; */
+    
+}
+.carousel-indicators {
+    bottom: -50px;
+}
+section#about {
+    padding-bottom: 10%;
+
+}
+.round-icon{
+    height: 70px;
+    width:70px;
+    margin-top:110px;
+    background-color:rgb(196, 196, 196);
+    color:white;
+    border-radius:50px;
+    padding:25px;
+}
+.inner-carousel-width{
+    width:60vw;
+}
+.fixed-carousel-height{
+    height:20vh
+}
+.custom-form{
+    margin-top: 3.5em;
+    margin-bottom:5em;
+
+}
+.big-text{
+    margin:1.5em;
+    color: grey;
+    font-size:2em;
+    font-weight: bold;
+    font-family: serif;
+}
+.custom-button{
+    margin-right: 2em;
+    max-width: 9rem;
+    text-align: left;
+    font-size:0.9em;
+    font-weight: bold;
+    font-family: serif;
+}
+.custom-button:hover{
+    background-color: rgba(61, 61, 61, 0.575);
+}
+.nav-link:hover{
+    color: white;
+
+}
+.nav-link{
+    color: white;
+}
+.flash{
+    border-radius: 40px;
+    font-weight: bold;
+    position: absolute;top: 5rem;
+}
+.flash-success{
+    background-color: rgb(1, 226, 1);
+ 
+}
+.flash-error{
+    background-color: rgba(255, 0, 0);
+}
+.fill-form{
+    background-color: white;
+    border-radius: 20px;
+    padding-top: 30px;
+    padding-bottom:30px ;
+  }
+
+
+ 
+footer{
+    
+    background-color: rgb(109, 109, 109);
+    padding-top: 5%;
+    padding-bottom:5%;
+    color:rgb(243, 243, 243);
+    /* font-weight:bold; */
+    
+}
+footer a{
+    color:rgb(243, 243, 243);
+    /* font-weight:bold; */
+}
+.navbar-collapse.show{
+    background-color: rgb(146, 146, 146);
+    padding:25px;
+
+}

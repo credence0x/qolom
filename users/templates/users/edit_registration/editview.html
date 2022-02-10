@@ -1,0 +1,95 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block head %}
+<script type="text/javascript" src="{% static "js/countries.js" %}"></script>
+{% endblock %}
+{% block content %}
+
+<div class="menubuttons" style="border-radius: 30px;text-align: unset;font-weight: normal;border-color: lightgrey">
+  <h2 class="searchstyle edit_head" style="color: orange">Edit Profile</h2><br>
+	<form action="{% url "users:user_edit" %}" method="POST" id="submit_form">
+		<select id="country_js" name="country_js" class="forms" ></select>
+   {{ edit_form.as_p}}
+   {% csrf_token %}
+   <p style="color: grey;border-style: none;box-shadow: none;height: 100%;background-color: inherit;" class="linestyle" id="show_tz">Current timezone is <span style="color: orange">
+    {{ edit_form.timezone.value }}
+   </span>. Incorrect timezone? Click <a href="##" id="change_tz"> here to change</a> timezone to your device's timezone</p>
+   <p >
+        <button type="submit" class="linestyle edit_submit" style="border-color: rgb(255,255,255);background-color: orange">
+              Submit
+          </button>
+      </p>
+  </form>
+</div>
+<br><br><br>
+
+
+
+<script type="text/javascript">
+  var t = new Date()
+  var offset = t.getTimezoneOffset()/-1
+  var timezonee =  Intl.DateTimeFormat().resolvedOptions().timeZone
+  var change = document.getElementById('change_tz');
+  if (offset < 0 ) {
+    var yyy = offset 
+  }
+  else{
+    var yyy = '+' + offset
+  }
+change.onclick=function(){
+   document.getElementById('tz').value = timezonee
+  if (timezonee != undefined) {
+    document.getElementById('show_tz').innerHTML ='Your timezone will be changed to ' 
+    + '<span style="color:orange">' 
+    + timezonee  
+    + '</span>' 
+    + ' once this form is submitted.'
+    +'<br><br>Note: Timezone will be used to ensure that time and dates are accurately represented. Please make sure that it is correct.'
+  
+  }
+  else{
+    document.getElementById('show_tz').innerHTML = '<span style="color:orange;">We couldn\'t detect your timezone.</span> <br> Please update your browser or switch to another browser '
+  }
+}
+
+
+
+
+ 
+</script>
+
+
+  <script type="text/javascript">
+  	populateCountries("country_js");
+  </script>
+
+  <script type="text/javascript">
+  var submit_form = document.getElementById('submit_form')
+  var country = document.getElementsByName('country_js')[0];
+  var form_country = document.getElementById('country');
+  var form_iso_code = document.getElementById('iso_code');
+  country.value = form_country.value +' ('+ form_iso_code.value +')'
+  country.onchange = function () {
+    if (country.value==-1) {
+      form_country.setAttribute('value','');
+      form_iso_code.setAttribute('value','');
+      return;
+    };
+    form_country.setAttribute('value',strip(country.value));
+    var regexp = /\(.{2}\)/.exec(country.value)
+    regexp = String(regexp);
+    form_iso_code.setAttribute('value',regexp[1]+regexp[2])
+  }
+  country.onclick = function(){this.style.color='black'}  
+  submit_form.onsubmit = function(event){
+    if (!form_country.value) {
+      event.preventDefault();
+      country.style.color ='red';
+      country.focus();
+    }
+  };
+  function strip(string) { 
+              return string.replace(/.{1}\(.{2}\)/,''); 
+  }
+	</script>
+{% endblock %}
