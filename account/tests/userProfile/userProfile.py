@@ -50,12 +50,18 @@ class CreateUserProfileTests(APITestCase):
                             "email",
                             ]
         for each in user_field_list:
-            # assert that the correct values were actually inserted
-            assert data[each].lower() == content['user'][each].lower(), f"{data[each]} is not equal {content['user'][each]}"
+            # self.assertIn( that the correct values were actually inserted
+            self.assertEqual(data[each].lower(),
+                            content['user'][each].lower(),
+                             f"{data[each]} is not equal {content['user'][each]}"
+                            )
 
         user = User.objects.get(username=self.data['username'].lower())
         correct_password = user.check_password(self.data["password"])
-        assert correct_password == True
+        self.assertEqual(correct_password,
+                            True,
+                            "The inputed password is not the same as the saved password"
+                            )
         
         
         userProfile_field_list = ["country",
@@ -64,8 +70,12 @@ class CreateUserProfileTests(APITestCase):
                             "d_o_b",
                             ]
         for each in userProfile_field_list:
-            # assert that the correct values were actually inserted            
-            assert str(data[each]) == content[each], f"{data[each]} is not equal {content[each]}"
+            # self.assertIn( that the correct values were actually inserted 
+            self.assertEqual(str(data[each]),
+                            content[each],
+                            f"{data[each]} is not equal {content[each]}"
+                        )           
+            
 
 
         
@@ -86,7 +96,7 @@ class CreateUserProfileTests(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
             
             content = self.__correct_byte(response.content)       
-            assert key in content, f'"{key}" should be a mandatory field in UserProfile model'
+            self.assertIn( key, content, f'"{key}" should be a mandatory field in UserProfile model')
             # return the key value pair to the original dict
             data_copy[key]= value
 
@@ -103,8 +113,8 @@ class CreateUserProfileTests(APITestCase):
 
         response = self.client.post(self.url, data, format='json')
         error = self.__correct_byte(response.content)
-        assert "username" in error, f' Username should have up to 6 characters'
-        assert "password" in error, f' Passwords must have up to 8 characters and a special character'
+        self.assertIn("username",error, f' Username should have up to 6 characters')
+        self.assertIn("password",error, f' Passwords must have up to 8 characters and a special character')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
         data["username"] = "lanre@ojetokun"
@@ -112,13 +122,16 @@ class CreateUserProfileTests(APITestCase):
 
         response = self.client.post(self.url, data, format='json')
         error = self.__correct_byte(response.content)
-        assert "@" in error["username"][0], f"Username must not contain the '@' symbol"
+        self.assertIn("@",
+            error["username"][0], 
+            f"Username must not contain the '@' symbol"
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
 
         data["username"] = self.data.get("username")
         data["password"] = self.data.get("password")
-        data["password_2"] = "please_work"
+        data["password_2"] = "different_from_first_password"
 
         response = self.client.post(self.url, data, format='json')
         content = self.__correct_byte(response.content)
@@ -209,8 +222,8 @@ class UpdateUserProfileTests(APITestCase):
                             "last_name",
                             ]
         for each in user_field_list:
-            # assert that the correct values were actually inserted
-            assert data[each].lower() == content['user'][each].lower(), f"{data[each]} is not equal {content['user'][each]}"
+            # self.assertIn( that the correct values were actually inserted
+            self.assertEqual(data[each].lower(), content['user'][each].lower(), f"{data[each]} is not equal {content['user'][each]}")
 
         
         
@@ -219,8 +232,8 @@ class UpdateUserProfileTests(APITestCase):
                             "timezone",
                             ]
         for each in userProfile_field_list:
-            # assert that the correct values were actually inserted            
-            assert str(data[each]) == content[each], f"{data[each]} is not equal {content[each]}"
+            # self.assertIn( that the correct values were actually inserted            
+            self.assertEqual(str(data[each]),content[each], f"{data[each]} is not equal {content[each]}")
 
 
 
@@ -236,7 +249,7 @@ class UpdateUserProfileTests(APITestCase):
 
         response = self.client.put(self.url, data, format='json')
         content = self.__correct_byte(response.content)
-        assert "password" in content, f" Incorrect password was authenticated"
+        self.assertIn("password", content, f" Incorrect password was authenticated")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
        
