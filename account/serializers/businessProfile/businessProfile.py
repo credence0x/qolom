@@ -9,14 +9,12 @@ from account.serializers.user import UserSerializer, UpdateUserSerializer
 User = get_user_model()
 
 business_profile_editable_fields = (
+                                    "password",
                                     "timezone",
                                     "country",
                                     "state",
                                     "address",
-                                    "iso_code",
-                                    "first_name",
-                                    "last_name",
-                                    "password",
+                                    "iso_code",     
                                     "name",
                                     "minimum_age_allowed",
                                     "profile_picture",
@@ -25,10 +23,9 @@ business_profile_editable_fields = (
 
 business_profile_base_fields =  (
                                 "username",
-                                "d_o_b",
-                                "password_2",
                                 "email",
                                 "key",
+
                               ) + business_profile_editable_fields 
 
 
@@ -49,20 +46,21 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
 
 
 class CreateBusinessProfileSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.FileField(required=False,
+                                            write_only=True)
     username = serializers.CharField(write_only=True)
-    email = serializers.EmailField(write_only=True)
-    first_name = serializers.CharField(write_only=True)
-    last_name = serializers.CharField(write_only=True)
+    key = serializers.CharField(required=False)
+    email = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
     password_2 = serializers.CharField(write_only=True)
-    ticket = serializers.CharField(read_only=True)
     user = UserSerializer(read_only=True)
+    
 
 
     
     class Meta:
         model = BusinessProfile
-        fields = business_profile_base_fields
+        fields = business_profile_base_fields + ("password_2",)
     
     
     def validate_profile_picture(self,value):
@@ -127,15 +125,15 @@ class CreateBusinessProfileSerializer(serializers.ModelSerializer):
         
     def create(self,validated_data):    
         key = getRandomTicket(7)
-        user = User.objects.create_user(username=validated_data.get('username'),
-                                        password=validated_data.get('password'),
-                                        first_name=validated_data.get('first_name'),
-                                        last_name=validated_data.get('last_name'),
-                                        email = validated_data.get('email'),
-                                        is_active=False
-                                        )
+        user = User.objects.create_user(
+                                username=validated_data.get('username'),
+                                password=validated_data.get('password'),
+                                email = validated_data.get('email'),
+                                is_active=False
+                            )
         
-        BusinessProfile = BusinessProfile.objects.create( user=user,
+        businessProfile = BusinessProfile.objects.create( 
+                                    user=user,
                                     key= key,
                                     country=validated_data.get('country'),
                                     state=validated_data.get('state'),
@@ -143,10 +141,10 @@ class CreateBusinessProfileSerializer(serializers.ModelSerializer):
                                     iso_code=validated_data.get('iso_code'),
                                     timezone = validated_data.get('timezone'),
                                     name=validated_data.get('name'),  
-                                    minimum_age_allowed=validated_data.get('minimun_age_allowed'),  
+                                    minimum_age_allowed=validated_data.get('minimum_age_allowed'),  
                                     profile_picture=validated_data.get('profile_picture'),  
                                 )
-        return BusinessProfile
+        return businessProfile
 
 
 
@@ -159,16 +157,16 @@ class CreateBusinessProfileSerializer(serializers.ModelSerializer):
 
 class UpdateBusinessProfileSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True) # required
-    first_name = serializers.CharField(write_only=True,required=False)
-    last_name = serializers.CharField(write_only=True,required=False)
-    name = serializers.CharField(write_only=True,required=False)
-    address = serializers.CharField(write_only=True,required=False)
-    country = serializers.CharField(write_only=True,required=False)
-    state = serializers.CharField(write_only=True,required=False)
-    iso_code = serializers.CharField(write_only=True,required=False)
-    profile_picture = serializers.ImageField(write_only=True,required=False)
+    name = serializers.CharField(required=False)
+    address = serializers.CharField(required=False)
+    country = serializers.CharField(required=False)
+    state = serializers.CharField(required=False)
+    timezone = serializers.CharField(required=False)
+    iso_code = serializers.CharField(required=False)
+    profile_picture = serializers.ImageField(required=False)
 
-    user = UpdateUserSerializer(read_only=True)
+    # essentially does nothing since first_name and last_name can't be updated
+    user = UpdateUserSerializer(write_only=True,required=False)
 
     
     class Meta:

@@ -13,20 +13,21 @@ from django.urls import reverse
 
 class BusinessProfile(BaseModel):
     user        = models.OneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='business',
+                                    related_name='businessProfile',
                                     on_delete=models.CASCADE)
-    name        = DefaultCharField()
-    key         = models.CharField(max_length=7,null=True,
-                                   blank=True,unique=True,
-                                   db_index=False)
-    minimum_age_allowed    = DefaultIntegerField()
+    name        = models.CharField(max_length=250,unique=True)
+    key         = models.CharField(
+                                    max_length=7,
+                                    unique=True
+                                )
+    minimum_age_allowed    = models.IntegerField(default=1)
     slug        = models.SlugField(blank=True,db_index=False)
-    address     = DefaultCharField()
-    state       = DefaultCharField()
-    country     = DefaultCharField()
-    iso_code    = models.CharField(max_length=2, null=True)
+    address     = models.CharField(max_length=255)
+    state       = models.CharField(max_length=255)
+    country     = models.CharField(max_length=255)
+    iso_code    = models.CharField(max_length=2)
     profile_picture       = models.ImageField(upload_to='profile',null=True)
-    timezone    = DefaultCharField()
+    timezone    = models.CharField(max_length=255)
 
     ordering_feature_active = models.BooleanField(default=False)
     has_orders  = models.BooleanField(default=False)
@@ -47,10 +48,7 @@ class BusinessProfile(BaseModel):
             ]
             
         
-
-    # def filename(self): # delete
-    #     return os.path.basename(self.profile_picture.name)    
-        
+ 
     def __str__(self):
         return f"[ Business ] - >  {self.user.first_name}"
 

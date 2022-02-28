@@ -47,6 +47,7 @@ urlpatterns = [
 
     # common 
     path('mail/confirm-sign-up/', SignUpMailAPIView.as_view(), name='mail_confirm_sign_up' ),
+    
     path('reset-password/mail/', ResetPasswordMailAPIView.as_view(), name='reset_password_mail' ),
     path('reset-password/validate-link/', CheckResetPasswordLinkAPIView.as_view(), name='reset_password_link_check' ),
     path('reset-password/', ResetPasswordAPIView.as_view(), name='reset_password' ),

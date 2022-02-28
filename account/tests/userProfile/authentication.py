@@ -29,8 +29,8 @@ class AuthenticateUserProfileTests(APITestCase):
                            }
         username = self.login_data.get("username")
         email = self.login_data.get("email")
-        assert username.lower() != username, "This is to ensure that the value is converted to lowercase during validation "
-        assert email.lower() != email, "This is to ensure that the value is converted to lowercase during validation "
+        self.assertNotEqual(username.lower(), username, "This is to ensure that the value is converted to lowercase during validation ")
+        self.assertNotEqual(email.lower(), email, "This is to ensure that the value is converted to lowercase during validation ")
 
     
     def __correct_byte(self,byte_value):
@@ -78,7 +78,7 @@ class AuthenticateUserProfileTests(APITestCase):
 
     def test_authentication_with_correct_email_details(self):
         """
-        Ensure that authentication with the correct details works.
+        Ensure that authentication with emails also.
         """
         data = self.login_data.copy()
         data["username"] = data.get("email")
@@ -123,8 +123,8 @@ class AuthenticateUserProfileTests(APITestCase):
         response = self.client.post(self.url, data, format='json')
         error = self.__correct_byte(response.content)
         user = auth.get_user(self.client)
-        self.assertEqual(error.get("password",False),False), f"Password field must not be sent out"
-        assert error.get("account",False) != False, f"An error stating that the account is inactive should pop up"
+        self.assertEqual(error.get("password",False),False, f"Password field must not be sent out")
+        self.assertNotEqual(error.get("account",False),False, f"An error stating that the account is inactive should pop up")
         self.assertEqual(user.is_authenticated,False)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

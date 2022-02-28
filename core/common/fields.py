@@ -2,7 +2,7 @@ from django.db import models
 
 class DefaultCharField(models.CharField):
     def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 255
+        kwargs['max_length'] = 255        
         kwargs['blank'] = True
         kwargs['null'] = True
         super().__init__(*args, **kwargs)

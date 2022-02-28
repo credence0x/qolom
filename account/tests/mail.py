@@ -76,7 +76,7 @@ class SignUpConfirmationEmailTests(APITestCase):
         data["username"]="random_username"
         response = self.client.post(self.url, data, format='json')
         error = self.__correct_byte(response.content)
-        assert error.get('username',False) !=  False, f"Invalid username error should pop up"
+        self.assertNotEqual(error.get('username',False), False, f"Invalid username error should pop up")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
@@ -93,5 +93,5 @@ class SignUpConfirmationEmailTests(APITestCase):
         user.save()
         response = self.client.post(self.url, data, format='json')
         error = self.__correct_byte(response.content)
-        assert error.get('account',False) !=  False, f" Active account error should pop up"
+        self.assertNotEqual(error.get('account',False), False, f" Active account error should pop up")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
