@@ -95,7 +95,7 @@ class ResetPasswordTests(APITestCase):
         query_params = f"?uidb64={uidb64}&token={token}"
         reset_response = self.client.post((self.url + query_params),data,format="json")
         reset_error = self.__correct_byte(reset_response.content)
-        assert 'password' in reset_error, "Password field must return an error"
+        self.assertIn('password',reset_error, "Password field must return an error")
         self.assertEqual(reset_response.status_code, status.HTTP_400_BAD_REQUEST)
 
 

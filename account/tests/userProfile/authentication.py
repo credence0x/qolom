@@ -116,7 +116,8 @@ class AuthenticateUserProfileTests(APITestCase):
         data = self.create_data
         data["username"]="testing123"
         data["email"]="testing@gmail.com"
-        c.post(create_account_url, data , format='json')
+        res = c.post(create_account_url, data , format='json')
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         
 
         # actual test
