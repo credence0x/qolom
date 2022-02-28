@@ -16,13 +16,13 @@
 
 <p style="font-weight: bold;"><span style="color: orange">Hi {{ user.first_name }},<br><br>Your account has been activated successfully!</span>.<br><br>
 <br>  
-<span style="font-weight: normal"> You can now <a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{ domain }}{% url 'login' %}?u=u" style="color: rgb(148,193,239);">log-in</a> and explore all the features we have to offer you</span>.<br><br>
+<span style="font-weight: normal"> You can now <a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{ domain }}" style="color: rgb(148,193,239);">log-in</a> and explore all the features we have to offer you</span>.<br><br>
 <br><br>
 {% if business %}
- You can also invite your customers to join using <a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{ domain }}{% url 'account:user_signup' %}">this link </a>
+ You can also invite your customers to join using <a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{ domain }}">this link </a>
 {% else %}
 Know a business that frequently has long queues?<br>
-Encourage them to join us absolutely free of charge or invite them to join using <a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{domain}}{% url 'account:business_signup' %}">this link</a>.
+Encourage them to join us absolutely free of charge or invite them to join using <a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{domain}}">this link</a>.
 {% endif %}
 </p>
 <div>

@@ -34,9 +34,9 @@ from django.contrib.auth.models import User
  
 
 
-def confirm_business_signup_object(business):
+def confirm_BusinessProfile_object(business):
     try:
-        business = business.business_signup
+        business = business.BusinessProfile
         return business
     except Exception:
         return HttpResponseRedirect(reverse('login'))
@@ -44,7 +44,7 @@ def confirm_business_signup_object(business):
 
 # def confirm_business_exists(business_key):
 #     try:
-#         business = Business_signup.objects.get(key=business_key)
+#         business = BusinessProfile.objects.get(key=business_key)
 #         return business
 #     except Exception:
 #         messages.error(request, 'Business does not exist')
@@ -52,7 +52,7 @@ def confirm_business_signup_object(business):
 
 @login_required
 def BusinessHomePageView(request):
-    business = confirm_business_signup_object(request.user)
+    business = confirm_BusinessProfile_object(request.user)
     businesslines = Business_line.objects.filter(business=business).order_by('name')
     first_letter = business.name[0].upper()
     
@@ -69,7 +69,7 @@ def BusinessHomePageView(request):
             
 @login_required
 def ItemsView(request):
-    business = confirm_business_signup_object(request.user)
+    business = confirm_BusinessProfile_object(request.user)
     items = business.all_items.all()
     if request.method =='GET':
         form = BusinessMenuForm()
@@ -111,7 +111,7 @@ def ItemsView(request):
 
 @login_required
 def EditItemView(request,identity):
-    business = confirm_business_signup_object(request.user)
+    business = confirm_BusinessProfile_object(request.user)
     if request.method =='POST':
         form = BusinessMenuForm(request.POST)
         if form.is_valid():
@@ -157,7 +157,7 @@ def EditItemView(request,identity):
 
 @login_required
 def OrdersView(request):
-    business = confirm_business_signup_object(request.user)
+    business = confirm_BusinessProfile_object(request.user)
     orders = Orders.objects.filter(business=business,status='PAID').order_by('-id')
     if request.GET.get('api',False)=='check':
         
@@ -217,7 +217,7 @@ def OrdersView(request):
 
 @login_required
 def OrderDetailView(request,identity):
-    business = confirm_business_signup_object(request.user)
+    business = confirm_BusinessProfile_object(request.user)
     if identity=='find':
         try:
             order = Orders.objects.get(id=request.GET.get('ref'))
@@ -301,7 +301,7 @@ def OrderDetailView(request,identity):
         
 @login_required
 def PaymentView(request):
-    business = confirm_business_signup_object(request.user)
+    business = confirm_BusinessProfile_object(request.user)
     if request.method=='POST':
         def get_bank_name(code):
             for all_ in range(len(bank_list)):
@@ -370,7 +370,7 @@ def activateBankView(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token_two.check_token(user, token):
-        business = user.business_signup
+        business = user.BusinessProfile
         business.bank_email_confirmation = True
         business.save()
         messages.success(request,'Bank account information updated successfully')
@@ -381,7 +381,7 @@ def activateBankView(request, uidb64, token):
 
 
 def ResendConfirmationView(request):
-    business = confirm_business_signup_object(request.user)
+    business = confirm_BusinessProfile_object(request.user)
     if request.method=='GET':
         if not business.bank_email_confirmation:
             confirm_bank.send(sender=None,user=user,request=request)
@@ -399,7 +399,7 @@ def ResendConfirmationView(request):
 
 @login_required
 def DelPaymentView(request):
-    business = confirm_business_signup_object(request.user)
+    business = confirm_BusinessProfile_object(request.user)
     GET =  request.GET.get('id',False)
     
     disable = request.GET.get('disable',False)
@@ -439,7 +439,7 @@ def DelPaymentView(request):
 
 @login_required
 def CreateLineView(request):
-    user = confirm_business_signup_object(request.user)
+    user = confirm_BusinessProfile_object(request.user)
     counting = user.business_line.all().count()
     if counting == 20:
         messages.error(request,
@@ -504,7 +504,7 @@ def CreateLineView(request):
 @login_required
 def EditLineView(request, slug):
     slug = slug  
-    user = confirm_business_signup_object(request.user)
+    user = confirm_BusinessProfile_object(request.user)
     line = Business_line.objects.get(business=user,slug=slug)
     if request.method == 'POST':
         form = EditLineForm(request.user,line,request.POST)
@@ -540,7 +540,7 @@ def EditLineView(request, slug):
 
 @login_required
 def DaysOpenView(request):
-    line = confirm_business_signup_object(request.user)
+    line = confirm_BusinessProfile_object(request.user)
     user = line
     if request.method == 'POST':
         form = DaysOpenForm(request.POST)
@@ -677,7 +677,7 @@ def business_ajax(request,uniquefield):
     if not user.is_authenticated:
         return HttpResponse('a')
     try:   
-        business = user.business_signup
+        business = user.BusinessProfile
     except ObjectDoesNotExist:
         return HttpResponse('a')
     line_object = False
@@ -731,7 +731,7 @@ def business_ajax(request,uniquefield):
 def LineDetailView(request,slug):
     slug=slug
     user = request.user
-    thebusiness = confirm_business_signup_object(user)
+    thebusiness = confirm_BusinessProfile_object(user)
     try:
         businessline = Business_line.objects.get(business=thebusiness,slug=slug)
     except ObjectDoesNotExist:
@@ -1007,7 +1007,7 @@ def LineDetailView(request,slug):
 def ChangePasswordView(request):
     user = request.user
     try:
-        business = user.business_signup
+        business = user.BusinessProfile
     except Exception:
         return HttpResponseRedirect(reverse('login'))
     if request.method == 'POST':
@@ -1041,17 +1041,17 @@ def DeleteBusinessLineView(request):
             user = request.user
             normal_line = False
             try:
-                user.business_signup
+                user.BusinessProfile
                 line = Business_line.objects.get(uniquefield=cd['delete'])
-                x = user.business_signup
+                x = user.BusinessProfile
                 normal_line = True
                 if line not in Business_line.objects.filter(business=x):
                     return HttpResponse('Something went wrong')
             except ObjectDoesNotExist:
                 try:
-                    user.user_signup
+                    user.UserProfile
                     line = Special_line.objects.get(uniquefield=cd['delete'])
-                    x = user.user_signup
+                    x = user.UserProfile
                     if x != line.admin_user:
                         return HttpResponse('Something went wrong')
                 except ObjectDoesNotExist:

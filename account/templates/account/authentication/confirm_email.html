@@ -13,7 +13,7 @@
 <p style="text-align:center;font-weight: bold;color: black">
 An activation link has been sent to your e-mail, <b style="color: orange">{{email}}</b><br>
 Click the link to continue
-<a href="{% url 'account:change_email' %}"><p style="margin-top:30px;text-align: center;font-weight: normal"><u>incorrect email?</u></p></a>
+<a href="to_be_det"><p style="margin-top:30px;text-align: center;font-weight: normal"><u>incorrect email?</u></p></a>
 <div style="width:80%;margin-left: 10%;margin-right: 10%;color: black">
   <span style="color: orange">Couldn't find the email?</span><br><br> Please verify that e-mail is not in your spam folder.If the e-mail can still not be found after about 5 minutes, click resend.
 </div>
@@ -21,7 +21,7 @@ Click the link to continue
 <button class="linestyle" style="background-color: rgb(148,193,239);color: white;font-weight:bold;margin-left: 30%;margin-right:30%;width:40%;font-size: 100%; " id="resend" >Resend</button>
 </p>
 <br>
-<a href="{% url 'login' %}?u=u" ><div style="text-align: center;font-weight: normal;">Log-in</div></a>
+<a href="login_url" ><div style="text-align: center;font-weight: normal;">Log-in</div></a>
 <br>
 </div>
 <br><br><br>
@@ -67,7 +67,7 @@ Click the link to continue
       resend.innerHTML = '.'
     }
   },1000)
-  xhttp.open("GET","{% url 'account:confirm_html' %}?p=x", true);
+  xhttp.open("GET","to_be_det", true);
   xhttp.send();
 
 }

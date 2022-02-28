@@ -76,7 +76,7 @@
 
 <p style="color: red;font-weight: bold;text-align: center;font-size: 80%"> Closes by {{closetime}} {% if tomorrow %}(tomorrow){% endif %}<br> </p>
 
-{% if business.order_active and business.iso_code == 'NG' and user_signup.iso_code == 'NG' %}
+{% if business.order_active and business.iso_code == 'NG' and UserProfile.iso_code == 'NG' %}
 <!-- <br>
 
     <a href="{% url 'users:show_items' business.key %}">

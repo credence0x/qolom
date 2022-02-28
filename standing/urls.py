@@ -14,23 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,re_path, include
-from account.views import LoginView,LogoutView,LandingPageView,termsView,privacyView
+from django.urls import path, include
 from users.views import VerifyPaymentScriptView,webhook
 
 urlpatterns = [
-    re_path(r'^accounts/', include('account.urls', namespace='account')),
-    re_path(r'^b/', include('business.urls', namespace='business')),
-    re_path(r'^u/', include('users.urls', namespace='users')),
-    re_path(r'^$', LandingPageView, name='landing-page' ),
-    re_path(r'^login$', LoginView, name='login' ),
+    path('accounts/', include('account.urls', namespace='account')),
+    path('business/', include('business.urls', namespace='business')),
+    path('user/', include('users.urls', namespace='users')),
     
-    re_path(r'^verify-script/$', VerifyPaymentScriptView, name='verify' ),
-    re_path(r'^legal-terms-of-use/$', termsView, name='terms-of-use' ),
-    re_path(r'^privacy-policy/$', privacyView, name='privacy-policy' ),
+    path('verify-script/', VerifyPaymentScriptView, name='verify' ),
     path('paystack', include(('paystack.frameworks.django.urls','paystack'),namespace='paystack')),
-    re_path(r'^log-out$', LogoutView, name='logout' ),
-    re_path(r'^webhook$', webhook, name='webhook' ),
+    path('webhook', webhook, name='webhook' ),
     #there are two login urls
 
 ]

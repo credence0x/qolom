@@ -81,15 +81,15 @@ def user_ajax(request,uniquefield,unique):
     
 
 
-def confirm_user_signup_object(user):
+def confirm_UserProfile_object(user):
     try:
-        user = user.user_signup
+        user = user.UserProfile
         return user
     except:
         return HttpResponseRedirect(reverse('login'))
 def confirm_business_exists(business_key):
     try:
-        business = Business_signup.objects.get(key=business_key)
+        business = BusinessProfile.objects.get(key=business_key)
         return business
     except:
         messages.error(request, 'Business does not exist')
@@ -98,7 +98,7 @@ def confirm_business_exists(business_key):
 @login_required
 def UserMenuView(request,key):
     user = request.user
-    confirm_user_signup_object(user)
+    confirm_UserProfile_object(user)
     business = confirm_business_exists(key)
     # the first letter is collected so it can be used as an alternative 
     # to a display picture
@@ -125,7 +125,7 @@ def CheckOutView(request,key):
     if not one:
         # no order..thus the only way they can be here is by tinkering with the url
         return HttpResponse('Stop playing with us')
-    userr = confirm_user_signup_object(user)
+    userr = confirm_UserProfile_object(user)
     business = confirm_business_exists(key)
     
     first_letter = business.name[0].upper()
@@ -240,7 +240,7 @@ def CheckOutView(request,key):
     new_order.created = time
     new_order.ready_time = time
     new_order.save()
-    card_information = ast.literal_eval(user.user_signup.card_information)
+    card_information = ast.literal_eval(user.UserProfile.card_information)
     return render (request,'users/payments/checkout.html',
                                        {'items': the_main_items,
                                         'total':total,
@@ -254,7 +254,7 @@ def CheckOutView(request,key):
 
 @login_required
 def PayWithCardView(request,the_id,signature):
-    user = confirm_user_signup_object(request.user)
+    user = confirm_UserProfile_object(request.user)
     
     the_order = Orders.objects.get(id=the_id,user=user)
     
@@ -400,7 +400,7 @@ def webhook(request): #for paystack
 @login_required
 def SaveCardView(request):
     try:
-        user = request.user.user_signup
+        user = request.user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     card_details = request.session.get('card_details',False)
@@ -427,7 +427,7 @@ def SaveCardView(request):
 @login_required
 def RemoveCardView(request):
     try:
-        user = request.user.user_signup
+        user = request.user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     card = request.GET.get('sig',False)
@@ -448,7 +448,7 @@ def RemoveCardView(request):
 @login_required
 def ManageCardView(request):
     try:
-        user = request.user.user_signup
+        user = request.user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     card = ast.literal_eval(user.card_information)
@@ -459,7 +459,7 @@ def ManageCardView(request):
 @login_required
 def OrderView(request,identity):
     user = request.user
-    ufo = confirm_user_signup_object(user)
+    ufo = confirm_UserProfile_object(user)
     the_order = Orders.objects.get(id=identity)
     zone = pytz.timezone(ufo.timezone)
     created_date = timezone.localtime(the_order.created,zone)
@@ -553,7 +553,7 @@ def OrderView(request,identity):
 @login_required
 def OrdersListView(request):
     user = request.user
-    userr=confirm_user_signup_object(user)
+    userr=confirm_UserProfile_object(user)
     changed = False
     orders = Orders.objects.filter(user=userr,is_active=True).order_by('-id')
     
@@ -640,7 +640,7 @@ def OrdersListView(request):
 def CheckReadyAPIView(request):
     user = request.user
     try:
-        userr = user.user_signup
+        userr = user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     params = request.GET.get('i',False)
@@ -658,7 +658,7 @@ def CheckReadyAPIView(request):
 def CheckKeyView(request):
     user = request.user
     try:
-        ufo = user.user_signup
+        ufo = user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     if request.method=='POST':
@@ -674,8 +674,8 @@ def CheckKeyView(request):
                 business = True
             if business:
                 try:
-                    business = Business_signup.objects.get(key=cd)
-                    if user.user_signup.iso_code != business.iso_code:
+                    business = BusinessProfile.objects.get(key=cd)
+                    if user.UserProfile.iso_code != business.iso_code:
                         form.add_error('key',
                                        ''' You can only join queues located in your country. Edit your profile if you are not in {}.'''
                                        .format(ufo.country))
@@ -726,7 +726,7 @@ def user_line(request,unumber):
     unumber = unumber
     user = request.user
     normal_line = False
-    person = confirm_user_signup_object(user)
+    person = confirm_UserProfile_object(user)
     if len(unumber)==7:
         try:
             businessline = Business_line.objects.get(uniquefield=unumber)
@@ -1347,7 +1347,7 @@ def user_line(request,unumber):
 def UserHomePageView(request):
     user = request.user
     try:
-        person = user.user_signup
+        person = user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     
@@ -1392,7 +1392,7 @@ def UserHomePageView(request):
         #other normal function
         #what happens when location changes.....watchlocation javascript and distance
         form = SearchForm()
-        all_businesses = Business_signup.objects.all()
+        all_businesses = BusinessProfile.objects.all()
         ts = person.total_seconds
         td = timedelta(seconds=ts)
         days = td.days
@@ -1445,7 +1445,7 @@ def UserHomePageView(request):
 def GetLocationView(request):
     user = request.user
     try:
-        person = user.user_signup
+        person = user.UserProfile
     except:
         return HttpResponse('Failed')
     if request.method == 'GET':
@@ -1477,7 +1477,7 @@ def GetLocationView(request):
 def SearchPageView(request):
     ccc= timezone.now()
     try:
-        some_variable = request.user.user_signup
+        some_variable = request.user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     business_name = request.GET.get('search',False)
@@ -1489,7 +1489,7 @@ def SearchPageView(request):
             data = {'search':business_name}
             form = SearchForm(initial=data)
             loc_form = SearchByLocationForm({'s_b_l':s_b_l})
-            results = Business_signup.objects.filter(Q(name__icontains=business_name),
+            results = BusinessProfile.objects.filter(Q(name__icontains=business_name),
                                                      Q(address__icontains=s_b_l)|Q(state__icontains=s_b_l))
             
 
@@ -1519,7 +1519,7 @@ def SearchPageView(request):
                                'result_for_loc':s_b_l})
         
         #else
-        person = request.user.user_signup
+        person = request.user.UserProfile
         data = {'search':business_name}
         form = SearchForm(initial=data)
         loc_search = request.session.get('loc_search')
@@ -1538,7 +1538,7 @@ def SearchPageView(request):
             locality     = request.session['location']['locality'].lower()
             loc_form = SearchByLocationForm()
             
-            results = Business_signup.objects.filter(Q(iso_code=person.iso_code),
+            results = BusinessProfile.objects.filter(Q(iso_code=person.iso_code),
                                                      Q(name__icontains=business_name)
                                                      ).order_by('state','name')
             
@@ -1737,7 +1737,7 @@ def SearchPageView(request):
         else:
             data = {'search':business_name}
             loc_form = SearchByLocationForm(initial=data)
-            results = Business_signup.objects.filter(Q(iso_code=person.iso_code),
+            results = BusinessProfile.objects.filter(Q(iso_code=person.iso_code),
                                                      Q(user__first_name__icontains=business_name)
                                                      ).order_by('state','user__first_name')
             if not results.exists():
@@ -1775,13 +1775,13 @@ def SearchPageView(request):
 @login_required
 def UserDetailView(request,key,slug):
     try:
-        person = request.user.user_signup
+        person = request.user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     key = key
     slug = slug
     #use get object or 404
-    business = Business_signup.objects.get(key=key)
+    business = BusinessProfile.objects.get(key=key)
     age = person.age
     legal = True
     if business.min_age!=0:
@@ -2041,7 +2041,7 @@ def UserDetailView(request,key,slug):
 def EditView(request):
     user = request.user
     try:
-        person = user.user_signup
+        person = user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     tz = pytz.timezone(person.timezone).utcoffset
@@ -2058,7 +2058,7 @@ def EditView(request):
             user.first_name = cd['first_name']
             user.last_name = cd['last_name']
             user.save()
-          # modify related User_signup
+          # modify related UserProfile
             person.country = cd['country']
             person.first_name = cd['first_name']
             person.last_name = cd['last_name']
@@ -2080,7 +2080,7 @@ def EditView(request):
 def ChangePasswordView(request):
     user = request.user
     try:
-        person = user.user_signup
+        person = user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
 
@@ -2104,17 +2104,17 @@ def ChangePasswordView(request):
 @login_required
 def FavouritesView(request):
     try:
-        some_variable = request.user.user_signup
+        some_variable = request.user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
-    person_fav = request.user.user_signup.favourites.all()
+    person_fav = request.user.UserProfile.favourites.all()
     return render(request,'users/homepage/favourites.html',
                           {'person_fav': person_fav })
     
 @login_required
 def CreateSpecialLineView(request):
     try:
-        user = request.user.user_signup
+        user = request.user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     another_special = Special_line.objects.filter(admin_user=user)
@@ -2249,7 +2249,7 @@ def CreateSpecialLineView(request):
 @login_required
 def EditSpecialLineView(request):
     try:
-        user = request.user.user_signup
+        user = request.user.UserProfile
     except:
         return HttpResponseRedirect(reverse('login'))
     # the next line means a business shouldn't have two lines with the same name cus slug will be same....Done!
@@ -2390,7 +2390,7 @@ def SpecialLineDetailView(request):
     user = request.user
     try:
         #just use request user then business to shorten len url
-        thebusiness = user.user_signup
+        thebusiness = user.UserProfile
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse('login'))
     try:
@@ -2657,12 +2657,12 @@ def special_ajax(request):
     if not user.is_authenticated:
         return HttpResponse('a')
     try:   
-        business = user.user_signup
+        business = user.UserProfile
     except ObjectDoesNotExist:
         return HttpResponse('a')
     line_object = False
     try:
-        line_object = user.user_signup.admin_special_line
+        line_object = user.UserProfile.admin_special_line
     except ObjectDoesNotExist:
         pass
     if not line_object:

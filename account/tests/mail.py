@@ -5,9 +5,12 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from account.models import UserProfile
 import datetime,ast
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib import auth
 from django.test import override_settings
+
+User = get_user_model()
+
 
 
 class SignUpConfirmationEmailTests(APITestCase):
@@ -42,7 +45,7 @@ class SignUpConfirmationEmailTests(APITestCase):
         user = User.objects.get(username=create_data.get("username").lower())
         cls.username = user.username
         cls.password = create_data.get("password")
-        cls.url = reverse('account:email_sign_up_confirmation')
+        cls.url = reverse('account:mail_confirm_sign_up')
 
 
 

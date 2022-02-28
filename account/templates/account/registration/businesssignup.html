@@ -29,7 +29,7 @@
 
 		<h2 class="searchstyle" style="color: orange;border-color:white;text-align: center;background-color: inherit;font-size: 140%">Register a Business</h2>            
         
-			<form action="{% url "account:business_signup" %}" method="POST" id="businessRegistrationForm">
+			<form action="{% url "account:BusinessProfile" %}" method="POST" id="businessRegistrationForm">
         <ul class="errorlist" id='js_errors'></ul>
         {% for field in form %}
                   

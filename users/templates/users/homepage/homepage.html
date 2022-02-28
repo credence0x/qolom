@@ -550,7 +550,7 @@
     document.getElementById('network_error').style.display = 'none';
     edit.style.animation ='blinker 1.5s infinite';
   };
-  xhttp.open("GET", "{% url "users:user_ajax" line.uniquefield request.user.user_signup.unique %}", true);
+  xhttp.open("GET", "{% url "users:user_ajax" line.uniquefield request.user.UserProfile.unique %}", true);
   xhttp.send();
 
   };

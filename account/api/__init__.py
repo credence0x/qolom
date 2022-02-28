@@ -4,10 +4,24 @@ from account.api.userProfile.userProfile import (
                                                 )
 
 from account.api.userProfile.authentication import (
+                                                    ActivateUserProfileTokenAPIView,
                                                      AuthenticateUserProfileAPIView,
                                                      DeauthenticateUserProfileAPIView,
                                                    )
 
-from account.api.userProfile.email import (
-                                            SignUpConfirmationEmailAPIView
-                                            )                               
+from account.api.businessProfile.businessProfile import (
+                                                  CreateBusinessProfileAPIView,
+                                                  UpdateBusinessProfileAPIView,
+                                                )
+
+from account.api.businessProfile.authentication import (
+                                                    ActivateBusinessProfileTokenAPIView,
+                                                     AuthenticateBusinessProfileAPIView,
+                                                     DeauthenticateBusinessProfileAPIView,
+                                                   )
+
+from account.api.mail import (SignUpMailAPIView,
+                              ResetPasswordMailAPIView)
+
+from account.api.update import (ResetPasswordAPIView)                            
+from account.api.authentication import (CheckResetPasswordLinkAPIView)                          

@@ -3,10 +3,10 @@
 {% load hosts %}
 {% block head %}
 <script type= "text/javascript" src="{% static "js/countries.js" %}"></script>
-{% if request.user.business_signup.dp %}
+{% if request.user.BusinessProfile.dp %}
 
 <link rel="dns-prefetch" href="//media.com">
-<link rel="preload" as="image" href="{% host_url 'image' request.user.business_signup.filename host 'media' %}">
+<link rel="preload" as="image" href="{% host_url 'image' request.user.BusinessProfile.filename host 'media' %}">
 {% endif %}
 {% endblock%}
 {% block content %}
@@ -22,8 +22,8 @@
 
 
                 <div style="text-align: center;">
-                  {% if request.user.business_signup.dp %}
-                  <img src="{% host_url 'image' request.user.business_signup.filename host 'media' %}"  style="height: 130px;width: 130px;box-shadow: 2px 2px 2px 3px rgba(0, 0, 0, 0.5); padding: 1px;border-radius: 10px" id="imagespace" >
+                  {% if request.user.BusinessProfile.dp %}
+                  <img src="{% host_url 'image' request.user.BusinessProfile.filename host 'media' %}"  style="height: 130px;width: 130px;box-shadow: 2px 2px 2px 3px rgba(0, 0, 0, 0.5); padding: 1px;border-radius: 10px" id="imagespace" >
 
                 <br><br>
 

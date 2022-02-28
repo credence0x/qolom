@@ -120,8 +120,8 @@ class LineForm(forms.Form):
         cd1 = self.cleaned_data.get('name')
         cd2 = slugify(cd1)
         try:
-            self.user.business_signup
-            business = self.user.business_signup
+            self.user.BusinessProfile
+            business = self.user.BusinessProfile
             all_associated_lines = Business_line.objects.filter(business=business) 
             for line in all_associated_lines:
                 if cd2 == line.slug:
@@ -167,8 +167,8 @@ class EditLineForm(forms.Form):
         cd1 = self.cleaned_data.get('name')
         cd2 = slugify(cd1)
         try:
-            self.user.business_signup
-            business = self.user.business_signup
+            self.user.BusinessProfile
+            business = self.user.BusinessProfile
             all_associated_lines = Business_line.objects.filter(business=business) 
             for line in all_associated_lines:
                 if cd2 == line.slug and line != self.this_line :

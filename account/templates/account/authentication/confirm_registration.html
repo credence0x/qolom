@@ -15,13 +15,19 @@
 <div style="padding-right: 10px;padding-left: 10px;" >
 
 <p style="font-weight: bold;"><span style="color: orange">Hi {{ user.first_name }},<br><br>We are excited to have you join us!</span><br><br>
-<br> You can now queue remotely at your favourite places as well as create and control your own remote lines among other features. <br>  
+{% if user.userProfile %}
+<br> You can now queue remotely at your favourite places as well as create and control your own remote lines among other exciting features that we have for you. <br>  
+
+{% else %}
+<br> You can now create and control your own remote queues among other exciting features that we have for you. <br>  
+
+{% endif %}
 <span style="font-weight: normal">We just have to verify your e-mail to make sure you always have access to your account. <br>Click the button below to complete your registration.</span><br><br><span style="color: grey;font-weight: normal;">Link expires after 30 minutes.</span></p>
 
 <div>
 <p>
 	<br>
-<a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{ domain }}{% url 'account:activate' uidb64=uid token=token %}">
+<a href="{% if domain == 'qolom.com' %}https{% else %}http{% endif %}://{{ domain }}{{ activate_account_url }}?uidb64={{uid}}&token={{token}}">
 	<button style="color: white;background-color: rgb(148,193,239);border-color: rgb(250,250,250);margin-left: 
 	30%;height: 60px;width: 40%;border-radius: 4px;font-size: 17px;"><b>Verify</b></button>
 </a>

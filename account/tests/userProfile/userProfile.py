@@ -1,11 +1,13 @@
 from django.test import Client
 from django.urls import reverse
-from account.serializers.userProfile import userProfile
 from rest_framework import status
 from rest_framework.test import APITestCase
-from account.models import UserProfile
 import datetime,ast
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
+
 
 
 class CreateUserProfileTests(APITestCase):
@@ -120,7 +122,7 @@ class CreateUserProfileTests(APITestCase):
 
         response = self.client.post(self.url, data, format='json')
         content = self.__correct_byte(response.content)
-        self.assertEqual(content["non_field_errors"][0], 'Passwords did not match')
+        self.assertEqual(content["password"][0], 'Passwords did not match')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
@@ -222,24 +224,7 @@ class UpdateUserProfileTests(APITestCase):
 
 
 
-    def test_field_availability(self):
-        """
-        Ensure that all mandantory field values are collected 
-        """
-        data_copy = self.data.copy()
-        for key,value in self.data.items():
-            data_copy.pop(key)
-
-            response = self.client.put(self.url, data_copy, format='json')
-            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-            
-            content = self.__correct_byte(response.content)       
-            assert key in content, f'"{key}" should be a mandatory field in UserProfile model'
-            # return the key value pair to the original dict
-            data_copy[key]= value
-
-
-
+   
 
     def test_password_validation(self):
         """

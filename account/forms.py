@@ -202,7 +202,7 @@ class BusinessAccountForm(forms.Form):
         cleaned_data = super(BusinessAccountForm, self).clean()
         cd = self.cleaned_data.get('name')
         iso_code = self.cleaned_data.get('iso_code')
-        exists = Business_signup.objects.filter(name__iexact=cd,iso_code=iso_code).exists()
+        exists = BusinessProfile.objects.filter(name__iexact=cd,iso_code=iso_code).exists()
         if exists:
             self.add_error('name','''A business with the name "{}" already exists in your country.'''.format(cd))
         ab = self.cleaned_data.get('password')
@@ -335,10 +335,10 @@ class EditBusinessProfileForm(forms.Form):
     def clean(self):
         cleaned_data = super(EditBusinessProfileForm, self).clean()
         person = self.user
-        business = person.business_signup
+        business = person.BusinessProfile
         cd = self.cleaned_data.get('name')
         iso_code = self.cleaned_data.get('iso_code')
-        exists = Business_signup.objects.filter(name__iexact=cd,
+        exists = BusinessProfile.objects.filter(name__iexact=cd,
                                                 iso_code=iso_code).exists()
         if exists and cd!=business.name:
             self.add_error('name','''A business with the name "{}" already exists in your country.'''.format(cd))

@@ -40,7 +40,7 @@ def notify_user_about_order(sender, **kwargs):
                     order.save()
                     with transaction.atomic():
                         business = (
-                              Business_signup.objects
+                              BusinessProfile.objects
                               .select_for_update()
                               .get(id=order.business.id)
                           )

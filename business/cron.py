@@ -7,7 +7,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from account.tokens import account_activation_token_two
 from django.core.mail import send_mail
 from django.template import loader
-from account.models import Orders,Business_signup
+from account.models import Orders,BusinessProfile
 from django.utils import timezone
 from django.db import transaction
 from django.contrib.auth.models import User
@@ -18,7 +18,7 @@ def job():
     x = User.objects.all()
     for b in x:
         try:
-            user = b.user_signup
+            user = b.UserProfile
             break
         except Exception:
             pass

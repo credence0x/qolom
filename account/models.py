@@ -18,7 +18,7 @@ class Business_line(models.Model):
                                        null=True)
     slug         = models.SlugField(max_length=80,
                                     db_index=False)
-    business     = models.ForeignKey('Business_signup',
+    business     = models.ForeignKey('BusinessProfile',
                                     on_delete=models.CASCADE,
                                     related_name='business_line'
                                     )
@@ -97,7 +97,7 @@ class Special_line(models.Model):
     su_c    = models.TimeField(blank=True,null=True)
 
 
-    admin_user     = models.OneToOneField('User_signup',
+    admin_user     = models.OneToOneField('UserProfile',
                                     on_delete=models.CASCADE,
                                     related_name='admin_special_line',
                                     null=True
@@ -122,9 +122,9 @@ class Special_line(models.Model):
 
 
         
-class User_signup(models.Model):
+class UserProfile(models.Model):
     user          = models.OneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='user_signup',
+                                    related_name='UserProfile',
                                     on_delete=models.CASCADE,blank=True)
     first_name    = models.CharField(max_length=15,blank=True)
     last_name     = models.CharField(max_length=30,blank=True)
@@ -136,7 +136,7 @@ class User_signup(models.Model):
                                   db_index=False)
     
     ticket        = models.CharField(max_length=10,blank=True)
-    favourites    = models.ManyToManyField('Business_signup',
+    favourites    = models.ManyToManyField('BusinessProfile',
                                     related_name='favourites')
     present_line  = models.ForeignKey(Business_line,
                                      on_delete=models.PROTECT,
@@ -167,9 +167,9 @@ class User_signup(models.Model):
 
     
 
-class Business_signup(models.Model):
+class BusinessProfile(models.Model):
     user        = models.OneToOneField(settings.AUTH_USER_MODEL,
-                                    related_name='business_signup',
+                                    related_name='BusinessProfile',
                                     on_delete=models.CASCADE)
     name        = models.CharField(max_length=300, null=True)
     key         = models.CharField(max_length=7,
@@ -260,7 +260,7 @@ class Business_signup(models.Model):
     
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        super(Business_signup, self).save(*args, **kwargs)
+        super(BusinessProfile, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('users:user_detailview',
@@ -275,7 +275,7 @@ class Items(models.Model):
     name                    = models.CharField(max_length=251,
                                                null=True,
                                                blank=True)
-    business                = models.ForeignKey(Business_signup,
+    business                = models.ForeignKey(BusinessProfile,
                                         related_name='all_items',
                                         on_delete = models.CASCADE)
     price                   = models.IntegerField()
@@ -289,11 +289,11 @@ class Orders(models.Model):
     items             = models.CharField(max_length=10485760)
     total             = models.CharField(max_length=250)
     status            = models.CharField(max_length=250)
-    user              = models.ForeignKey(User_signup,
+    user              = models.ForeignKey(UserProfile,
                                      on_delete=models.CASCADE,
                                      related_name='all_orders',
                                     )
-    business          = models.ForeignKey(Business_signup,
+    business          = models.ForeignKey(BusinessProfile,
                                      on_delete=models.CASCADE,
                                      related_name='not_important',
                                     )

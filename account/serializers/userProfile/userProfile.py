@@ -1,11 +1,13 @@
-from rest_framework import fields, serializers, exceptions
+from urllib import request
+from rest_framework import serializers
 from account.models import UserProfile
-from business.models import Queue
-from django.contrib.auth.models import User
-from ...module.generate_random import getRandomKey,getRandomTicket
-from ...module.variables import special_characters
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from account.module.generate_random import getRandomTicket
+from account.module.variables import SPECIAL_CHARS
+from account.module.email import Email
+from account.serializers.user import UserSerializer,UpdateUserSerializer
 
+User = get_user_model()
 
 user_profile_editable_fields = (
                                 "timezone",
@@ -25,20 +27,6 @@ user_profile_base_fields =  (
                             "ticket",
                             ) + user_profile_editable_fields 
 
-
-
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("username","first_name","last_name","email")
-        
-
-class UpdateUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("first_name","last_name")
 
 
 
@@ -98,7 +86,7 @@ class CreateUserProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Password must contain up to 8 characters including a number or special character")
         
         contains_special_char = False
-        for at_least_one in special_characters:
+        for at_least_one in SPECIAL_CHARS:
             if at_least_one in value:
                 contains_special_char = True
                 break
@@ -112,7 +100,7 @@ class CreateUserProfileSerializer(serializers.ModelSerializer):
     def validate(self,data):
         password_1, password_2 = data.get('password'), data.get('password_2')
         if password_1 != password_2:
-            raise serializers.ValidationError("Passwords did not match")
+            raise serializers.ValidationError({"password":"Passwords did not match"})
         return data
 
         
@@ -146,9 +134,9 @@ class CreateUserProfileSerializer(serializers.ModelSerializer):
 
 
 class UpdateUserProfileSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(write_only=True)
-    last_name = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
+    first_name = serializers.CharField(write_only=True,required=False)
+    last_name = serializers.CharField(write_only=True,required=False)
     user = UpdateUserSerializer(read_only=True)
 
     
@@ -178,3 +166,6 @@ class UpdateUserProfileSerializer(serializers.ModelSerializer):
 
                 
         
+
+
+       

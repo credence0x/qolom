@@ -8,7 +8,7 @@ from datetime import timedelta
 
 def get_business(request):
     try:
-        business_real = request.user.business_signup
+        business_real = request.user.BusinessProfile
     except Exception:
         business_real = False
     return {
@@ -17,7 +17,7 @@ def get_business(request):
 
 def special_line(request):
     try:
-        special_line = request.user.user_signup.admin_special_line
+        special_line = request.user.UserProfile.admin_special_line
         
     except Exception:
         special_line = False
@@ -26,8 +26,8 @@ def special_line(request):
     }
 def ready_order(request):
     try:
-        user_signup = request.user.user_signup
-        card_information = ast.literal_eval(user_signup.card_information)
+        UserProfile = request.user.UserProfile
+        card_information = ast.literal_eval(UserProfile.card_information)
         perma_form = SearchForm()
 
         loc_time = request.session.get('loc_time',False)
@@ -48,7 +48,7 @@ def ready_order(request):
         order_ready_exists = False
         more_than_one = False
         first_order_url = False
-        user_signup = False
+        UserProfile = False
         return {
         'order_sent': order_sent,
         'order_ready':order_ready,
@@ -57,16 +57,16 @@ def ready_order(request):
         'first_order_url':first_order_url,
         'card_info':False,
         'perma_form':perma_form,
-        'user_signup':user_signup
+        'UserProfile':UserProfile
         
     }
 
 
     minus = timezone.now()- datetime.timedelta(days=3)  
-    order_sent = user_signup.all_orders.filter(is_active=True,
+    order_sent = UserProfile.all_orders.filter(is_active=True,
                                                     order_status='SENT',
                                                     created__gte=minus)
-    order_ready = user_signup.all_orders.filter(is_active=True,
+    order_ready = UserProfile.all_orders.filter(is_active=True,
                                                     order_status='READY',
                                                     created__gte=minus,
                                                     has_seen_notification=False
@@ -92,7 +92,7 @@ def ready_order(request):
         'first_order_url':first_order_url,
         'card_info':card_information,
         'perma_form':perma_form,
-        'user_signup':user_signup
+        'UserProfile':UserProfile
         
     }
     

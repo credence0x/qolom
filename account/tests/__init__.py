@@ -5,6 +5,9 @@ from .userProfile.userProfile import   (
 from .userProfile.authentication import (
                                             AuthenticateUserProfileTests,
                                             DeauthenticateUserProfileTests,
+                                            ActivateUserProfileTokenTests,
+
                                         )
 
-from .userProfile.email import (SignUpConfirmationEmailTests)
+from .mail import (SignUpConfirmationEmailTests)
+from .update import ResetPasswordTests

@@ -12,7 +12,7 @@ class SecondTokenGenerator(PasswordResetTokenGenerator):
         return (
             six.text_type(user.pk) + six.text_type(timestamp) +
             six.text_type(user.is_active)+ six.text_type(
-                user.business_signup.days_open)
+                user.BusinessProfile.days_open)
         )
 class ThirdTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
