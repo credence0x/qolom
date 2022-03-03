@@ -45,7 +45,7 @@ class UserQueue(BaseModel):
 
 
     def delete(self, *args, **kwargs):
-        self.people_present.set([])
+        self.people_on_queue.set([])
         self.is_active = False
         super(UserQueue, self).save(*args, **kwargs)
 

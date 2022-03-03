@@ -7,20 +7,19 @@ from django.urls import reverse
 from account.models import BusinessProfile
 
 class BusinessQueue(BaseModel):
-    business     = models.ForeignKey("account.BusinessProfile",
+    owner     = models.ForeignKey("account.BusinessProfile",
                                     on_delete=models.DO_NOTHING,
                                     related_name='queue'
                                     )
-    name         = DefaultCharField()
-    instruction  = DefaultCharField()
-    information  = DefaultCharField()
+    name         = models.CharField(max_length=255)
+    instruction  = models.CharField(max_length=10000)
+    information  = models.CharField(max_length=10000)
     
-    key  = models.CharField(max_length=8,
-                            blank=True,
+    key  = models.CharField(
+                            max_length=8,
                             unique=True,
-                            null=True)
-    slug         = models.SlugField(max_length=80,
-                                    db_index=False)
+                            )
+    
     objects = CustomManager()
     
     class Meta:
@@ -36,22 +35,15 @@ class BusinessQueue(BaseModel):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.is_active = True
-        self.slug = slugify(self.name)
         super(BusinessQueue, self).save(*args, **kwargs)
 
 
     def delete(self, *args, **kwargs):
-        self.people_present.set([])
+        self.people_on_queue.set([])
         self.is_active = False
         super(BusinessQueue, self).save(*args, **kwargs)
 
  
-    
-    def get_absolute_url(self):
-        return reverse('business:business_detailview',
-                        args=[
-                              str(self.slug)
-                            ])
        
                         
         

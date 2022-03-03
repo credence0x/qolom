@@ -63,7 +63,7 @@ class Item(BaseModel):
     
     
     class Meta:
-        verbose_name = '[ Item ]'
+        verbose_name = '[Business] Item '
         ordering = ["-created_at"]
         
         

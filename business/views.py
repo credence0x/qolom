@@ -687,7 +687,7 @@ def business_ajax(request,uniquefield):
     if not line_object:
         return HttpResponse('r')
     else:
-        line = line_object.people_present.all().order_by('time')
+        line = line_object.people_on_queue.all().order_by('time')
     compare = request.session.get('compare', None)
     json_line={}
     if line:
@@ -743,7 +743,7 @@ def LineDetailView(request,slug):
     if request.method == 'POST':
         body = request.body.decode('utf-8')
         body = json.loads(body)
-        line = businessline.people_present.all()
+        line = businessline.people_on_queue.all()
         for eachuser in line:
             if eachuser.unique == body['remove']:
                 if eachuser.present_line!=None:
@@ -981,7 +981,7 @@ def LineDetailView(request,slug):
             
             
         
-        line = businessline.people_present.all().order_by('time')
+        line = businessline.people_on_queue.all().order_by('time')
         number_of_people = len(line)
         form = RemoveForm()
         if not businessline:
@@ -1003,32 +1003,6 @@ def LineDetailView(request,slug):
        
     
     
-@login_required
-def ChangePasswordView(request):
-    user = request.user
-    try:
-        business = user.BusinessProfile
-    except Exception:
-        return HttpResponseRedirect(reverse('login'))
-    if request.method == 'POST':
-        password_form = ChangePasswordForm(request.user,request.POST)
-        if password_form.is_valid():
-            cd = password_form.cleaned_data
-            user.set_password(cd['new_password'])
-            user.save()
-            login(request,user)
-            messages.success(request,
-                             'Your password was updated successfully!')
-            return HttpResponseRedirect(reverse('business:business_homepage'))
-        else:
-            return render(request,'business/edit_registration/change_password.html',
-                          {'password_form': password_form })
-    else:
-        password_form = ChangePasswordForm(request.user)
-        return render(request,'business/edit_registration/change_password.html',
-                          {'password_form': password_form })
-        
-        
 
         
      
@@ -1057,7 +1031,7 @@ def DeleteBusinessLineView(request):
                 except ObjectDoesNotExist:
                     return HttpResponse('Something went wrong')
             if normal_line:
-                for all_ in line.people_present.all():
+                for all_ in line.people_on_queue.all():
                     all_.present_line = None
                     all_.special_line = None
                     all_.save()

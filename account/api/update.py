@@ -1,10 +1,9 @@
-from rest_framework import generics,status
-from django.contrib.auth.models import User
+from rest_framework import status
 from account.serializers import (
-                            ResetPasswordSerializer,
-                            CheckResetPasswordLinkSerializer,
-                            ChangePasswordSerializer,
+                                    ResetPasswordSerializer,
+                                    ChangePasswordSerializer,
                             )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -30,10 +29,13 @@ class ChangePasswordAPIView(APIView):
     """
     Update password of logged in user
     """
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 

@@ -18,13 +18,12 @@ from django.urls import path, include
 from users.views import VerifyPaymentScriptView,webhook
 
 urlpatterns = [
-    path('accounts/', include('account.urls', namespace='account')),
-    path('business/', include('business.urls', namespace='business')),
-    path('user/', include('users.urls', namespace='users')),
+    path('api/account/', include('account.urls', namespace='account')),
+    path('api/business/', include('business.urls', namespace='business')),
+    path('api/user/', include('users.urls', namespace='users')),
     
     path('verify-script/', VerifyPaymentScriptView, name='verify' ),
     path('paystack', include(('paystack.frameworks.django.urls','paystack'),namespace='paystack')),
     path('webhook', webhook, name='webhook' ),
-    #there are two login urls
 
 ]

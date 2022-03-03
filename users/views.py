@@ -53,7 +53,7 @@ def user_ajax(request,uniquefield,unique):
         len_key = len(key)
         if len_key == 7:
             try:
-                line = Business_line.objects.get(uniquefield=key).people_present.all().order_by('time')
+                line = Business_line.objects.get(uniquefield=key).people_on_queue.all().order_by('time')
             except:
                 return HttpResponse('pnf')#page not found
         elif len_key == 8:
@@ -760,7 +760,7 @@ def user_line(request,unumber):
     
     
     if normal_line == True:
-        line = businessline.people_present.all().order_by('time')
+        line = businessline.people_on_queue.all().order_by('time')
         len_line = line.count()
     else:
         line = businessline.all_present.all().order_by('time')
@@ -1368,7 +1368,7 @@ def UserHomePageView(request):
     special_line = person.special_line
     if normal_line:
         line = normal_line
-        people = line.people_present.all().order_by('time')
+        people = line.people_on_queue.all().order_by('time')
     elif special_line:
         line = special_line        
         people = line.all_present.all().order_by('time')

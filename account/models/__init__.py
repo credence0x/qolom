@@ -1,3 +1,3 @@
 from .User import User
-from .UserProfile import UserProfile,UserCalendar
-from .BusinessProfile import BusinessProfile,Calendar
+from .UserProfile import UserProfile
+from .BusinessProfile import BusinessProfile

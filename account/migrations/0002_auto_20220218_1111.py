@@ -20,12 +20,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userprofile',
             name='current_business_queue',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='people_present', to='business.businessqueue'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='people_on_queue', to='business.businessqueue'),
         ),
         migrations.AddField(
             model_name='userprofile',
             name='current_user_queue',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='people_present', to='users.userqueue'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='people_on_queue', to='users.userqueue'),
         ),
         migrations.AddField(
             model_name='userprofile',
