@@ -1,35 +1,42 @@
 from .user import (
-                    UserSerializer,
-                    UpdateUserSerializer,
-            )
+                        UserSerializer,
+                        UpdateUserSerializer,
+                 )
 
 
 from .userProfile.userProfile import (
-                                 UserProfileSerializer,
-                                 CreateUserProfileSerializer,
-                                 UpdateUserProfileSerializer,
-                            )
+                                            UserProfileSerializer,
+                                            CreateUserProfileSerializer,
+                                            UpdateUserProfileSerializer,
+                                    )
 from .userProfile.authentication import (
-                                AuthenticateUserProfileSerializer,
-                                DeauthenticateUserProfileSerializer,
-                                ActivateUserProfileTokenSerializer,
-                            )
+                                            AuthenticateUserProfileSerializer,
+                                            DeauthenticateUserProfileSerializer,
+                                            ActivateUserProfileTokenSerializer,
+                                        )
 
 
 
 from .businessProfile.businessProfile import (
-                                 BusinessProfileSerializer,
-                                 CreateBusinessProfileSerializer,
-                                 UpdateBusinessProfileSerializer,
-                            )
+                                                BusinessProfileSerializer,
+                                                CreateBusinessProfileSerializer,
+                                                UpdateBusinessProfileSerializer,
+                                            )
 from .businessProfile.authentication import (
-                                AuthenticateBusinessProfileSerializer,
-                                DeauthenticateBusinessProfileSerializer,
-                                ActivateBusinessProfileTokenSerializer,
+                                                    AuthenticateBusinessProfileSerializer,
+                                                    DeauthenticateBusinessProfileSerializer,
+                                                    ActivateBusinessProfileTokenSerializer,
+                                                )
+
+
+from .update import (
+                        ResetPasswordSerializer, 
+                        ChangePasswordSerializer
+                    )
+from .authentication import (
+                                CheckResetPasswordLinkSerializer
                             )
-
-
-from .update import (ResetPasswordSerializer)
-from .authentication import CheckResetPasswordLinkSerializer
-from .mail import (SignUpMailSerializer,
-                    ResetPasswordMailSerializer)
+from .mail import (
+                        SignUpMailSerializer,
+                        ResetPasswordMailSerializer
+                    )

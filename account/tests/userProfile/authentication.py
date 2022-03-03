@@ -133,6 +133,44 @@ class AuthenticateUserProfileTests(APITestCase):
 
 
 
+    def test_authentication_with_business_profile_instance(self):
+        """
+        Ensure that this link only works with user profile objects.
+        """
+
+        # create test user profile account
+        create_business_profile_data =  {    
+                                            "name": "Starbucks International Ltd",
+                                            "username":"starbucks",
+                                            "email":"lojetokun2@gmail.com",
+                                            "password":"1234@334&*9",
+                                            "password_2":"1234@334&*9",     
+                                            "minimum_age_allowed":"18",
+                                            "iso_code":"NG",
+                                            "country":"Nigeria",
+                                            "state":"Lagos",
+                                            "address":"14, Titi Close, Ogba",
+                                            "timezone":"Lagos/Africa"
+                                        }
+
+        c = Client()
+        c.post(reverse('account:create_business_profile'), create_business_profile_data, format='json')
+        user = User.objects.get(username=create_business_profile_data.get("username").lower())
+        user.is_active = True
+        user.save()
+        
+        business_profile_login_data = {   
+                                        "username":"starbucks",
+                                        "password":"1234@334&*9",
+                                    }
+        # actual test
+        response = self.client.post(self.url, business_profile_login_data, format='json')
+        error = self.__correct_byte(response.content)
+        self.assertIn("account",error, f"An error stating that the user is not a user profile object should have popped up")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 

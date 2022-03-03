@@ -16,7 +16,7 @@ class ResetPasswordTests(APITestCase):
         
         
         self.url = reverse('account:reset_password')
-        self.mail_url = reverse('account:reset_password_mail')
+        self.mail_url = reverse('account:mail_reset_password')
         self.validation_url = reverse('account:reset_password_link_check')
 
 
@@ -54,7 +54,7 @@ class ResetPasswordTests(APITestCase):
    
    
     # @override_settings(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend')
-    def test_reset_password_mail_using_username_or_email(self):
+    def test_mail_reset_password_using_username_or_email(self):
         """
         Ensure we can send reset password mail to user
         """
@@ -121,3 +121,110 @@ class ResetPasswordTests(APITestCase):
 
     
 
+
+
+
+
+
+class ChangePasswordTests(APITestCase):
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordTests, self).__init__(*args, **kwargs)
+        
+        self.url = reverse('account:change_password')
+
+
+    @classmethod    
+    def setUpTestData(cls):
+        create_data =      {    "first_name": "babatola",
+                                "last_name":"ojetokun",
+                                "username":"Babatola",
+                                "email":"lojetokun@gmail.com",
+                                "password":"1234@334&*9",
+                                "password_2":"1234@334&*9",
+                                "d_o_b": datetime.datetime.now().date(),
+                                "iso_code":"NG",
+                                "country":"Nigeria",
+                                "timezone":"Lagos/Africa"
+                         }
+        
+
+        cls.create_data = create_data
+
+        url = reverse('account:create_user_profile')
+        c = Client()
+        c.post(url, create_data, format='json')
+
+        user = User.objects.get(username=create_data.get("username").lower())
+        user.is_active = True
+        user.save()
+
+        cls.username = create_data.get("username").lower()
+        cls.password = create_data.get("password")
+                
+        
+    def setUp(self):
+        self.client.login(username=self.username,
+                            password=self.password)
+        
+   
+    def __correct_byte(self,byte_value):
+        return ast.literal_eval(byte_value.decode('utf-8'))
+        
+   
+   
+
+    def test_change_password_with_correct_details(self):
+        """
+        Ensure that we can change user password
+        """
+        
+        data = {
+                    "password":self.create_data.get("password"),
+                    "new_password": "new_passwword_9328",
+                    "new_password_2": "new_passwword_9328",
+                }
+        
+        response = self.client.post(self.url,data, format='json')
+        content = self.__correct_byte(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        
+    def test_old_password_validation(self):
+        """
+        Ensure that we can change user password
+        """
+        data = {
+                    "password":"wrong_old_password",
+                    "new_password": "new_passwword_9328",
+                    "new_password_2": "new_passwword_9328",
+                }
+        
+        response = self.client.post(self.url,data, format='json')
+        content = self.__correct_byte(response.content)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("password", content)
+
+
+    
+
+
+    def test_new_password_validation(self):
+        """
+        Ensure that we can change user password
+        """
+        data = {
+                    "password":self.create_data.get("password"),
+                    "new_password": "new_passwword_9328",
+                    "new_password_2": "password_that_doesn't_match_'new_password'_above",
+                }
+        
+        response = self.client.post(self.url,data, format='json')
+        content = self.__correct_byte(response.content)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("new_password", content)
+
+
+        
+        
+
+    

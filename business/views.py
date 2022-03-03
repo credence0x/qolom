@@ -1076,20 +1076,3 @@ def DeleteBusinessLineView(request):
                                       line_uniquefield=line.uniquefield)
                 messages.success(request,'Line deleted successfully')
                 return HttpResponseRedirect (reverse('users:user_homepage'))
-            
-    
-        
-    
-
-
-
-
-
-    
-    
-
-
-
-
-            
-        

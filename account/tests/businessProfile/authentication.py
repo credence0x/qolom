@@ -12,11 +12,6 @@ from django.test import override_settings
 
 User = get_user_model()
 
-# def test_authentication_with_related_business_profile_account(self):
-    #     """
-    #     Ensure that authentication with a User account that 
-    #     doesn't have a related BusinessProfile object doesn't work.
-    #     """
         
 class AuthenticateBusinessProfileTests(APITestCase):
     def __init__(self, *args, **kwargs):
@@ -129,6 +124,41 @@ class AuthenticateBusinessProfileTests(APITestCase):
         self.assertEqual(error.get("password",False),False, f"Password field must not be sent out")
         self.assertNotEqual(error.get("account",False),False, f"An error stating that the account is inactive should pop up")
         self.assertEqual(user.is_authenticated,False)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+    def test_authentication_with_user_profile_instance(self):
+        """
+        Ensure that this link only works with business profile objects.
+        """
+
+        # create test user profile account
+        create_user_profile_data =      {    "first_name": "Babatola",
+                                            "last_name":"Ojetokun",
+                                            "username":"babatola",
+                                            "email":"babatola@gmail.com",
+                                            "password":"1234@334&*9",
+                                            "password_2":"1234@334&*9",
+                                            "d_o_b": datetime.datetime.now().date(),
+                                            "iso_code":"NG",
+                                            "country":"Nigeria",
+                                            "timezone":"Lagos/Africa"
+                                        }
+
+        c = Client()
+        c.post(reverse('account:create_user_profile'), create_user_profile_data, format='json')
+        user = User.objects.get(username=create_user_profile_data.get("username").lower())
+        user.is_active = True
+        user.save()
+        
+        user_profile_login_data = {   
+                                    "username":"babatola",
+                                    "password":"1234@334&*9",
+                                }
+        # actual test
+        response = self.client.post(self.url, user_profile_login_data, format='json')
+        error = self.__correct_byte(response.content)
+        self.assertIn("account",error, f"An error stating that the user is not a business profile object should have popped up")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 

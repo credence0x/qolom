@@ -7,7 +7,7 @@ def ensure_user_has_related_business_profile_object(user):
     """
     Confirms that a user has a related BusinessProfile object
     """
-    if not user.has_related_business_profile_object:
+    if not user.has_related_business_profile_object():
         raise serializers.ValidationError({"account":"This is not a business account. \
                                                     Please try using theend user sign up page "})
 

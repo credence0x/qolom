@@ -20,5 +20,10 @@ from .userProfile.authentication import (
                                             ActivateUserProfileTokenTests,
 
                                         )
-from .mail import (SignUpConfirmationEmailTests)
-from .update import ResetPasswordTests
+from .mail import ( 
+                    SignUpConfirmationEmailTests
+                )
+from .update import (
+                        ResetPasswordTests,
+                        ChangePasswordTests
+                    )

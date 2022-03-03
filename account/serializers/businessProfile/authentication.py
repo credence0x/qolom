@@ -78,6 +78,8 @@ class AuthenticateBusinessProfileSerializer(serializers.Serializer):
 
         # ensures that it is a business account
         ensure_user_has_related_business_profile_object(user)
+        
+
         correct_password = user.check_password(password) 
         if not correct_password:
             raise serializers.ValidationError({"username":"Username and password did not match"})

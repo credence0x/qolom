@@ -20,8 +20,14 @@ from account.api.businessProfile.authentication import (
                                                      DeauthenticateBusinessProfileAPIView,
                                                    )
 
-from account.api.mail import (SignUpMailAPIView,
-                              ResetPasswordMailAPIView)
+from account.api.mail import (
+                                 SignUpMailAPIView,
+                                 ResetPasswordMailAPIView
+                              )
 
-from account.api.update import (ResetPasswordAPIView)                            
+from account.api.update import (
+                                  ResetPasswordAPIView,
+                                  ChangePasswordAPIView
+                                )        
+
 from account.api.authentication import (CheckResetPasswordLinkAPIView)                          
