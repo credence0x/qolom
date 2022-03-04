@@ -1,7 +1,6 @@
-from queue import Queue
 from account.models.UserProfile import UserProfile
 from account.module.generate_random import getRandomKey
-from business.models.Queue import Queue
+from business.models import BusinessQueue
 from rest_framework import serializers
 
 
@@ -20,7 +19,7 @@ class __QueueUserProfileSerializer(serializers.ModelSerializer):
 class CreateQueueSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Queue
+        model = BusinessQueue
         fields = ("name","instruction","information",)
 
     
@@ -28,24 +27,24 @@ class CreateQueueSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         validated_data['owner'] = self.context.get("request").user.businessProfile 
         validated_data['key'] = getRandomKey(8) 
-        queue = Queue.objects.create(**validated_data)
+        queue = BusinessQueue.objects.create(**validated_data)
         return queue 
     
 
 
 
 class RetrieveQueueSerializer(serializers.ModelSerializer):
-    people_on_queue =  serializers.SerializerMethodSerializer()
+    people_on_queue =  serializers.SerializerMethodField()
     class Meta:
-        model = Queue
+        model = BusinessQueue
         fields = ("people_on_queue",)
 
-    def get_people_on_queue(self, instance):
+    def get_people_on_Businessqueue(self, instance):
         """
         Method to get the people on the
-        queue based on time of entry
+        Businessqueue based on time of entry
         """
-        people = instance.people_on_queue.all().order_by('-time_of_queue_entry')
+        people = instance.people_on_Businessqueue.all().order_by('-time_of_queue_entry')
         return __QueueUserProfileSerializer(people, many=True).data
 
 
@@ -54,12 +53,12 @@ class RetrieveQueueSerializer(serializers.ModelSerializer):
 
 class RetrieveQueueInformationSerializer(serializers.ModelSerializer):
     """
-    Serializer to get information about the queue
+    Serializer to get information about the Businessqueue
     """
-    # number of people on the queue
+    # number of people on the Businessqueue
     num_of_people = serializers.SerializerMethodField()
     class Meta:
-        model = Queue
+        model = BusinessQueue
         fields =  ("name","instruction","information","num_of_people")
 
     def get_num_of_people(self,obj):
@@ -69,7 +68,7 @@ class RetrieveQueueInformationSerializer(serializers.ModelSerializer):
 class UpdateDestroyQueueSerializer(serializers.ModelSerializer):    
 
     class Meta:
-        model = Queue
+        model = BusinessQueue
         fields = ("name","instruction","information",)
 
 

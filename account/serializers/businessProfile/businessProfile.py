@@ -1,16 +1,19 @@
 from account.module.businessProfile.serializers.utils import compress_image
+from business.models.Calendar import Calendar
 from rest_framework import serializers
 from account.models import BusinessProfile
 from django.contrib.auth import get_user_model
 from account.module.generate_random import getRandomTicket
 from account.module.variables import SPECIAL_CHARS
 from account.serializers.user import UserSerializer, UpdateUserSerializer
+from business.module import variables
+import datetime
+
 
 User = get_user_model()
 
 business_profile_editable_fields = (
                                     "password",
-                                    "timezone",
                                     "country",
                                     "state",
                                     "address",
@@ -75,10 +78,6 @@ class CreateBusinessProfileSerializer(serializers.ModelSerializer):
         return value
 
     
-    def validate_timezone(self,value):
-        if not value or (value == 'undefined'):
-            raise serializers.ValidationError("Invalid Timezone")
-        return value
 
 
     def validate_username(self,value):
@@ -139,11 +138,16 @@ class CreateBusinessProfileSerializer(serializers.ModelSerializer):
                                     state=validated_data.get('state'),
                                     address=validated_data.get('address'),
                                     iso_code=validated_data.get('iso_code'),
-                                    timezone = validated_data.get('timezone'),
                                     name=validated_data.get('name'),  
                                     minimum_age_allowed=validated_data.get('minimum_age_allowed'),  
                                     profile_picture=validated_data.get('profile_picture'),  
                                 )
+
+        # initalize Calendar
+        calendar_data =  {"owner":businessProfile}
+        Calendar.objects.create(**calendar_data)
+
+
         return businessProfile
 
 
@@ -161,7 +165,6 @@ class UpdateBusinessProfileSerializer(serializers.ModelSerializer):
     address = serializers.CharField(required=False)
     country = serializers.CharField(required=False)
     state = serializers.CharField(required=False)
-    timezone = serializers.CharField(required=False)
     iso_code = serializers.CharField(required=False)
     profile_picture = serializers.ImageField(required=False)
 

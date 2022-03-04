@@ -4,7 +4,7 @@ from account.serializers.userProfile import userProfile
 from rest_framework import status
 from rest_framework.test import APITestCase
 from account.models import UserProfile
-import datetime,ast
+import datetime,json
 from django.contrib.auth import get_user_model
 from django.contrib import auth
 from django.test import override_settings
@@ -23,7 +23,7 @@ class SignUpConfirmationEmailTests(APITestCase):
         
     
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
     
     @classmethod    
     def setUpTestData(cls):
@@ -36,7 +36,6 @@ class SignUpConfirmationEmailTests(APITestCase):
                                 "d_o_b": datetime.datetime.now().date(),
                                 "iso_code":"NG",
                                 "country":"Nigeria",
-                                "timezone":"Lagos/Africa"
                          }
         cls.create_data = create_data
         url = reverse('account:create_user_profile')

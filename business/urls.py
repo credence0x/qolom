@@ -1,8 +1,7 @@
 from django.urls import path
 
 from business.api import (
-                                    CreateCalendarAPIView,
-                                    RetrieveUpdateDestroyCalendarAPIView,
+                                    RetrieveUpdateCalendarAPIView,
 
                                     CreateQueueAPIView,
                                     RetrieveQueueAPIView,
@@ -17,17 +16,15 @@ from business.api import (
 app_name ='business'
 urlpatterns = [
 
-        path('calendar/add/', CreateCalendarAPIView, name='calendar_add' ),
-        path('calendar/update/', RetrieveUpdateDestroyCalendarAPIView, name='calendar_update' ),
-        path('calendar/delete/', RetrieveUpdateDestroyCalendarAPIView, name='calendar_delete' ),
-        path('calendar/', RetrieveUpdateDestroyCalendarAPIView, name='calendar_view' ),
+        path('calendar/update/', RetrieveUpdateCalendarAPIView.as_view(), name='calendar_update' ),
+        path('calendar/', RetrieveUpdateCalendarAPIView.as_view(), name='calendar_view' ),
 
 
-        path('queue/<int:pk>/info/', RetrieveQueueInformationAPIView, name='queue_view_info' ),
-        path('queue/<int:pk>/update/', UpdateDestroyQueueAPIView, name='queue_update' ),
-        path('queue/<int:pk>/delete/', UpdateDestroyQueueAPIView, name='queue_delete' ),
-        path('queue/<int:pk>/', RetrieveQueueAPIView, name='queue_view' ),
-        path('queue/add/', CreateQueueAPIView, name='queue_add' ),
+        path('queue/<int:pk>/info/', RetrieveQueueInformationAPIView.as_view(), name='queue_view_info' ),
+        path('queue/<int:pk>/update/', UpdateDestroyQueueAPIView.as_view(), name='queue_update' ),
+        path('queue/<int:pk>/delete/', UpdateDestroyQueueAPIView.as_view(), name='queue_delete' ),
+        path('queue/<int:pk>/', RetrieveQueueAPIView.as_view(), name='queue_view' ),
+        path('queue/add/', CreateQueueAPIView.as_view(), name='queue_add' ),
 
 #     re_path(r'^add-line/$', CreateLineView, name='business_line' ),
 #     re_path(r'^$', BusinessHomePageView, name='business_homepage' ),

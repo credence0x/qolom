@@ -15,15 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from users.views import VerifyPaymentScriptView,webhook
+# from users.views import VerifyPaymentScriptView,webhook
 
 urlpatterns = [
     path('api/account/', include('account.urls', namespace='account')),
     path('api/business/', include('business.urls', namespace='business')),
     path('api/user/', include('users.urls', namespace='users')),
     
-    path('verify-script/', VerifyPaymentScriptView, name='verify' ),
+    # path('verify-script/', VerifyPaymentScriptView, name='verify' ),
     path('paystack', include(('paystack.frameworks.django.urls','paystack'),namespace='paystack')),
-    path('webhook', webhook, name='webhook' ),
+    # path('webhook', webhook, name='webhook' ),
 
 ]

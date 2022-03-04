@@ -3,7 +3,7 @@ from django.test import Client
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-import datetime,ast
+import datetime,json
 from PIL import Image
 
 from django.contrib.auth import get_user_model
@@ -30,14 +30,13 @@ class CreateBusinessProfileTests(APITestCase):
                 "country":"Nigeria",
                 "state":"Lagos",
                 "address":"14, Titi Close, Ogba",
-                "timezone":"Lagos/Africa"
             }
 
         self.url = reverse('account:create_business_profile')
 
     
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
         
    
    
@@ -79,7 +78,6 @@ class CreateBusinessProfileTests(APITestCase):
                             "address",
                             "minimum_age_allowed",
                             "iso_code",
-                            "timezone",
                         ]
 
         for each in BusinessProfile_field_list:
@@ -197,12 +195,11 @@ class UpdateBusinessProfileTests(APITestCase):
                             "country":"Ukraine",
                             "state":"Kyiv",
                             "address":"The Presidential Villa",
-                            "timezone":"Lagos/Africa",
                      }
         
     
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
     
     @classmethod    
     def setUpTestData(cls):
@@ -217,7 +214,6 @@ class UpdateBusinessProfileTests(APITestCase):
                 "country":"Nigeria",
                 "state":"Lagos",
                 "address":"14, Titi Close, Ogba",
-                "timezone":"Lagos/Africa"
             }
         
 

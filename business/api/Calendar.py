@@ -1,28 +1,22 @@
-from urllib import request
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from business.models import Calendar
 from business.serializers import (
-                                        CreateCalendarSerializer,
-                                        RetrieveUpdateDestroyCalendarSerializer
+                                        RetrieveUpdateCalendarSerializer
                                     )
 from business.permissions import BusinessOnly
 from django.shortcuts import get_object_or_404
 
-class CreateCalendarAPIView(generics.CreateAPIView):
-    queryset = Calendar.objects.all()
-    serializer_class = CreateCalendarSerializer
-    permission_classes = [IsAuthenticated,BusinessOnly]
 
-
-class RetrieveUpdateDestroyCalendarAPIView(generics.UpdateAPIView):
+class RetrieveUpdateCalendarAPIView(generics.RetrieveUpdateAPIView):
     queryset = Calendar.objects.all()
-    serializer_class = RetrieveUpdateDestroyCalendarSerializer
+    serializer_class = RetrieveUpdateCalendarSerializer
     permission_classes = [IsAuthenticated,BusinessOnly]
 
     def get_object(self):
         queryset = self.get_queryset() 
-        obj = get_object_or_404(queryset, {"owner":request.user.businessProfile.pk})
+        filter_ = {"owner":self.request.user.businessProfile.pk}
+        obj = get_object_or_404(queryset, **filter_)
         return obj
     
 

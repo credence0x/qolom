@@ -2,7 +2,7 @@ from django.test import Client
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-import datetime,ast
+import datetime,json
 from django.contrib.auth import get_user_model
 
 
@@ -22,14 +22,13 @@ class CreateUserProfileTests(APITestCase):
                             "d_o_b": datetime.datetime.now().date(),
                             "iso_code":"NG",
                             "country":"Nigeria",
-                            "timezone":"Lagos/Africa"
                      }
         
         self.url = reverse('account:create_user_profile')
 
     
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
         
    
    
@@ -65,7 +64,6 @@ class CreateUserProfileTests(APITestCase):
         
         userProfile_field_list = ["country",
                             "iso_code",
-                            "timezone",
                             "d_o_b",
                             ]
         for each in userProfile_field_list:
@@ -164,11 +162,10 @@ class UpdateUserProfileTests(APITestCase):
                             "password":"1234@334&*9",
                             "iso_code":"NG",
                             "country":"Nigeria",
-                            "timezone":"Lagos/Africa"
                      }
     
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
     
     @classmethod    
     def setUpTestData(cls):
@@ -181,7 +178,6 @@ class UpdateUserProfileTests(APITestCase):
                                     "d_o_b": datetime.datetime.now().date(),
                                     "iso_code":"NG",
                                     "country":"Nigeria",
-                                    "timezone":"Lagos/Africa"
         }
         url = reverse('account:create_user_profile')
         c = Client()
@@ -232,7 +228,6 @@ class UpdateUserProfileTests(APITestCase):
         
         userProfile_field_list = ["country",
                             "iso_code",
-                            "timezone",
                             ]
         for each in userProfile_field_list:
             # self.assertIn( that the correct values were actually inserted            

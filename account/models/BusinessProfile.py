@@ -50,7 +50,7 @@ class BusinessProfile(BaseModel):
         
  
     def __str__(self):
-        return f"[ Business ] - >  {self.user.first_name}"
+        return f"[ Business ] - >  {self.name}"
 
     
     def save(self, *args, **kwargs):

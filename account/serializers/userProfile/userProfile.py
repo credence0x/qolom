@@ -10,7 +10,6 @@ from account.serializers.user import UserSerializer,UpdateUserSerializer
 User = get_user_model()
 
 user_profile_editable_fields = (
-                                "timezone",
                                 "country",
                                 "iso_code",
                                 "first_name",
@@ -63,10 +62,6 @@ class CreateUserProfileSerializer(serializers.ModelSerializer):
         return value
 
     
-    def validate_timezone(self,value):
-        if not value or (value == 'undefined'):
-            raise serializers.ValidationError("Invalid Timezone")
-        return value
 
     def validate_username(self,value):
         value = value.lower()
@@ -118,7 +113,6 @@ class CreateUserProfileSerializer(serializers.ModelSerializer):
                                     ticket = ticket,
                                     country=validated_data.get('country'),
                                     iso_code=validated_data.get('iso_code'),
-                                    timezone = validated_data.get('timezone'),
                                     d_o_b=validated_data.get('d_o_b'),  
                                     total_seconds=0
                                 )

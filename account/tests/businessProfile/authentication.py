@@ -4,7 +4,7 @@ from account.serializers.businessProfile import businessProfile
 from rest_framework import status
 from rest_framework.test import APITestCase
 from account.models import BusinessProfile
-import datetime,ast
+import datetime,json
 from django.contrib.auth import get_user_model
 from django.contrib import auth
 from django.test import override_settings
@@ -29,7 +29,7 @@ class AuthenticateBusinessProfileTests(APITestCase):
 
     
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
     
     @classmethod    
     def setUpTestData(cls):
@@ -44,7 +44,6 @@ class AuthenticateBusinessProfileTests(APITestCase):
                 "country":"Nigeria",
                 "state":"Lagos",
                 "address":"14, Titi Close, Ogba",
-                "timezone":"Lagos/Africa"
             }
         cls.create_data = create_data
         url = reverse('account:create_business_profile')
@@ -142,7 +141,6 @@ class AuthenticateBusinessProfileTests(APITestCase):
                                             "d_o_b": datetime.datetime.now().date(),
                                             "iso_code":"NG",
                                             "country":"Nigeria",
-                                            "timezone":"Lagos/Africa"
                                         }
 
         c = Client()
@@ -179,7 +177,7 @@ class DeauthenticateBusinessProfileTests(APITestCase):
                            }
     
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
     
     @classmethod    
     def setUpTestData(cls):
@@ -194,7 +192,6 @@ class DeauthenticateBusinessProfileTests(APITestCase):
                 "country":"Nigeria",
                 "state":"Lagos",
                 "address":"14, Titi Close, Ogba",
-                "timezone":"Lagos/Africa"
             }
         cls.create_data = create_data
         url = reverse('account:create_business_profile')
@@ -246,7 +243,7 @@ class ActivateBusinessProfileTokenTests(APITestCase):
                            }
     
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
     
     @classmethod    
     def setUpTestData(cls):
@@ -261,7 +258,6 @@ class ActivateBusinessProfileTokenTests(APITestCase):
                 "country":"Nigeria",
                 "state":"Lagos",
                 "address":"14, Titi Close, Ogba",
-                "timezone":"Lagos/Africa"
             }
         # create account
         cls.create_data = create_data

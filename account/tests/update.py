@@ -2,7 +2,7 @@ from django.test import Client
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-import datetime,ast
+import datetime,json
 from django.contrib.auth import get_user_model
 from django.test import override_settings
 
@@ -31,7 +31,6 @@ class ResetPasswordTests(APITestCase):
                                 "d_o_b": datetime.datetime.now().date(),
                                 "iso_code":"NG",
                                 "country":"Nigeria",
-                                "timezone":"Lagos/Africa"
                          }
         # assertions are to ensure that the test app automatically lowers the values
         assert create_data.get('username') != create_data.get('username').lower()
@@ -49,7 +48,7 @@ class ResetPasswordTests(APITestCase):
     
    
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
         
    
    
@@ -144,7 +143,6 @@ class ChangePasswordTests(APITestCase):
                                 "d_o_b": datetime.datetime.now().date(),
                                 "iso_code":"NG",
                                 "country":"Nigeria",
-                                "timezone":"Lagos/Africa"
                          }
         
 
@@ -168,7 +166,7 @@ class ChangePasswordTests(APITestCase):
         
    
     def __correct_byte(self,byte_value):
-        return ast.literal_eval(byte_value.decode('utf-8'))
+        return json.loads(byte_value.decode('utf-8'))
         
    
    

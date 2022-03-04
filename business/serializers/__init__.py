@@ -1,6 +1,5 @@
 from .Calendar import (
-                        CreateCalendarSerializer,
-                        RetrieveUpdateDestroyCalendarSerializer,
+                        RetrieveUpdateCalendarSerializer,
                     )
 
 from .Queue import (

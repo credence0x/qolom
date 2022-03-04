@@ -1,6 +1,5 @@
 from .Calendar import (
-                            CreateCalendarAPIView,
-                           RetrieveUpdateDestroyCalendarAPIView
+                           RetrieveUpdateCalendarAPIView
                      )
 
 
