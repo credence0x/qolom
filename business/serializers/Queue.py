@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 
 
-class __QueueUserProfileSerializer(serializers.ModelSerializer):
+class QueueUserProfileSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
                                         read_only=True,
                                         slug_field='first_name'
@@ -20,7 +20,7 @@ class CreateQueueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BusinessQueue
-        fields = ("name","instruction","information",)
+        fields = ("name","instruction","information","id")
 
     
 
@@ -39,13 +39,13 @@ class RetrieveQueueSerializer(serializers.ModelSerializer):
         model = BusinessQueue
         fields = ("people_on_queue",)
 
-    def get_people_on_Businessqueue(self, instance):
+    def get_people_on_queue(self, instance):
         """
         Method to get the people on the
-        Businessqueue based on time of entry
+        queue based on time of entry
         """
-        people = instance.people_on_Businessqueue.all().order_by('-time_of_queue_entry')
-        return __QueueUserProfileSerializer(people, many=True).data
+        people = instance.people_on_queue.all().order_by('-time_of_queue_entry')
+        return QueueUserProfileSerializer(people, many=True).data
 
 
 
@@ -70,7 +70,3 @@ class UpdateDestroyQueueSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusinessQueue
         fields = ("name","instruction","information",)
-
-
-      
-    

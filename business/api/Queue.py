@@ -7,35 +7,39 @@ from business.serializers import (
                                         UpdateDestroyQueueSerializer,
                                         RetrieveQueueInformationSerializer
                                     )
-from business.permissions import BusinessOnly
+from business.permissions import  IsBusiness, IsBusinessOwner
 
 class CreateQueueAPIView(generics.CreateAPIView):
     queryset = BusinessQueue.objects.all()
     serializer_class = CreateQueueSerializer
-    permission_classes = [IsAuthenticated,BusinessOnly]
+    permission_classes = [IsAuthenticated, IsBusiness]
 
 
-class RetrieveQueueAPIView(generics.UpdateAPIView):
+class RetrieveQueueAPIView(generics.RetrieveAPIView):
     """
     Retrieve the list of people in a single queue
     """
     queryset = BusinessQueue.objects.all()
     serializer_class = RetrieveQueueSerializer
-    permission_classes = [IsAuthenticated,BusinessOnly]
+    permission_classes = [IsAuthenticated, IsBusiness, IsBusinessOwner]
 
-class RetrieveQueueInformationAPIView(generics.UpdateAPIView):
+class RetrieveQueueInformationAPIView(generics.RetrieveAPIView):
     """
     For retrieving the basic queue information
      e.g name,instruction, information and key
     """
     queryset = BusinessQueue.objects.all()
     serializer_class = RetrieveQueueInformationSerializer
-    permission_classes = [IsAuthenticated,BusinessOnly]
+    permission_classes = [IsAuthenticated, IsBusiness, IsBusinessOwner]
 
     
 
-class UpdateDestroyQueueAPIView(generics.UpdateAPIView):
+class UpdateQueueAPIView(generics.UpdateAPIView):
     queryset = BusinessQueue.objects.all()
     serializer_class = UpdateDestroyQueueSerializer
-    permission_classes = [IsAuthenticated,BusinessOnly]
+    permission_classes = [IsAuthenticated, IsBusiness, IsBusinessOwner]
 
+class DestroyQueueAPIView(generics.DestroyAPIView):
+    queryset = BusinessQueue.objects.all()
+    serializer_class = UpdateDestroyQueueSerializer
+    permission_classes = [IsAuthenticated, IsBusiness, IsBusinessOwner]

@@ -6,6 +6,7 @@ from .Calendar import (
 from .Queue import (
                         CreateQueueAPIView,
                         RetrieveQueueAPIView,
-                        UpdateDestroyQueueAPIView,
+                        UpdateQueueAPIView,
+                        DestroyQueueAPIView,
                         RetrieveQueueInformationAPIView
 )

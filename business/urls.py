@@ -5,7 +5,8 @@ from business.api import (
 
                                     CreateQueueAPIView,
                                     RetrieveQueueAPIView,
-                                    UpdateDestroyQueueAPIView,
+                                    UpdateQueueAPIView,
+                                    DestroyQueueAPIView,
                                     RetrieveQueueInformationAPIView
                                 )
 
@@ -19,10 +20,10 @@ urlpatterns = [
         path('calendar/update/', RetrieveUpdateCalendarAPIView.as_view(), name='calendar_update' ),
         path('calendar/', RetrieveUpdateCalendarAPIView.as_view(), name='calendar_view' ),
 
-
-        path('queue/<int:pk>/info/', RetrieveQueueInformationAPIView.as_view(), name='queue_view_info' ),
-        path('queue/<int:pk>/update/', UpdateDestroyQueueAPIView.as_view(), name='queue_update' ),
-        path('queue/<int:pk>/delete/', UpdateDestroyQueueAPIView.as_view(), name='queue_delete' ),
+        path('queue/info/<int:pk>/update/', UpdateQueueAPIView.as_view(), name='queue_info_update' ),
+        path('queue/info/<int:pk>/', RetrieveQueueInformationAPIView.as_view(), name='queue_info_view' ),
+        
+        path('queue/<int:pk>/delete/', DestroyQueueAPIView.as_view(), name='queue_delete' ),
         path('queue/<int:pk>/', RetrieveQueueAPIView.as_view(), name='queue_view' ),
         path('queue/add/', CreateQueueAPIView.as_view(), name='queue_add' ),
 

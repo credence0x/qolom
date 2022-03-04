@@ -17,6 +17,10 @@ beta               = ['A','B','C','D','E','F','G','H',
                     # no 0,o,O,1,l to avoid confusion
                     # key must be 7
 
+
+gamma               = ['0','1','2','3','4','5','6','7','8','9']
+                    
+
                     
 def getRandomTicket(num):
         ticket = ""
@@ -32,3 +36,8 @@ def getRandomKey(num):
             ticket += choice(beta)
         return ticket
         
+def getRandomNumbers(num):
+        ticket = ""
+        for _ in range(num):
+            ticket += choice(gamma)
+        return ticket

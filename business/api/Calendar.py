@@ -4,14 +4,14 @@ from business.models import Calendar
 from business.serializers import (
                                         RetrieveUpdateCalendarSerializer
                                     )
-from business.permissions import BusinessOnly
+from business.permissions import  IsBusiness, IsBusinessOwner
 from django.shortcuts import get_object_or_404
 
 
 class RetrieveUpdateCalendarAPIView(generics.RetrieveUpdateAPIView):
     queryset = Calendar.objects.all()
     serializer_class = RetrieveUpdateCalendarSerializer
-    permission_classes = [IsAuthenticated,BusinessOnly]
+    permission_classes = [IsAuthenticated, IsBusiness,IsBusinessOwner]
 
     def get_object(self):
         queryset = self.get_queryset() 
