@@ -1,6 +1,6 @@
 from dataclasses import field
 from rest_framework import serializers
-from account.module.email import Email
+from core.module.email import Email
 from django.contrib.auth import get_user_model
 from account.module.utils import get_asterisked_mail
 from django.contrib.sites.shortcuts import get_current_site

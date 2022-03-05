@@ -4,7 +4,7 @@ from account.models import UserProfile
 from django.contrib.auth import get_user_model
 from account.module.generate_random import getRandomTicket
 from account.module.variables import SPECIAL_CHARS
-from account.module.email import Email
+from core.module.email import Email
 from account.serializers.user import UserSerializer,UpdateUserSerializer
 
 User = get_user_model()

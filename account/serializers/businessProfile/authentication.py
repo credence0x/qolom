@@ -4,7 +4,7 @@ from django.contrib.auth import login,logout
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_text
 from account.module.businessProfile.serializers.utils import ensure_user_has_related_business_profile_object
-from account.module.email import Email
+from core.module.email import Email
 from account.tokens import account_activation_token
 
 User = get_user_model()

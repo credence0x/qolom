@@ -11,9 +11,10 @@ from core.manager import CustomManager
 
 class Order(BaseModel):
     class StatusChoices(models.IntegerChoices):
-        SENT = 1
-        READY = 2
-        COLLECTED = 3
+        AWAITING_PAYMENT = 1
+        SENT = 2
+        READY = 3
+        COLLECTED = 4
 
     seller          = models.ForeignKey("account.BusinessProfile",
                                      on_delete=models.DO_NOTHING,
@@ -28,7 +29,7 @@ class Order(BaseModel):
     reference         = DefaultTextField()
     pin               = DefaultIntegerField()
 
-    total             = DefaultCharField()
+    total             = DefaultIntegerField() # total minus fees
     status            = models.IntegerField(choices=StatusChoices.choices)
 
     
@@ -36,7 +37,7 @@ class Order(BaseModel):
     paid                 = models.BooleanField(default=False)
     was_ready_by        = DefaultDateTimeField()
     # True when buyer has been notified that order is ready 
-    buyer_notified = models.BooleanField(default=False)
+    # buyer_notified = models.BooleanField(default=False)
     fees          = models.FloatField(default=0)
     objects = CustomManager()
 

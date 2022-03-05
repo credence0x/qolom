@@ -28,7 +28,34 @@ class Email:
                 fail_silently=False
                 )
 
+                
+    def send_common_activation_mail(self):
+        """
+        Actiation mail to be sent when an account is created
+        to prove that they own email address
+        """
+        user = self.user
+        context =  {'user': user,
+                    'domain': self.current_site.domain,
+                    'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token':account_activation_token.make_token(user),
+                    }
+        self.mail_subject = 'Activate Your Account.'
+        self.to_email = user.email
+        self.html_message = render_to_string('account/authentication/confirm_registration.html',context)
+        self.plain_message = self.html_message
+        self.__send()
+
+        # values are needed for proper testing
+        if str(self.current_site)=="testserver":
+            return {
+                    "uidb64": context.get('uid'),
+                    "token":context.get('token')
+                }
     def send_common_welcome_mail(self):
+        """
+        An email sent after successful activation of account
+        """
         user = self.user
         context = {'user': user,
                     'domain': self.current_site.domain,
@@ -43,6 +70,10 @@ class Email:
 
 
     def send_common_reset_password_mail(self):
+        """
+        An email sent when a user requests to 
+        reset their password
+        """
         user = self.user
         context = {'user': user,
                     'domain': self.current_site.domain,
@@ -63,24 +94,29 @@ class Email:
                 }
 
 
-    def send_common_activation_mail(self):
-        user = self.user
-        context =  {'user': user,
+    
+
+    
+    def send_order_ready_mail(self,order):
+        """
+        Notify buyer that their order is ready
+        """
+        context =  {'user': order.buyer,
+                    'business':order.seller,
                     'domain': self.current_site.domain,
-                    'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token':account_activation_token.make_token(user),
+                    'order':order,
                     }
-        self.mail_subject = 'Activate Your Account.'
-        self.to_email = user.email
-        self.html_message = render_to_string('account/authentication/confirm_registration.html',context)
+        self.mail_subject = f"Your Order [{order.reference}] is Ready"
+        self.to_email = order.buyer
+        self.html_message = render_to_string('users/payments/order_ready_mail.html',context)
         self.plain_message = self.html_message
         self.__send()
 
-        # values are needed for proper testing
-        if str(self.current_site)=="testserver":
-            return {
-                    "uidb64": context.get('uid'),
-                    "token":context.get('token')
-                }
+
+
+                
+                
+                
+        
 
     

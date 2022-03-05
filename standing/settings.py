@@ -190,6 +190,7 @@ AUTH_USER_MODEL = 'account.User'
 
 AUTH_FROM_EMAIL = 'Qolom <auth@qolom.com>'
 
+ORDERING_FEES = 0.02 # 2/100
 CRONJOBS = [
     ('* * * * *', 'business.cron.job')
 ]
@@ -214,8 +215,8 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD")
 PASSWORD_RESET_TIMEOUT = 1800
 
 
-#PAYSTACK_SCRET_KEY = 'sk_live_ac2b02dea7ded9c765e8603a58538911a3e724b5'
-PAYSTACK_SCRET_KEY = 'sk_test_dba3ece03b5a28cc32f000e6eb82ff58e5d690e7'
+#PAYSTACK_SECRET_KEY = 'sk_live_ac2b02dea7ded9c765e8603a58538911a3e724b5'
+PAYSTACK_SECRET_KEY = 'sk_test_dba3ece03b5a28cc32f000e6eb82ff58e5d690e7'
 
 django_heroku.settings(locals())
 
