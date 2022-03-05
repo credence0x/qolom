@@ -214,7 +214,12 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 PASSWORD_RESET_TIMEOUT = 1800
 
-
+PAYSTACK_WHITELISTED_IPS = [
+                            '129.205.124.243',
+                            '52.31.139.75',
+                            '52.49.173.169',
+                            '52.214.14.220'
+                            ]
 #PAYSTACK_SECRET_KEY = 'sk_live_ac2b02dea7ded9c765e8603a58538911a3e724b5'
 PAYSTACK_SECRET_KEY = 'sk_test_dba3ece03b5a28cc32f000e6eb82ff58e5d690e7'
 

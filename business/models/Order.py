@@ -5,6 +5,7 @@ from core.common.fields import (DefaultTextField,
                                 DefaultCharField)
 from core.common.models import BaseModel
 from core.manager import CustomManager
+from django.db import transaction
 
 
 
@@ -37,7 +38,9 @@ class Order(BaseModel):
     paid                 = models.BooleanField(default=False)
     was_ready_by        = DefaultDateTimeField()
     # True when buyer has been notified that order is ready 
-    # buyer_notified = models.BooleanField(default=False)
+    buyer_notified = models.BooleanField(default=False)
+    # True when seller has been notified that order has been sent
+    seller_notified = models.BooleanField(default=False)
     fees          = models.FloatField(default=0)
     objects = CustomManager()
 
@@ -50,7 +53,40 @@ class Order(BaseModel):
     def __str__(self):
         return f"[ Order ] - >  {self.reference}"
 
-    
+    def payment_successful(self,reference=None):
+        """
+        Function is called when payment has been made successfully
+        
+        Reference is an optional field that would only be added 
+        when a charge is made directly on the user (i.e when they pay
+        with a saved card). This means that no reference had previously
+        been generated and thus the new one is added 
+        """
+        with transaction.atomic():
+            order = (
+                    Order.objects
+                    .select_for_update()
+                        .get(
+                                id=self.id
+                            )
+            )
+            if order.status == 1:
+                for purchased_item in order.items:
+                    item = purchased_item.item
+                    item.units -= purchased_item.units
+                    item.save()
+
+                
+                # update item 
+                for purchased_item in order.items:
+                    item = purchased_item.item
+                    item.units -= purchased_item.units
+                    item.save()
+
+                order.status = 2 # SENT
+                if reference:
+                    order.reference = reference
+                order.save()
     
 
 
