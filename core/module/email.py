@@ -6,7 +6,7 @@ from django.conf import settings
 import re
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-from account.tokens import account_activation_token_three,account_activation_token
+from account.tokens import account_activation_token_three,account_activation_token,account_activation_token_two
 
 
 class Email:
@@ -97,7 +97,7 @@ class Email:
     
 
     
-    def send_order_ready_mail(self,order):
+    def send_business_order_ready_mail(self,order):
         """
         Notify buyer that their order is ready
         """
@@ -113,10 +113,19 @@ class Email:
         self.__send()
 
 
-
-                
-                
-                
-        
-
-    
+    def send_business_bank_confirmation_mail(self):
+        """
+        Mail sent to business to confirm that 
+        they want to receive moneythrough the 
+        new bank account provided
+        """
+        context = {'user': self.user,
+                    'domain': self.current_site.domain,
+                    'uid':urlsafe_base64_encode(force_bytes(self.user.pk)),
+                    'token':account_activation_token_two.make_token(self.user),
+                    }
+        self.mail_subject = f"Confirm Bank Information"
+        self.to_email = self.user.email
+        self.html_message = render_to_string("account/authentication/confirm_bank_mail.html",context)
+        self.plain_message = self.html_message
+        self.__send()

@@ -37,8 +37,7 @@ class UserProfile(BaseModel):
     total_seconds = DefaultIntegerField()
     country       = models.CharField(max_length=255)
     iso_code      = models.CharField(max_length=2)
-    card_information = models.CharField(max_length=1000000, null=True,
-                                          default='[]')
+    
     
     
     objects = CustomManager()
@@ -50,5 +49,40 @@ class UserProfile(BaseModel):
     
     def __str__(self):
         return f"[ User Profile ] - >{self.user.first_name} {self.user.last_name}"
+
+    
+
+
+
+
+
+
+
+
+class CardInformation(models.Model):
+    owner            = models.ForeignKey("account.UserProfile",
+                                     on_delete=models.DO_NOTHING,
+                                     related_name='card',
+                                    )
+   
+    authorization_code          = DefaultCharField()
+    card_bin        = DefaultCharField()
+    last4    = DefaultCharField()
+    exp_month= DefaultCharField()
+    exp_year = DefaultCharField()
+    brand = DefaultCharField()
+    signature = DefaultCharField()
+    account_name = DefaultCharField()
+
+    
+    objects = CustomManager()
+
+
+    class Meta:
+        verbose_name = '[User Profile] [Card Information]'
+        ordering = ["-created_at"]
+    
+    def __str__(self):
+        return f"[ User Profile ] [ Card Information ] - > {self.owner}"
 
     

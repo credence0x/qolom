@@ -7,7 +7,7 @@ from business.serializers import (
                                         UpdateDestroyQueueSerializer,
                                         RetrieveQueueInformationSerializer
                                     )
-from business.permissions import  IsBusiness, IsBusinessOwner
+from business.permissions import  IsBusiness, IsObjectOwner
 
 class CreateQueueAPIView(generics.CreateAPIView):
     queryset = BusinessQueue.objects.all()
@@ -21,7 +21,7 @@ class RetrieveQueueAPIView(generics.RetrieveAPIView):
     """
     queryset = BusinessQueue.objects.all()
     serializer_class = RetrieveQueueSerializer
-    permission_classes = [IsAuthenticated, IsBusiness, IsBusinessOwner]
+    permission_classes = [IsAuthenticated, IsBusiness, IsObjectOwner]
 
 class RetrieveQueueInformationAPIView(generics.RetrieveAPIView):
     """
@@ -30,16 +30,16 @@ class RetrieveQueueInformationAPIView(generics.RetrieveAPIView):
     """
     queryset = BusinessQueue.objects.all()
     serializer_class = RetrieveQueueInformationSerializer
-    permission_classes = [IsAuthenticated, IsBusiness, IsBusinessOwner]
+    permission_classes = [IsAuthenticated, IsBusiness, IsObjectOwner]
 
     
 
 class UpdateQueueAPIView(generics.UpdateAPIView):
     queryset = BusinessQueue.objects.all()
     serializer_class = UpdateDestroyQueueSerializer
-    permission_classes = [IsAuthenticated, IsBusiness, IsBusinessOwner]
+    permission_classes = [IsAuthenticated, IsBusiness, IsObjectOwner]
 
 class DestroyQueueAPIView(generics.DestroyAPIView):
     queryset = BusinessQueue.objects.all()
     serializer_class = UpdateDestroyQueueSerializer
-    permission_classes = [IsAuthenticated, IsBusiness, IsBusinessOwner]
+    permission_classes = [IsAuthenticated, IsBusiness, IsObjectOwner]

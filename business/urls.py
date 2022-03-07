@@ -7,11 +7,24 @@ from business.api import (
                                     RetrieveQueueAPIView,
                                     UpdateQueueAPIView,
                                     DestroyQueueAPIView,
-                                    RetrieveQueueInformationAPIView
-                                )
+                                    RetrieveQueueInformationAPIView,
 
 
-# from business.views import ResendConfirmationView,activateBankView,DelPaymentView,DaysOpenView,CreateLineView,OrderDetailView,OrdersView,PaymentView,EditItemView,ItemsView,business_ajax, BusinessHomePageView, LineDetailView,EditLineView,ChangePasswordView,DeleteBusinessLineView
+                                    CreateBankAPIView,
+                                    ResolveBankAPIView,
+                                    ConfirmBankAPIView,
+
+                                     CreateItemAPIView,
+                                     ListItemAPIView,
+                                     UpdateItemAPIView,
+                                     RetrieveItemAPIView,
+                                     DestroyItemAPIView,
+
+                                     OrderListAPIView,
+                                     OrderUpdateStatusAPIView,
+                        )
+
+
 
 
 app_name ='business'
@@ -27,29 +40,22 @@ urlpatterns = [
         path('queue/<int:pk>/', RetrieveQueueAPIView.as_view(), name='queue_view' ),
         path('queue/add/', CreateQueueAPIView.as_view(), name='queue_add' ),
 
-#     re_path(r'^add-line/$', CreateLineView, name='business_line' ),
-#     re_path(r'^$', BusinessHomePageView, name='business_homepage' ),
-#     # add business name in url and views
-#     re_path(r'^line/(?P<slug>[-\w\s\d]+)/$',
-#             LineDetailView,
-#             name='business_detailview' ),
-#     # next urlshould allow for numbers too
-#     re_path(r'^edit-line/(?P<slug>[-\w\s\d]+)/$', EditLineView, name ='edit_line'),
-#     re_path(r'^change-password/$', ChangePasswordView, name ='change_password'),
-#     re_path(r'^delete-line/$', DeleteBusinessLineView , name ='delete_line'),
-#     re_path(r'^(?P<uniquefield>[\w]{7,8})/$', business_ajax , name ='business_ajax'),
-#     re_path(r'^bank-confirmation/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,100})/$',
-#             activateBankView, name='bank_confirmation' ),
-#     re_path(r'^edit-item/(?P<identity>[\w]+)/$', EditItemView, name='edit_item' ),
-#     re_path(r'^items/$', ItemsView, name='items' ),
-#     re_path(r'^orders/$', OrdersView, name='orders' ),
-#     re_path(r'^resend-bank-confirmation-email/$',
-#             ResendConfirmationView, name='resend_bank_confirm' ),
-    
-#     re_path(r'^business-hours/$', DaysOpenView, name='business_hours' ),
-#     re_path(r'^order-detail/(?P<identity>[\w]+)/$',
-#             OrderDetailView, name='order_detail' ),
-   
-#     re_path(r'^payment-information/$', PaymentView, name='payment' ),
-#     re_path(r'^delete-payment-information/$', DelPaymentView, name='del_pay' ),
+
+
+        path('bank/add/', CreateBankAPIView.as_view(), name='bank_create' ),
+        path('bank/resolve/', ResolveBankAPIView.as_view(), name='bank_resolve' ),
+        path('bank/confirm/', ConfirmBankAPIView.as_view(), name='bank_confirm' ),
+
+
+        path('item/<int:pk>/update/', UpdateItemAPIView.as_view(), name='item_update' ),
+        path('item/<int:pk>/delete/', DestroyItemAPIView.as_view(), name='item_destroy' ),
+        path('item/<int:pk>/', RetrieveItemAPIView.as_view(), name='item_retrieve' ),
+        path('item/create/', CreateItemAPIView.as_view(), name='item_create' ),
+        path('item/', ListItemAPIView.as_view(), name='item_list' ),
+
+
+
+        path('order/update/', OrderUpdateStatusAPIView.as_view(), name='order_update_status' ),
+        path('order/', OrderListAPIView.as_view(), name='order_list' ),
+
 ]

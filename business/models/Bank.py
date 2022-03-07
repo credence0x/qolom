@@ -11,14 +11,13 @@ from account.models import BusinessProfile
 
 
 class Bank(BaseModel):
-    business                = models.ForeignKey("account.BusinessProfile",
+    owner                = models.ForeignKey("account.BusinessProfile",
                                         related_name='bank',
                                         on_delete = models.DO_NOTHING)    
     account_number = DefaultCharField()
-    bank = DefaultTextField()
     account_name= DefaultTextField()
-    recipient_info = DefaultTextField()
-    email_confirmation = models.BooleanField(default=False)
+    bank = DefaultTextField()
+    activated = models.BooleanField(default=False)
     objects = CustomManager()
     
     class Meta:
@@ -26,7 +25,7 @@ class Bank(BaseModel):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Bank for {self.business}"
+        return f"Bank for {self.owner}"
 
     def save(self, *args, **kwargs):
         if not self.pk:

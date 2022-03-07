@@ -70,7 +70,7 @@ class Order(BaseModel):
                                 id=self.id
                             )
             )
-            if order.status == 1:
+            if order.status == 1: #AWAITING PAYMENT
                 for purchased_item in order.items:
                     item = purchased_item.item
                     item.units -= purchased_item.units
