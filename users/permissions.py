@@ -6,6 +6,6 @@ class IsEndUser(BasePermission):
 
 class IsObjectOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.businessProfile == obj.owner
+        return request.user.userProfile == obj.owner
 
 

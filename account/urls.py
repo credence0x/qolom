@@ -40,6 +40,9 @@ urlpatterns = [
     
 
      # business-profile
+     # search for business
+    # path('business-profile/', ListBusinessProfileAPIView.as_view(), name='list_business_profile' ),
+
     path('business-profile/create/', CreateBusinessProfileAPIView.as_view(), name='create_business_profile' ),
     path('business-profile/<int:pk>/update/', UpdateBusinessProfileAPIView.as_view(), name='update_business_profile' ),
     path('business-profile/activate/', ActivateBusinessProfileTokenAPIView.as_view(), name='activate_business_profile' ),
