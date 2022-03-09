@@ -73,9 +73,9 @@ class CardInformation(models.Model):
     brand = DefaultCharField()
     signature = DefaultCharField()
     account_name = DefaultCharField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     
-    objects = CustomManager()
 
 
     class Meta:

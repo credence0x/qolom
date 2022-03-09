@@ -7,11 +7,9 @@ from users.serializers import (
                                     OrderInitializePaymentSerializer,
                                     OrderVerifyPaymentSerializer,
                                     OrderPaymentWithSavedCardSerializer,
-                                    OrderPayStackSuccessCallbackSerializer,
-                                    OrderPaystackWebhookSerializer,
                                 )
 from rest_framework.permissions import IsAuthenticated
-from user.permissions import IsEndUser
+from users.permissions import IsEndUser
 from rest_framework.views import APIView
 from django.conf import settings
 from rest_framework.response import Response

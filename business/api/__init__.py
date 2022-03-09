@@ -13,6 +13,7 @@ from .Queue import (
 )
 from .Bank import (
                         CreateBankAPIView,
+                        ListBankAPIView,
                         ConfirmBankAPIView,
                         ResolveBankAPIView
                   )

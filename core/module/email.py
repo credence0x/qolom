@@ -129,3 +129,10 @@ class Email:
         self.html_message = render_to_string("account/authentication/confirm_bank_mail.html",context)
         self.plain_message = self.html_message
         self.__send()
+        
+        # values are needed for proper testing
+        if str(self.current_site)=="testserver":
+            return {
+                    "uidb64": context.get('uid'),
+                    "token":context.get('token')
+                }

@@ -11,6 +11,7 @@ User = get_user_model()
 
 class SignUpMailSerializer(serializers.Serializer):
     username = serializers.CharField(write_only=True)
+    # uidb64 and token are for tests
     uidb64 = serializers.CharField(read_only=True,required=False)
     token = serializers.CharField(read_only=True,required=False)
 

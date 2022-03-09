@@ -11,12 +11,13 @@ from account.models import BusinessProfile
 
 
 class Bank(BaseModel):
-    owner                = models.ForeignKey("account.BusinessProfile",
+    owner                = models.OneToOneField("account.BusinessProfile",
                                         related_name='bank',
                                         on_delete = models.DO_NOTHING)    
     account_number = DefaultCharField()
     account_name= DefaultTextField()
-    bank = DefaultTextField()
+    bank_name = DefaultTextField()
+    bank_code = DefaultCharField()
     activated = models.BooleanField(default=False)
     objects = CustomManager()
     

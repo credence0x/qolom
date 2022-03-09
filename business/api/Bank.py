@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from business.permissions import IsBusiness
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from core.module.paystack import Paystack
 
 
 
@@ -18,7 +19,16 @@ class CreateBankAPIView(generics.CreateAPIView):
     serializer_class = BankSerializer
     permission_classes = [IsAuthenticated, IsBusiness]
 
-    
+
+
+class ListBankAPIView(APIView):
+    permission_classes = [IsAuthenticated, IsBusiness]
+
+    def get(self, request):
+        data = Paystack().list_banks()
+        return Response(data)
+
+
 class ResolveBankAPIView(APIView):
     """
     Confirm that an account belongs

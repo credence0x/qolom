@@ -13,6 +13,7 @@ from business.api import (
                                     CreateBankAPIView,
                                     ResolveBankAPIView,
                                     ConfirmBankAPIView,
+                                    ListBankAPIView,
 
                                      CreateItemAPIView,
                                      ListItemAPIView,
@@ -42,15 +43,16 @@ urlpatterns = [
 
 
 
-        path('bank/add/', CreateBankAPIView.as_view(), name='bank_create' ),
+        path('bank/add/', CreateBankAPIView.as_view(), name='bank_add' ),
+        path('bank/list/', ListBankAPIView.as_view(), name='bank_list' ),
         path('bank/resolve/', ResolveBankAPIView.as_view(), name='bank_resolve' ),
         path('bank/confirm/', ConfirmBankAPIView.as_view(), name='bank_confirm' ),
 
 
         path('item/<int:pk>/update/', UpdateItemAPIView.as_view(), name='item_update' ),
-        path('item/<int:pk>/delete/', DestroyItemAPIView.as_view(), name='item_destroy' ),
+        path('item/<int:pk>/delete/', DestroyItemAPIView.as_view(), name='item_delete' ),
         path('item/<int:pk>/', RetrieveItemAPIView.as_view(), name='item_retrieve' ),
-        path('item/create/', CreateItemAPIView.as_view(), name='item_create' ),
+        path('item/create/', CreateItemAPIView.as_view(), name='item_add' ),
         path('item/', ListItemAPIView.as_view(), name='item_list' ),
 
 

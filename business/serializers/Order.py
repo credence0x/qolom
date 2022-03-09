@@ -22,13 +22,14 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ("name","price","units",)
+        fields = ("id","name","price","units",)
  
 
 class CreateItemSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(read_only=True)
     class Meta:
         model = Item
-        fields = ("name","price","units",)
+        fields = ("id","name","price","units",)
 
     def validate_name(self,value):
         business = self.context.get("request").user.businessProfile
@@ -50,7 +51,7 @@ class CreateItemSerializer(serializers.ModelSerializer):
 class UpdateDestroyItemSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Order
+        model = Item
         fields = ("name","price","units",)
 
 

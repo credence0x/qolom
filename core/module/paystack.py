@@ -4,7 +4,7 @@ import requests
 
 class Paystack:
     def __init__(self) -> None:
-        self.secret_key = settings.PAYSTACK_SeCRET_KEY
+        self.secret_key = settings.PAYSTACK_SECRET_KEY
         
     def initialize_payment(self,order):
         """
@@ -79,12 +79,12 @@ class Paystack:
 
     ################################ NON PAYMENT APIS ##############################
     
-    def resolve_bank(self,account_name,bank_code):
+    def resolve_bank(self,account_number,bank_code):
         """
         Get a business' bank account information
         using account number and bank code
         """
-        query_params = f"?account_name={account_name}&bank_code={bank_code}"
+        query_params = f"?account_number={account_number}&bank_code={bank_code}"
         response = requests.get('https://api.paystack.co/bank/resolve'+ query_params,
                                     headers={
                                             'Authorization': f'Bearer {self.secret_key}',
@@ -120,7 +120,7 @@ class Paystack:
         add transfer recipient to PayStack
         """
         business = user.businessProfile
-        bank = self.user.businessProfile.bank
+        bank = business.bank
         response = requests.post('https://api.paystack.co/transferrecipient',
                                  headers={
                                         'Authorization': f'Bearer {self.secret_key}',

@@ -5,7 +5,7 @@ from users.serializers import (
                                     CardSerializer
                                 )
 from rest_framework.permissions import IsAuthenticated
-from user.permissions import IsEndUser, IsObjectOwner
+from users.permissions import IsEndUser, IsObjectOwner
 
 """
     Card Information APIs
