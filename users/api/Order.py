@@ -79,6 +79,7 @@ class OrderPaymentWithSavedCardAPIView(APIView):
 """
 class OrderPayStackSuccessCallbackAPIView(APIView):
     """
+    TO BE DELETED
     Charge.Success callback
     """
     def get(self, request):
@@ -107,5 +108,5 @@ class OrderPaystackWebhookAPIView(APIView):
                 data = body.get('data')                  
                 order = Order.objects.get(reference=data.get('reference'))
                 order.payment_successful()
-            return Response({}, status=status.HTTP_200_OK)
+                return Response({}, status=status.HTTP_200_OK)
         return Response({}, status=status.HTTP_400_BAD_REQUEST)

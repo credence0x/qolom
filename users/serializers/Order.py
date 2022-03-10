@@ -1,3 +1,4 @@
+from asyncore import write
 from urllib import request
 from account.models.UserProfile import CardInformation
 from business.models.Order import Item, Order, PurchasedItem
@@ -22,53 +23,63 @@ import json
 class OrderCreateSerializer(serializers.Serializer):
     class PurchasedItemSerializer(serializers.ModelSerializer):
         id = serializers.IntegerField()
-        units = serializers.IntegerField()
+        units = serializers.IntegerField(min_value=1)
         class Meta:
+            model = Item
             fields = ("id","units",)
 
 
     seller = serializers.IntegerField()
     items = PurchasedItemSerializer(many=True)
+    id = serializers.IntegerField(read_only=True)
    
 
     class Meta:
         fields = ("seller","items")
  
     def save(self):
-        validated_data = self.validated_data
-        seller = validated_data.get("seller")
+        validated_data = self.validated_data.copy()
+        seller = BusinessProfile.objects.get(id=validated_data.get("seller"))
         items = validated_data.get("items")
         total = 0
         purchased_items = []
-
-        for item_data in items:
-            if item_data.get("units") == 0:
+        
+        for raw_item_data in items:
+            if raw_item_data.get("units") == 0:
                 raise serializers.ValidationError({"items":"Item units must be greater than 0 "})
             
-            item = Item.objects.get(id=item_data.get('id'))
-            if item.owner != BusinessProfile.objects.get(pk=seller):
+            item = Item.objects.get(id=raw_item_data.get('id'))
+            if item.owner != seller:
                 raise serializers.ValidationError({"seller":"Seller does not own this item"})
-            if item.units < item_data.get("units"):
+            if item.units < raw_item_data.get("units"):
                 raise serializers.ValidationError({"items":"Requested for greater quantity than is available"})
             
-            purchased_items.append({
-                "item":item_data.get("id"),
-                "units":item_data.get("units")
-            })
-            total += item.price * item_data.get("units")
+            purchased_items.append(
+                PurchasedItem(
+                    item=item,
+                    units=raw_item_data.get("units"),
+                    is_active = True
+                )
+               )
+            total += item.price * raw_item_data.get("units")
 
-        validated_data['buyer'] = self.context.get("request").user.businessProfile 
+
+        validated_data['buyer'] = self.context.get("request").user.userProfile
         validated_data['pin'] = getRandomNumbers(4) 
         validated_data['total'] = total 
         validated_data['status'] = 1 # AWAITING_PAYMENT
         validated_data["fees"] = get_fees(total)
+        validated_data["seller"] = seller
+
+        del validated_data["items"]
 
         order = Order.objects.create(**validated_data)
         for purchased_item in purchased_items:
-            purchased_item["order"] = order.id
-        PurchasedItem.objects.bulk_create(**purchased_items)
-
-        return order
+            setattr(purchased_item,"order",order)
+        PurchasedItem.objects.bulk_create(purchased_items)
+        
+        self.validated_data["id"] = order.id
+        return 
     
 
 
@@ -76,13 +87,14 @@ class OrderCreateSerializer(serializers.Serializer):
 
 class OrderInitializePaymentSerializer(serializers.Serializer):
     id = serializers.IntegerField() # order id
+    data = serializers.DictField(child=serializers.CharField(),read_only=True)
     class Meta:
-        fields = ("id")
+        fields = ("id","data")
 
     def save(self):
         order_id = self.validated_data.get("id")
         order = Order.objects.get(id=order_id)
-        data = Paystack.initialize_payment(order)
+        data = Paystack().initialize_payment(order)
         if not data:
             raise serializers.ValidationError({
                                 "order":"Failed"
@@ -91,29 +103,29 @@ class OrderInitializePaymentSerializer(serializers.Serializer):
         order.reference = data.get('reference')
         order.save()
 
-        return data
+        self.validated_data["data"] = data
+
+        return 
 
 
 
 
 class OrderVerifyPaymentSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    reference = serializers.CharField()
+    success = serializers.BooleanField(read_only=True)
     class Meta:
-        fields = ("id")
+        fields = ("reference","success")
 
     def save(self):
-        order_id = self.validated_data.get("id")
-        order = Order.objects.get(id=order_id)
-        data = Paystack.verify_payment(order)
-        
+        reference = self.validated_data.get("reference")
+        order = Order.objects.get(reference=reference)
+        data = Paystack().verify_payment(order)
+        self.validated_data["success"] = False
         if data!=False:
             transaction_status = data.get("status")
             if transaction_status == "success":
-                return data
-
-        raise serializers.ValidationError({
-                                "order":"Failed"
-                            })
+                self.validated_data["success"] = True
+        
 
 
                 
@@ -135,7 +147,7 @@ class OrderPaymentWithSavedCardSerializer(serializers.Serializer):
                                         owner=order.buyer,
                                         last4= last4,
                                     )
-        data = Paystack.pay_with_card(order,card)
+        data = Paystack().pay_with_card(order,card)
         if not data:
             raise serializers.ValidationError({
                                 "order":"Failed"

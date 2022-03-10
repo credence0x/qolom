@@ -51,7 +51,7 @@ class Order(BaseModel):
         
 
     def __str__(self):
-        return f"[ Order ] - >  {self.reference}"
+        return f"[ Order ] - >  {self.id} from {self.seller} to {self.buyer}"
 
     def payment_successful(self,reference=None):
         """
@@ -71,21 +71,22 @@ class Order(BaseModel):
                             )
             )
             if order.status == 1: #AWAITING PAYMENT
-                for purchased_item in order.items:
+                for purchased_item in order.purchased_item.all():
                     item = purchased_item.item
                     item.units -= purchased_item.units
                     item.save()
 
                 
                 # update item 
-                for purchased_item in order.items:
+                for purchased_item in order.purchased_item.all():
                     item = purchased_item.item
                     item.units -= purchased_item.units
                     item.save()
 
-                order.status = 2 # SENT
                 if reference:
                     order.reference = reference
+                
+                order.status = 2 # SENT
                 order.save()
     
 

@@ -23,7 +23,8 @@ urlpatterns = [
     path('order/verify/', OrderVerifyPaymentAPIView.as_view(), name='order_verify'),
     path('order/initialize/', OrderInitializePaymentAPIView.as_view(), name='order_initialize'),
     path('order/pay-with-card/', OrderPaymentWithSavedCardAPIView.as_view(), name='order_pay_with_card'),
-    path('order/', OrderCreateAPIView.as_view(), name='order_create'),
+    path('order/create/', OrderCreateAPIView.as_view(), name='order_add'),
+    # path('order/', OrderListAPIView.as_view(), name='order_list'),
 
 
     path('paystack/callback/', OrderPayStackSuccessCallbackAPIView.as_view(), name='paystack_callback'),

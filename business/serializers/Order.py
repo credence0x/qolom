@@ -27,6 +27,8 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class CreateItemSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
+    units = serializers.IntegerField(min_value=1)
+    price = serializers.IntegerField(min_value=1)
     class Meta:
         model = Item
         fields = ("id","name","price","units",)
@@ -49,7 +51,8 @@ class CreateItemSerializer(serializers.ModelSerializer):
     
 
 class UpdateDestroyItemSerializer(serializers.ModelSerializer):
-
+    units = serializers.IntegerField(min_value=1)
+    price = serializers.IntegerField(min_value=1)
     class Meta:
         model = Item
         fields = ("name","price","units",)

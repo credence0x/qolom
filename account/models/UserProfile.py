@@ -66,7 +66,7 @@ class CardInformation(models.Model):
                                     )
    
     authorization_code          = DefaultCharField()
-    card_bin        = DefaultCharField()
+    bin        = DefaultCharField()
     last4    = DefaultCharField()
     exp_month= DefaultCharField()
     exp_year = DefaultCharField()

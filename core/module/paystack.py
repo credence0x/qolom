@@ -1,5 +1,6 @@
 from django.conf import settings
 import requests
+from core.module.math import safe_total
 
 
 class Paystack:
@@ -20,14 +21,16 @@ class Paystack:
                                         'Content-Type': 'application/json'
                                     },
                             json={
-                                    'email':order.buyer.email,
-                                    'amount':total_plus_fees
+                                    'email':order.buyer.user.email,
+                                    'amount':safe_total(total_plus_fees)
                                 }
                             )
 
         if response.status_code == 200:   
             if response.json().get('status')==True:                 
                 data = response.json().get('data')
+                print(data)
+
                 return data
         return False
 
@@ -51,6 +54,38 @@ class Paystack:
                 return data
         return False
 
+    
+    # def test_charge(self):
+    #     """
+    #     test_charge
+    #     """
+    #     response = requests.post('https://api.paystack.co/charge',
+    #                              headers={
+    #                                     'Authorization': f'Bearer {self.secret_key}',
+    #                                     'Content-Type': 'application/json'
+    #                                 },
+    #                              json={  
+    #                                  "email": "lojetokun@gmail.com", 
+    #                                  "amount": "10000",
+    #                                  "card":{
+    #                                             "number":"",
+    #                                             "expiry_month":"",
+    #                                             "expiry_year":"",
+    #                                             "cvv":"",
+    #                                         }
+    #                                     })
+        
+        
+    #     if response.status_code == 200:
+    #         data = response.json().get('data')
+            
+    #         status = data.get('status')
+    #         if status == 'success':
+    #             return data
+    #     print(response.json())          
+    #     return False
+
+
 
     def pay_with_card(self,order,card):
         """
@@ -63,8 +98,8 @@ class Paystack:
                                         'Content-Type': 'application/json'
                                     },
                                  json={ "authorization_code" : card.authorization_code,
-                                        'email': order.buyer.email,
-                                        'amount': total_plus_fees,
+                                        'email': order.buyer.user.email,
+                                        'amount': safe_total(total_plus_fees)
                                         })
         
         

@@ -5,7 +5,12 @@ class CardSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CardInformation
-        fields = "__all__"
+        exclude = ("owner",)
+
+    def create(self,validated_data):
+        owner = self.context.get("request").user.userProfile
+        validated_data["owner"] = owner
+        return CardInformation.objects.create(**validated_data)
 
 
     
