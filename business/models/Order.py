@@ -35,7 +35,6 @@ class Order(BaseModel):
 
     
     
-    paid                 = models.BooleanField(default=False)
     was_ready_by        = DefaultDateTimeField()
     # True when buyer has been notified that order is ready 
     buyer_notified = models.BooleanField(default=False)

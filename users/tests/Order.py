@@ -1,4 +1,5 @@
 from email.headerregistry import ContentTypeHeader
+from operator import itemgetter
 from turtle import update
 from django.test import Client
 from django.urls import reverse
@@ -94,7 +95,7 @@ class UserOrderTests(APITestCase):
         business_user.is_active = True
         business_user.save()
         cls.business_user = business_user
-        cls.business_username = user.username
+        cls.business_username = business_user.username
         cls.business_password = business_create_data.get("password")
 
 
@@ -111,7 +112,8 @@ class UserOrderTests(APITestCase):
         response = bc.post(reverse('business:item_add'),item_data,format="json")
         content = json.loads(response.content.decode('utf-8'))
         assert response.status_code == status.HTTP_201_CREATED
-        cls.item_1 = Item.objects.get(id=content.get("id"))
+        item_1 = Item.objects.get(id=content.get("id"))
+        cls.item_1 = item_1
 
         # create item 2
         
@@ -170,7 +172,7 @@ class UserOrderTests(APITestCase):
         are accepted
         """
         # test for negative number
-        data = {
+        data =  {
             "seller":self.business_user.businessProfile.id,
             "items":[
                 {
@@ -188,7 +190,8 @@ class UserOrderTests(APITestCase):
 
 
         # test for quantity greater than available
-        data["items"][0]["units"] = "888888888"
+        data["items"][0]["units"] = "7777777777777"
+
         response = self.client.post(reverse('users:order_add'),data,format="json")
         content = self.__correct_byte(response.content)  
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -249,6 +252,7 @@ class UserOrderTests(APITestCase):
                 },
             ]
         }
+
         response = self.client.post(reverse('users:order_add'),data,format="json")
         content = self.__correct_byte(response.content)  
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -328,6 +332,35 @@ class UserOrderTests(APITestCase):
         }
         response = self.client.post(reverse('users:order_pay_with_card'),data,format="json")
         content = self.__correct_byte(response.content)  
-        print(content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
+
+    def test_list_orders(self):
+        """
+        Ensure user can find all orders created
+        """
+        # create order 1
+        data = {
+            "seller":self.business_user.businessProfile.id,
+            "items":[
+                {
+                    "id":self.item_1.id,
+                    "units":"12",
+                },
+            ]
+        }
+
+        response = self.client.post(reverse('users:order_add'),data,format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # create order 2
+        response = self.client.post(reverse('users:order_add'),data,format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+
+
+        # list orders
+        response = self.client.get(reverse('users:order_list'))
+        content = self.__correct_byte(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(content) > 1, True)

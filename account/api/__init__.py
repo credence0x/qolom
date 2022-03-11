@@ -12,6 +12,7 @@ from account.api.userProfile.authentication import (
 from account.api.businessProfile.businessProfile import (
                                                   CreateBusinessProfileAPIView,
                                                   UpdateBusinessProfileAPIView,
+                                                  ListBusinessProfileAPIView
                                                 )
 
 from account.api.businessProfile.authentication import (

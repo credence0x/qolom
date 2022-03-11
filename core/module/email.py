@@ -136,3 +136,27 @@ class Email:
                     "uidb64": context.get('uid'),
                     "token":context.get('token')
                 }
+
+    def send_business_bank_activation_success_mail(self):
+        """
+        Mail sent to business to AFTER SUCEESSFUL activation
+        of new bank account
+        """
+        context = {'user': self.user,
+                    'domain': self.current_site.domain,
+                    'uid':urlsafe_base64_encode(force_bytes(self.user.pk)),
+                    'token':account_activation_token_two.make_token(self.user),
+                    }
+        self.mail_subject = f"Successful Bank Account Activatioon "
+        self.to_email = self.user.email
+        self.html_message = render_to_string("account/authentication/confirm_bank_mail.html",context)
+        self.plain_message = self.html_message
+        try:
+            self.__send()
+            return True
+        except:
+            return False
+        
+    
+
+

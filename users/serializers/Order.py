@@ -13,6 +13,39 @@ import json
 
 
 
+class UserOrderSerializer(serializers.ModelSerializer):
+    """
+    Generic Order Serializer for UserProfile
+
+    """
+    # Currently only being used and recommended
+    # to only use for listing for security reasons
+    class Meta:
+        model = Order
+        fields = (
+                    "id",
+                    "seller",
+                    "buyer",
+                    "reference",
+                    "pin",
+                    "status",
+                    "total",
+                    "fees",
+                    "was_ready_by",
+                    "buyer_notified",
+                )
+        depth = 2
+
+    
+    
+    
+    
+
+
+    
+    
+  
+        
 
 
  
@@ -22,7 +55,7 @@ import json
 
 class OrderCreateSerializer(serializers.Serializer):
     class PurchasedItemSerializer(serializers.ModelSerializer):
-        id = serializers.IntegerField()
+        id = serializers.CharField()
         units = serializers.IntegerField(min_value=1)
         class Meta:
             model = Item

@@ -102,7 +102,7 @@ class OrderListAPIView(generics.ListAPIView):
         return Response(serializer.data)
 
 
-class OrderUpdateStatusAPIView(APIView):
+class OrderUpdateStatusAPIView(generics.UpdateAPIView):
     """
     update order status by status
     """
@@ -110,11 +110,5 @@ class OrderUpdateStatusAPIView(APIView):
     serializer_class = OrderUpdateStatusSerializer
     permission_classes = [IsAuthenticated, IsBusiness, IsSeller]
 
-    def put(self, request):
-        serializer = OrderUpdateStatusSerializer(data=request.data,context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+   \
 

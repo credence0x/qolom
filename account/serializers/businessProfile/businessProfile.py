@@ -44,7 +44,18 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
   
     class Meta:
         model = BusinessProfile
-        fields = business_profile_base_fields
+        fields = (
+                                   
+                "country",
+                "state",
+                "address",
+                "iso_code",     
+                "name",
+                "minimum_age_allowed",
+                "profile_picture",
+                "user", # read_only=True
+                "key"
+            )
 
 
 

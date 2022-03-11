@@ -9,6 +9,7 @@ from account.api  import (
 
 
                           CreateBusinessProfileAPIView,
+                          ListBusinessProfileAPIView,
                           UpdateBusinessProfileAPIView,
                           ActivateBusinessProfileTokenAPIView,
                           AuthenticateBusinessProfileAPIView,
@@ -40,15 +41,16 @@ urlpatterns = [
     
 
      # business-profile
-     # search for business
-    # path('business-profile/', ListBusinessProfileAPIView.as_view(), name='list_business_profile' ),
-
+    
     path('business-profile/create/', CreateBusinessProfileAPIView.as_view(), name='create_business_profile' ),
     path('business-profile/<int:pk>/update/', UpdateBusinessProfileAPIView.as_view(), name='update_business_profile' ),
     path('business-profile/activate/', ActivateBusinessProfileTokenAPIView.as_view(), name='activate_business_profile' ),
     path('business-profile/authenticate/', AuthenticateBusinessProfileAPIView.as_view(), name='authenticate_business_profile' ),
     path('business-profile/deauthenticate/', DeauthenticateBusinessProfileAPIView.as_view(), name='deauthenticate_business_profile' ),
     
+    # search for business
+    path('business-profile/', ListBusinessProfileAPIView.as_view(), name='list_business_profile' ),
+
 
     # common 
     path('mail/confirm-sign-up/', SignUpMailAPIView.as_view(), name='mail_confirm_sign_up' ),  

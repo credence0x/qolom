@@ -185,9 +185,9 @@ class CreateBusinessProfileTests(APITestCase):
 
 
 
-class UpdateBusinessProfileTests(APITestCase):
+class UpdateAndListBusinessProfileTests(APITestCase):
     def __init__(self, *args, **kwargs):
-        super(UpdateBusinessProfileTests, self).__init__(*args, **kwargs)
+        super(UpdateAndListBusinessProfileTests, self).__init__(*args, **kwargs)
                         
         self.data =  {      "name":"Starbucks Local Ltd",
                             "password":"1234@334&*9",
@@ -285,4 +285,17 @@ class UpdateBusinessProfileTests(APITestCase):
         self.assertIn("password", content, f" Incorrect password was authenticated")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
-       
+    
+    
+    
+    def test_business_list(self):
+        """
+        Ensure that you can find a businesses
+        """
+        
+
+        response = self.client.get(reverse("account:list_business_profile"))
+        content = self.__correct_byte(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(content), 1)
+        

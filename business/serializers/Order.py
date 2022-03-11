@@ -67,7 +67,7 @@ class UpdateDestroyItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ("buyer","seller","items","status")
+        fields = ("buyer","seller","purchased_item","status")
         depth = 2 
 
     
@@ -76,7 +76,7 @@ class OrderUpdateStatusSerializer(serializers.ModelSerializer):
     Update order status from 'SENT' to 'READY' or 
                         from 'READY' to 'COLLECTED' 
     """
-    status = serializers.IntegerField()
+    status = serializers.IntegerField(min_value=3,max_value=4)
     pin = serializers.IntegerField(required=False,write_only=True)
    
 
@@ -92,9 +92,10 @@ class OrderUpdateStatusSerializer(serializers.ModelSerializer):
             if validated_data.get("status") == 3: # 3 == READY
                 user = request.user
                 Email(request,user).send_business_order_ready_mail(instance)
-                instance.status == 3
+                instance.status = 3
                 instance.was_ready_by = timezone.now()
                 instance.save()
+
             else:
                 raise serializers.ValidationError({"status":"Incorrect order status"})
         
@@ -111,9 +112,9 @@ class OrderUpdateStatusSerializer(serializers.ModelSerializer):
                                             .get(id=instance.seller.id)
                                         )
                             
-                            business.total_earned +=  instance.total
+                            business.total_amount_earned +=  instance.total
                             business.save()
-                         instance.status == 4 # 4 == COLLECTED
+                         instance.status = 4 # 4 == COLLECTED
                          instance.save()
                     else:
                         raise serializers.ValidationError({"pin":"Incorrect pin"})

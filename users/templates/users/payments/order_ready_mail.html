@@ -18,9 +18,9 @@
 <br>  
 <span style="font-weight: normal"> You can now pick up 
 	{% if 'qolom' in domain %} 
-	<a href="https://{{ domain }}{% url 'users:order' order.id %}">
+	<a href="order_url">
 	{% else %} 
-	<a href="http://{{ domain }}{% url 'users:order' order.id %}">
+	<a href="order_url">
 {% endif %}your order</a> without further delay</span>.<br><br>
 <br><br>
 You may be asked to provide some information for identification purposes.<br><br>

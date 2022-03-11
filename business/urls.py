@@ -44,9 +44,9 @@ urlpatterns = [
 
 
         path('bank/add/', CreateBankAPIView.as_view(), name='bank_add' ),
-        path('bank/list/', ListBankAPIView.as_view(), name='bank_list' ),
         path('bank/resolve/', ResolveBankAPIView.as_view(), name='bank_resolve' ),
         path('bank/confirm/', ConfirmBankAPIView.as_view(), name='bank_confirm' ),
+        path('bank/', ListBankAPIView.as_view(), name='bank_list' ),
 
 
         path('item/<int:pk>/update/', UpdateItemAPIView.as_view(), name='item_update' ),
@@ -57,7 +57,7 @@ urlpatterns = [
 
 
 
-        path('order/update/', OrderUpdateStatusAPIView.as_view(), name='order_update_status' ),
+        path('order/update-status/<int:pk>/', OrderUpdateStatusAPIView.as_view(), name='order_update_status' ),
         path('order/', OrderListAPIView.as_view(), name='order_list' ),
 
 ]

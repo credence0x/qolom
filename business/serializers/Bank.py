@@ -114,12 +114,17 @@ class ConfirmBankSerializer(serializers.Serializer):
         return data
         
     def save(self):
+        request = self.context.get("request")
         user = self.validated_data.get("user")
         bank = user.businessProfile.bank 
         if Paystack().add_transfer_recipient(user):
             bank.activated = True
-            # implement send notification email to business
-            bank.save()
+            done = Email(request,user).send_business_bank_activation_success_mail()
+            if done:
+                bank.save()
+            else:
+                raise serializers.ValidationError("Please try again")
+
         else:
             raise serializers.ValidationError("Please try again")
 

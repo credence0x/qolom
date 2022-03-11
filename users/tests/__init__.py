@@ -1,6 +1,6 @@
 from .Order import (
     UserOrderTests
 ) 
-# from .Card import (
-#     CardTests,
-# ) 
+from .Card import (
+    CardTests,
+) 

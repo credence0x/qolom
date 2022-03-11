@@ -1,7 +1,7 @@
 from business.models import Item,Order
 from rest_framework import generics,status
 from users.serializers import (
-                                    
+                                    UserOrderSerializer,
                                     OrderCreateSerializer,
 
                                     OrderInitializePaymentSerializer,
@@ -18,6 +18,22 @@ import json
 """
     Order APIs
 """
+
+class OrderAPIView(generics.ListAPIView):
+    """
+    Used only to list orders
+    belonging to account
+    """
+    queryset = Order.objects.all()
+    serializer_class = UserOrderSerializer
+    permission_classes = [IsAuthenticated, IsEndUser]
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        queryset = queryset.filter(buyer=request.user.userProfile)
+        serializer = UserOrderSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
 
 class OrderCreateAPIView(generics.CreateAPIView):
     """
@@ -77,18 +93,7 @@ class OrderPaymentWithSavedCardAPIView(APIView):
 """
     Paystack Order Callback and Webhook
 """
-class OrderPayStackSuccessCallbackAPIView(APIView):
-    """
-    TO BE DELETED
-    Charge.Success callback
-    """
-    def get(self, request):
-        reference = request.query_params.get('reference')
-        order = Order.objects.get(reference=reference)
-        order.payment_successful()
-        return Response({}, status=status.HTTP_200_OK)
-        
-        
+    
 
 class OrderPaystackWebhookAPIView(APIView):
     """
