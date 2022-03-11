@@ -153,7 +153,6 @@ class ItemTests(APITestCase):
         """
         response = self.client.get(reverse('business:item_retrieve',args=[self.default_item.id]))
         content = self.__correct_byte(response.content)
-        print(content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
 
