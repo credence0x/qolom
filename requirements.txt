@@ -1,10 +1,10 @@
-asgiref==3.2.10
+asgiref==3.5.0
 certifi==2020.6.20
 chardet==3.0.4
 colorama==0.4.4
 demoji==0.4.0
 dj-database-url==0.5.0
-Django==3.1
+Django==3.1.4
 django-cleanup==5.1.0
 django-crontab==0.7.1
 django-filter==21.1
@@ -29,6 +29,7 @@ pytz==2020.1
 requests==2.24.0
 six==1.15.0
 sqlparse==0.3.1
+tzdata==2021.5
 tzlocal==2.1
 urllib3==1.25.10
 whitenoise==5.2.0
