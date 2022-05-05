@@ -168,8 +168,7 @@ class OrderPaymentWithSavedCardSerializer(serializers.Serializer):
     """
     id = serializers.IntegerField()
     last4 = serializers.CharField()
-    class Meta:
-        fields = ("id","last4")
+
 
     
     def save(self):

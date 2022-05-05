@@ -49,7 +49,13 @@ class Paystack:
         if response.status_code==200:
             if response.json().get('status')==True:            
                 data = response.json().get('data')
+                """
+                    note that in order to get the real 
+                    transaction status we still have to 
+                    get data["status"] which can be 'failed' or 'success'
+                """
                 return data
+                
         return False
 
     

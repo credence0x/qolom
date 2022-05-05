@@ -6,6 +6,7 @@ from account.module.generate_random import getRandomTicket
 from account.module.variables import SPECIAL_CHARS
 from core.module.email import Email
 from account.serializers.user import UserSerializer,UpdateUserSerializer
+from django.contrib.auth import password_validation
 
 User = get_user_model()
 
@@ -76,18 +77,9 @@ class CreateUserProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Username is already taken. Please choose another username')
         return value
 
-    def validate_password(self,value):
-        if len(value) < 8:
-            raise serializers.ValidationError("Password must contain up to 8 characters including a number or special character")
-        
-        contains_special_char = False
-        for at_least_one in SPECIAL_CHARS:
-            if at_least_one in value:
-                contains_special_char = True
-                break
-        if not contains_special_char:
-            raise serializers.ValidationError("Password must contain a number or special character")
-        
+
+    def validate_password(self, value):
+        password_validation.validate_password(value, self.instance)
         return value
 
 

@@ -13,7 +13,7 @@ from users.permissions import IsEndUser
 from rest_framework.views import APIView
 from django.conf import settings
 from rest_framework.response import Response
-import json
+import json,hashlib,hmac
 
 """
     Order APIs
@@ -99,19 +99,23 @@ class OrderPaystackWebhookAPIView(APIView):
     """
     Charge.Success webhook
     """
-    def get(self, request):
+    def post(self, request):        
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
             ip_address = x_forwarded_for.split(',')[0]
         else:
             ip_address = request.META.get('REMOTE_ADDR')
 
-        if ip_address in settings.PAYSTACK_WHITELISTED_IPS: 
-            req_body = request.body.decode('utf-8')
-            body = json.loads(req_body)
-            if body.get('event')=='charge.success':
-                data = body.get('data')                  
-                order = Order.objects.get(reference=data.get('reference'))
-                order.payment_successful()
-                return Response({}, status=status.HTTP_200_OK)
-        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        if ip_address in settings.PAYSTACK_WHITELISTED_IPS:
+            hash_ = hmac.new(settings.PAYSTACK_SECRET_KEY.encode('utf-8'),
+                                msg=request.body,
+                                digestmod=hashlib.sha512
+                            ).hexdigest()
+            data = request.data
+            if hash_ == request.headers['X-Paystack-Signature']:
+                if data.get('event')=='charge.success':
+                    data = data.get('data')    
+                    if data["status"]=="success":
+                        order = Order.objects.get(reference=data.get('reference'))
+                        order.payment_successful()
+        return Response(status=status.HTTP_204_NO_CONTENT)
