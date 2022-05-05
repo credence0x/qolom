@@ -1,4 +1,4 @@
-# Standing, The Virtual Queuing App
+# Qolom, The Virtual Queuing App
 <br>
 Hey there and welcome :smiley:.<br><br>
 
@@ -25,4 +25,4 @@ The app is live at https://qolom.com and I'll encourage you to check it out.
 <br>If you'd like to work with me,contact me at lojetokun@gmail.com
 <br><br>
 
-NOTE: You may not fork, use or download this code as a whole or any part of it.
+NOTE: This repo only contains the updated and refactored backend
