@@ -1,8 +1,9 @@
 from .base import *
 import os
 
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG")
 
+# FOR DEMONSTRATION ONLY
 ALLOWED_HOSTS = ['*'] 
 
 
