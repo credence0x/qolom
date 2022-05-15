@@ -1,0 +1,28 @@
+version: "3.9"
+   
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=qolom
+      - POSTGRES_USER=qolom
+      - POSTGRES_PASSWORD=qolom
+
+      
+  web:
+    env_file:
+      - .env
+    build: .
+    volumes:
+      - ./app:/app 
+    ports:
+      - "9000:9000"      
+    depends_on:
+      - db
+    links:
+      - db
+   
+
+  
+
+
